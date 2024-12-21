@@ -17,5 +17,18 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
+// error handlers
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    const errMsg = err.message;
+    const statusCode = err.statusCode || 500;
+    console.log(errMsg || err);
+    res.status(statusCode).json({
+        message: errMsg,
+        error: err.errors,
+    });
+});
+
 
 module.exports = app;
