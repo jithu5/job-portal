@@ -12,11 +12,11 @@ export default {
             colors: {
                 primary: "#EDEAEB",
                 secondary: "#020204",
-                third: "#7F90FE",
+                third: "#9263f3",
                 white: "#FFFFFF",
             },
             fontSize: {
-                "10xl": "170px",
+                "10xl": "160px",
             },
         },
     },

@@ -7,9 +7,9 @@ function NavBar() {
     const currentUser = true;
     return (
         <>
-            <header className="w-full flex items-center justify-between font-BarlowSemiCondensed font-medium px-10">
+            <header className="w-full flex items-center justify-between font-BarlowSemiCondensed font-medium md:px-10">
                 <nav>
-                    <ul className="flex items-center gap-20 px-5 text-lg">
+                    <ul className="flex items-center gap-6 sm:gap-8 md:gap-20 md:px-5 text-sm sm:text-md sm:text-lg">
                         <li>
                             <a href="#">Home</a>
                         </li>
@@ -40,8 +40,8 @@ function NavBar() {
                             </>
                         )}
                         {currentUser && (
-                            <div className="flex justify-center items-center p-2 rounded-full border-[2px] border-secondary">
-                                <HiOutlineUser className="text-lg" />
+                            <div className="flex justify-center items-center p-1 md:p-2 rounded-full border-[2px] border-secondary">
+                                <HiOutlineUser className="text-sm sm:text-md md:text-lg" />
                             </div>
                         )}
                     </ul>

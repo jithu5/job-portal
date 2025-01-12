@@ -10,7 +10,7 @@ function AnimationButton() {
             <motion.button
                 onMouseEnter={() => setMouseOver(true)}
                 onMouseLeave={() => setMouseOver(false)}
-                className="relative text-4xl font-medium font-BebasNeue border-[2.7px] px-8 py-2 border-third rounded-2xl overflow-hidden mix-blend-darken"
+                className="relative text-xl sm:text-3xl lg:text-4xl font-medium font-BebasNeue border-[2.7px] px-6 lg:px-8 py-1 md:py-2 border-third rounded-2xl overflow-hidden mix-blend-darken"
             >
                 <motion.div
                     className="absolute left-2 top-[40%] translate-y-[60%] bg-third rounded-full h-2 w-2"
@@ -29,11 +29,11 @@ function AnimationButton() {
 
                 <motion.h1
                     style={{
-                        color: "#7E90FE",
+                        color: "#9263f3",
                     }}
                     animate={{
                         x: mouseOver ? 4 : 0,
-                        color: mouseOver ? "#FFFFFF" : "#7E90FE",
+                        color: mouseOver ? "#FFFFFF" : "#9263f3",
                     }}
                     transition={{
                         duration: 0.3,

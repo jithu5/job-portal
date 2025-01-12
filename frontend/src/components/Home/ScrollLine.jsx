@@ -5,11 +5,12 @@ function ScrollLine() {
     return (
         <>
             <div className="w-full flex justify-center items-center">
-                <motion.div className="rounded-2xl"
+                <motion.div
+                    className="rounded-2xl"
                     style={{
                         width: "30%",
-                        height: "3px",
-                        backgroundColor:"black",
+                        height: "1px",
+                        backgroundColor: "black",
                     }}
                     whileInView={{
                         width: "100%",
