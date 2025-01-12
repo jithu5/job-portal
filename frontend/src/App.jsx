@@ -1,9 +1,16 @@
 import React from 'react'
+import { NavBar } from './components/index'
+import { Outlet } from 'react-router-dom'
+import "./App.css"
 
 function App() {
   return (
     <>
-      <h1>app</h1>
+    <div className='min-h-screen w-full px-6 py-4 bg-primary'>
+
+      <NavBar/>
+      <Outlet/>
+    </div>
     </>
   )
 }
