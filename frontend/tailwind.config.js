@@ -16,7 +16,8 @@ export default {
                 white: "#FFFFFF",
             },
             fontSize: {
-                "10xl": "160px",
+                "10xl": "135px",
+                "11xl": "155px",
             },
         },
     },
