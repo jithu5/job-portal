@@ -63,7 +63,7 @@ function HowToUse() {
                         key={step.id}
                         onMouseEnter={() => setMouseOver(step.id)} // Set mouseOver to current step id
                         onMouseLeave={() => setMouseOver(null)} // Reset mouseOver when mouse leaves
-                        className="w-full border-2 border-b-secondary py-4 md:py-6 px-1 md:px-3 flex items-center justify-between relative cursor-pointer"
+                        className="w-full py-4 md:py-6 px-1 md:px-3 flex items-center justify-between relative cursor-pointer"
                         style={{
                             backgroundColor: "#EDEAEB",
                             color: "#020204",
@@ -96,10 +96,10 @@ function HowToUse() {
                                     mouseOver === step.id ? "#FFF" : "#020204", // Make sure text is visible
                             }}
                             animate={{
-                                scale: mouseOver === step.id ? 1.1 : 1, // Increase font size on hover
+                                scale: mouseOver === step.id ? 1.3 : 1, // Increase font size on hover
                             }}
                             transition={{
-                                duration: 0.3, // Smooth transition duration
+                                duration: 0.4, // Smooth transition duration
                             }}
                         >
                             {step.id}
@@ -119,7 +119,7 @@ function HowToUse() {
                                 scale: mouseOver === step.id ? 1.1 : 1, // Increase font size on hover
                             }}
                             transition={{
-                                duration: 0.3, // Smooth transition duration
+                                duration: 0.4, // Smooth transition duration
                             }}
                         >
                             {step.title}

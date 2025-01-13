@@ -1,5 +1,5 @@
 import React from "react";
-import HomeImage from "../assets/job-image.png";
+import HomeImage from "../../assets/job-image.png";
 
 import { motion } from "framer-motion";
 
@@ -8,10 +8,11 @@ import {
     ScrollLine,
     HowToUse,
     RecommendedJobs,
-    AboutUs
-} from "../components/index";
+    AboutUs,
+} from "../../components/index";
 
 function Home() {
+    const currentUser = false;
     const parentVariants = {
         hidden: {
             opacity: 1,
@@ -43,8 +44,7 @@ function Home() {
                             initial="hidden"
                             animate="visible"
                         >
-                            {words.map((word, index) =>
-                            (
+                            {words.map((word, index) => (
                                 <div
                                     key={index}
                                     className="w-fit h-fit overflow-hidden"
@@ -60,14 +60,37 @@ function Home() {
                                             overflow: "hidden", // Ensures word movement stays inside
                                         }}
                                     >
-                                                {word}{" "}
-                                            
-                                      
+                                        {word}{" "}
                                     </motion.span>
                                 </div>
                             ))}
                         </motion.div>
-                        <AnimationButton />
+                        {currentUser ? (
+                            <AnimationButton
+                            destination={"/"}
+                                bgColor={"third"}
+                                colorCode={"#9263f3"}
+                            >
+                                Find a Job
+                            </AnimationButton>
+                        ) : (
+                            <div className="flex items-center gap-6">
+                                <AnimationButton
+                                    destination={"/user/login"}
+                                    bgColor={"secondary"}
+                                    colorCode={"#020204"}
+                                >
+                                    LOG IN
+                                </AnimationButton>
+                                <AnimationButton
+                                    destination={"/user/register"}
+                                    bgColor={"secondary"}
+                                    colorCode={"#020204"}
+                                >
+                                    SIGN UP
+                                </AnimationButton>
+                            </div>
+                        )}
                     </div>
                     <div className="w-full sm:w-[37%] items-end">
                         {/* Add your image here */}

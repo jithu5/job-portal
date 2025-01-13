@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 import { FaArrowRight } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-function AnimationButton() {
+function AnimationButton({children,bgColor,colorCode,destination}) {
     const [mouseOver, setMouseOver] = useState(false);
+    const navigate = useNavigate()
     return (
         <>
             <motion.button
+            onClick={()=>navigate(destination)}
                 onMouseEnter={() => setMouseOver(true)}
                 onMouseLeave={() => setMouseOver(false)}
-                className="relative text-xl sm:text-3xl lg:text-4xl font-medium font-BebasNeue border-[2.7px] px-6 lg:px-8 py-1 md:py-2 border-third rounded-2xl overflow-hidden mix-blend-darken"
+                className={`relative text-xl sm:text-3xl lg:text-4xl font-medium font-BebasNeue border-[2.7px] px-6 lg:px-8 py-1 md:py-2 border-${bgColor} rounded-2xl overflow-hidden`}
             >
                 <motion.div
-                    className="absolute left-2 top-[40%] translate-y-[60%] bg-third rounded-full h-2 w-2"
+                    className={`absolute left-2 top-[40%] translate-y-[60%] bg-${bgColor} rounded-full h-2 w-2`}
                     style={{
                         display: "none",
                     }}
@@ -29,19 +32,26 @@ function AnimationButton() {
 
                 <motion.h1
                     style={{
-                        color: "#9263f3",
+                        color: colorCode, // Initial color from props
                     }}
                     animate={{
                         x: mouseOver ? 4 : 0,
-                        color: mouseOver ? "#FFFFFF" : "#9263f3",
+                        color:mouseOver
+                                ? "#FFFFFF"
+                                : colorCode,
+                        mixBlendMode:
+                            bgColor === "secondary" && mouseOver
+                                ? "difference"
+                                : "normal",
                     }}
                     transition={{
                         duration: 0.3,
                         ease: "easeIn",
                     }}
                 >
-                    Find a Job
+                    {children}
                 </motion.h1>
+
                 <motion.div
                     className="absolute top-1/2 -translate-y-[50%]"
                     style={{

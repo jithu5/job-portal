@@ -11,7 +11,7 @@ function NavBar() {
                 <nav>
                     <ul className="flex items-center gap-6 sm:gap-8 md:gap-20 md:px-5 text-sm sm:text-md sm:text-lg">
                         <li>
-                            <a href="#">Home</a>
+                            <Link to="/">Home</Link>
                         </li>
                         <li>
                             <a href="#">Find Job</a>
