@@ -1,24 +1,26 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const jobSchema = mongoose.Schema({
-    company:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:'company'
+const JobSchema = mongoose.Schema(
+    {
+        company: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "company",
+        },
+        Title: {
+            type: String,
+            required: true,
+        },
+        Description: {
+            type: String,
+            required: true,
+        },
+        Date: {
+            type: Date,
+            required: true,
+        },
     },
-    Title:{
-        type:String,
-        required:true,
-    },
-    Descr:{
-        type:String,
-        required:true,
-    },
-    Date:{
-        type:Date,
-        required:true,
-    },
+    { timestamps: true }
+);
 
-})
-
-module.exports = mongoose.model('jobs', jobSchema);
+module.exports = mongoose.model("Job", JobSchema);

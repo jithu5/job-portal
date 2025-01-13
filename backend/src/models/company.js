@@ -34,7 +34,12 @@ const CompanySchema = mongoose.Schema({
         minlength: 8,
         maxlength: 12,
     }
-})
+},
+{
+    timestamps: true,
+    
+}
+)
 
 CompanySchema.pre("save",async function (next){
     try {
@@ -49,12 +54,13 @@ CompanySchema.pre("save",async function (next){
     } 
 });
 
-CompanySchema.methods.comparepassword = async function (password) {
+CompanySchema.methods.comparePassword = async function (password) {
    try {
-    return await bcrypt.compare("password",this.password)
+    return await bcrypt.compare(password,this.password)
    } catch (error) {
      console.log(error);
      
    } 
 }
-module.exports = mongoose.model("company", CompanySchema);
+
+module.exports = mongoose.model("Company", CompanySchema);
