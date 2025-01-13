@@ -31,3 +31,46 @@
 .swiper-button-prev:after, .swiper-button-next:after {
     font-size: 16px !important;
 }
+
+
+/* Main Button Hover Logic */
+.menuBtnAnim {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+.menuBtnAnim:hover .buttonRotate {
+    transform: rotateX(90deg);
+}
+
+.menuBtnAnim:hover .firstLabel {
+    transform: translateY(-100%);
+    opacity: 0;
+}
+
+.menuBtnAnim:hover .secondLabel {
+    opacity: 1;
+}
+
+/* Default States */
+.firstLabel {
+    opacity: 1;
+    transition: all 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.secondLabel {
+    position: absolute;
+    transform: rotateX(-90deg) translateY(10px);
+    opacity: 0;
+    transition: all 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+    transform-origin:bottom center ;
+}
+
+.buttonRotate {
+    transform-style: preserve-3d;
+    transition: all 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+}

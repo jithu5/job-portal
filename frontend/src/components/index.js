@@ -5,5 +5,7 @@ import HowToUse from "./Home/HowToUse";
 import RecommendedJobs from "./Home/RecommendedJobs";
 import Footer from "./Footer";
 import AboutUs from "./Home/AboutUs";
+import MenuButton from "./MenuButton";
+import NavigationLinks from "./NavigationLinks";
 
-export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs };
+export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks};
