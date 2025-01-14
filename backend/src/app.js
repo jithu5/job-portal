@@ -5,10 +5,10 @@ const session = require('express-session');
 const passport = require('passport');
 const morgan = require('morgan');
 const cors = require('cors');
-const userModel = require('./models/usermodel');
-const companyModel = require('./models/company');
-const userRouter = require('./routes/user');
+const userModel = require('./models/usermodel.js');
+const companyModel = require('./models/company.js');
 const path = require('path');
+const UserRouter = require('./routers/user.router.js');
 
 
 const app = express();
@@ -24,7 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/',userRouter);
+
+// routes
+app.use("/api/auth/user", UserRouter)
 
 
 // session
