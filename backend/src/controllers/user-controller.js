@@ -5,7 +5,7 @@ const usermodel = require('../models/usermodel.js');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
-passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{
+passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{   
     try {
         const user = await usermodel.findOne({
            $or:[{username: usernameOrEmail},{email: usernameOrEmail}] 
@@ -27,14 +27,17 @@ passport.serializeUser((user,done)=>{
     done(null,user.id);
 })
 
-passport.deserializeUser((id,done)=>{
-    usermodel.findById(id,(err,user)=>{
-        done(err,user);
-    })
+passport.deserializeUser(async(id,done)=>{
+    try {
+        const user = await usermodel.findById(id);
+        done(null,user);
+          
+    } catch (error) {
+        done(error);   
+    }
 })
 
 const UserRegister = asyncHandler(async(req,res)=>{
-    console.log(req.body);
     
     const {username,name,email,password,gender,address,phone,age} = req.body;
 
@@ -79,6 +82,8 @@ const UserRegister = asyncHandler(async(req,res)=>{
 
 const UserLogin = asyncHandler(async(req, res, next) => {
     passport.authenticate('local',(err, user,info) => {
+        console.log("User",user);
+        
         if (err) {
             throw new ApiError(500, "Internal server error");
         }
