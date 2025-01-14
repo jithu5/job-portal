@@ -1,22 +1,24 @@
 const mongoose = require('mongoose');
 
 
-const HistorySchema = mongoose.Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'user'
+const HistorySchema = mongoose.Schema(
+    {
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+        jobId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Job",
+        },
+        status: {
+            type: String,
+            enum: ["pending", "success", "cancelled"],
+        },
     },
-    jobId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'job'
-    },
-    status:{
-        type:String,
-        enum:["pending", "success","cancelled"]
+    {
+        timestamps: true,
     }
-},
-{
-    timestamps: true
-})
+);
 
 module.exports = mongoose.model('History', HistorySchema);

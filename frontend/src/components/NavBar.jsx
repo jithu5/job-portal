@@ -35,8 +35,8 @@ function NavBar() {
                     transition: "all 0.75s cubic-bezier(0.76,0,0.24,1)",
                 },
                 close: {
-                    width: 90,
-                    height: 30,
+                    width: 0,
+                    height: 0,
                     top: "20px",
                     right: "24px",
                     transition: {
@@ -59,8 +59,8 @@ function NavBar() {
                     // opacity: 1,
                 },
                 close: {
-                    width: 90,
-                    height: 30,
+                    width: 0,
+                    height: 0,
                     top: "16px",
                     right: "64px",
                     // opacity: 0,
@@ -83,8 +83,8 @@ function NavBar() {
                     transition: "all 0.75s cubic-bezier(0.76,0,0.24,1)",
                 },
                 close: {
-                    width: 90,
-                    height: 30,
+                    width: 0,
+                    height: 0,
                     top: "20px",
                     right: "66px",
                     // opacity: 0,

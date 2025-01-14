@@ -18,6 +18,7 @@ app.use(cors({
     credentials: true,
     origin: process.env.CLIENT_URL
 }))
+app.use(morgan("dev"))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -26,10 +27,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/',userRouter);
 
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
-
 // session
 app.use(session({
     resave: false,
@@ -37,8 +34,10 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     cookie: { maxAge: 60000 }
 }));
+
 app.use(passport.initialize());
 app.use(passport.session());
+
 passport.serializeUser(userModel.serializeUser());
 passport.deserializeUser(userModel.deserializeUser());
 passport.serializeUser(companyModel.serializeUser());
