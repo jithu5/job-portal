@@ -5,13 +5,46 @@ const session = require('express-session');
 const passport = require('passport');
 const morgan = require('morgan');
 const cors = require('cors');
-const userModel = require('./models/usermodel.js');
-const companyModel = require('./models/company.js');
+var userModel = require('./models/usermodel');
+var companyModel = require('./models/company');
 const path = require('path');
 const UserRouter = require('./routers/user.router.js');
+const MogoStore = require('connect-mongo');
+const db = require('./db/connect');
 
 
 const app = express();
+
+db();
+
+// session
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: process.env.SESSION_SECRET||"jobportalsecret",
+    store: new MogoStore({
+        mongoUrl:'mongodb://127.0.0.1:27017/job-portal',
+        ttl: 14 * 24 * 60 * 60, // = 14 days. Default
+        }),
+    cookie: {
+        httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
+        secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
+        sameSite: "lax", // Protects against CSRF attacks
+         maxAge: 600000 }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.serializeUser((user, done) => {
+    done(null, user._id);
+});
+
+passport.deserializeUser((id, done) => {
+    userModel.findById(id, (err, user) => {
+        done(err, user);
+    });
+});
 
 // Middleware
 app.use(cors({
@@ -26,25 +59,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // routes
-app.use("/api/auth/user", UserRouter)
-
-
-// session
-app.use(session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.SESSION_SECRET,
-    cookie: { maxAge: 60000 }
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-passport.serializeUser(userModel.serializeUser());
-passport.deserializeUser(userModel.deserializeUser());
-passport.serializeUser(companyModel.serializeUser());
-passport.deserializeUser(companyModel.deserializeUser());
-
+app.use("/api/auth/user", UserRouter);
 
 
 // error handlers

@@ -2,12 +2,41 @@ const ApiResponse = require('../utils/ApiResponse.js');
 const ApiError = require('../utils/ApiError.js');
 const asyncHandler = require('../utils/Asynchandler.js');
 const usermodel = require('../models/usermodel.js');
+const passport = require('passport');
+const localStrategy = require('passport-local').Strategy;
+
+passport.use(new localStrategy(async(username,password,done)=>{
+    try {
+        const user = await usermodel.findOne({username: username});
+        if (!user) {
+            return done(null,false,{message: "Invalid username"});
+        }
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            return done(null,false,{message: "Invalid password"});
+        }
+        return done(null,user);
+    } catch (error) {
+        return done(error);
+    }
+}))
+
+passport.serializeUser((user,done)=>{
+    done(null,user.id);
+})
+
+passport.deserializeUser((id,done)=>{
+    usermodel.findById(id,(err,user)=>{
+        done(err,user);
+    })
+})
 
 const UserRegister = asyncHandler(async(req,res)=>{
+    console.log(req.body);
+    
+    const {username,name,email,password,gender,address,phone,age} = req.body;
 
-    const {username,name,email,password} = req.body;
-
-    if (!username || !name || !email || !password) {
+    if (!username || !name || !email || !password || !gender || !address || !phone || !age) {
         throw new ApiError(400,"All fields are required")
     }
     try {
@@ -15,30 +44,52 @@ const UserRegister = asyncHandler(async(req,res)=>{
         const ExistingUser = await usermodel.findOne({
             $or:[{username: username},{email: email}]
         })
+        console.log("Exist",ExistingUser);
+        
         if (ExistingUser) {
             throw new ApiError(400 , "User already exists");
         }
 
         // create user 
-        const user = "created"
+        const newuser= new usermodel({
+            username: username,
+            name: name,
+            email: email,
+            gender: gender,
+            address: address,
+            phone: phone,
+            age: age,
+            password: password
+        })
+        newuser.save();
+        // save user in session
+        req.session.user = {
+            id: newuser._id,
+            username: newuser.username,
+            email: newuser.email
+        }
 
-        // create token
-        const token = 1234;
-
-        const cookieOptions = {
-            httpOnly: true, // Prevents client-side JavaScript from accessing the cookie
-            secure: process.env.NODE_ENV === "production", // Ensures the cookie is sent over HTTPS in production
-            sameSite: "lax", // Protects against CSRF attacks
-            maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time in milliseconds (e.g., 1 day)
-        };
-
-        // attach to cookie
-        res.status(201)
-        .cookie("token",token,cookieOptions)
-        .json(new ApiResponse(201,user,"User registered successfully"));
+        res.status(201).json(new ApiResponse(201,newuser,"User registered successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message)
     }
+})
+
+const UserLogin = asyncHandler(async(req, res, next) => {
+    passport.authenticate('local',(err, user,info) => {
+        if (err) {
+            throw new ApiError(500, "Internal server error");
+        }
+        if (!user) {
+            throw new ApiError(400, "Invalid credentials");
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                throw new ApiError(500, "Internal server error");
+            }
+            return res.status(200).json(new ApiResponse(200, user, "User logged in successfully"));
+        });
+    })(req, res, next);
 })
 
 const GetUser = asyncHandler( async(req, res) => {
@@ -47,5 +98,6 @@ const GetUser = asyncHandler( async(req, res) => {
 
 module.exports = {
     UserRegister,
-    GetUser
+    GetUser,
+    UserLogin,
 }
