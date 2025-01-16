@@ -37,6 +37,7 @@ passport.deserializeUser(async(id,done)=>{
     }
 })
 
+//user register
 const UserRegister = asyncHandler(async(req,res)=>{
     
     const {username,name,email,password,gender,address,phone,age} = req.body;
@@ -80,6 +81,7 @@ const UserRegister = asyncHandler(async(req,res)=>{
     }
 })
 
+//user login
 const UserLogin = asyncHandler(async(req, res, next) => {
     passport.authenticate('local',(err, user,info) => {
         console.log("User",user);

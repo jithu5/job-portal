@@ -9,6 +9,7 @@ var userModel = require('./models/usermodel');
 var companyModel = require('./models/company');
 const path = require('path');
 const UserRouter = require('./routers/user.router.js');
+const CompanyRouter = require('./routers/company.router.js');
 const MogoStore = require('connect-mongo');
 const db = require('./db/connect');
 
@@ -60,6 +61,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // routes
 app.use("/api/auth/user", UserRouter);
+app.use("/api/auth/company", CompanyRouter);
 
 
 // error handlers

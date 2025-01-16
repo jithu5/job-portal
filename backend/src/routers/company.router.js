@@ -1,17 +1,22 @@
 const express = require('express');
-const router = express.router();
-const jobModel = require('../models/jobs');
-const companyModel = require('../models/company');
-const userModel = require('../models/user');
-const historyModel = require('../models/history');
-const multer = require('../middlewares/multer.middleware');
+const CompanyRouter = express.Router();
+const jobModel = require('../models/jobs.js');
+const companyModel = require('../models/company.js');
+const userModel = require('../models/usermodel.js');
+const historyModel = require('../models/history.js');
+const {upload} = require('../middlewares/multer.middleware.js');
 const passport = require('passport');
 const path = require('path');
-const localStrategy = require('passport-local').Strategy;
+const { CRegister, GetUser,CLogin } = require('../controllers/company-controller.js');
 
-passport.use(new localStrategy({
-    cnameField: 'email',
-    passwordField: 'password'
-},companyModel.authenticate()));
-passport.serializeUser(companyModel.serializeUser());
-passport.deserializeUser(companyModel.deserializeUser());
+
+
+CompanyRouter.get('/',GetUser);
+
+CompanyRouter.post('/cregister',CRegister);
+
+CompanyRouter.post("/clogin",CLogin);
+
+
+
+module.exports = CompanyRouter;
