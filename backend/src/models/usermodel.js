@@ -52,6 +52,10 @@ const UserSchema = mongoose.Schema(
             minlength: 8,
             maxlength: 12,
         },
+        role:{
+            type: String,
+            default: "user",
+        },
         isAccountVerified: {
             type: Boolean,
             default: false,

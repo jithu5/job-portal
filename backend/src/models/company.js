@@ -1,45 +1,69 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const CompanySchema = mongoose.Schema({
-    Cname:{
-        type:String,
-        required:true,
-        unique:true,
-        minlength: 5,
-        maxlength: 25,
+const CompanySchema = mongoose.Schema(
+    {
+        Cname: {
+            type: String,
+            required: true,
+            unique: true,
+            minlength: 5,
+            maxlength: 25,
+        },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+            minlength: 5,
+            maxlength: 50,
+        },
+        address: {
+            type: String,
+            required: true,
+            minlength: 10,
+            maxlength: 100,
+        },
+        phone: {
+            type: Number,
+            required: true,
+            minlength: 10,
+            maxlength: 10,
+        },
+        password: {
+            type: String,
+            required: true,
+            minlength: 8,
+            maxlength: 12,
+        },
+        role: {
+            type: String,
+            default: 'admin',
+        },
+        isAccountVerified: {
+            type: Boolean,
+            default: false,
+        },
+        AccountVerificationOTP: {
+            type: Number,
+            default: null,
+        },
+        AccountVerificationOTPValidDate: {
+            type: Date,
+            default: null,
+        },
+        resetPasswordOTP: {
+            type: Number,
+            default: null,
+        },
+        resetPasswordOTPValidDate: {
+            type: Date,
+            default: null,
+        },
     },
-    email:{
-        type:String,
-        required:true,
-        unique:true,
-        minlength: 5,
-        maxlength: 50
-    },
-    address:{
-        type:String,
-        required:true,
-        minlength: 10,
-        maxlength: 100
-    },
-    phone:{
-        type:Number,
-        required:true,
-        minlength: 10,
-        maxlength: 10,
-    },
-    password:{
-        type:String,
-        required:true,
-        minlength: 8,
-        maxlength: 12,
+    {
+        timestamps: true,
     }
-},
-{
-    timestamps: true,
-    
-}
-)
+);
 
 CompanySchema.pre("save",async function (next){
     try {
