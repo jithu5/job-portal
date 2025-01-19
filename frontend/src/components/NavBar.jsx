@@ -145,7 +145,7 @@ function NavBar() {
                                     className="bg-third rounded-2xl absolute top-4 right-6 md:right-16 z-10"
                                 >
                                     <AnimatePresence>
-                                        {isActive && <NavigationLinks />}
+                                        {isActive && <NavigationLinks setIsActive={setIsActive} />}
                                     </AnimatePresence>
                                 </motion.div>
                                 <MenuButton

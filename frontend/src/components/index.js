@@ -8,4 +8,7 @@ import AboutUs from "./Home/AboutUs";
 import MenuButton from "./MenuButton";
 import NavigationLinks from "./NavigationLinks";
 
-export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks};
+import JobHeader from "./Jobs/Header";
+import JobSideBar from "./Jobs/SideBar";
+
+export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks, JobHeader, JobSideBar};

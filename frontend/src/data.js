@@ -9,7 +9,7 @@ export const NavLinks=[
     },
     {
         label: 'Profile',
-        href: '/user/profile',
+        href: 'profile',
     },
     {
         label: 'Logout',

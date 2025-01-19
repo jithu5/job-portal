@@ -5,8 +5,10 @@ import { NavBar,Footer } from '../../components/index';
 function UserHome() {
   return (
       <>
-          <NavBar />
-          <Outlet />
+          <div className="px-6 py-4">
+              <NavBar />
+              <Outlet />
+          </div>
           <Footer />
       </>
   );

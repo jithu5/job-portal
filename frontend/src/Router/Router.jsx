@@ -8,7 +8,9 @@ import {
     Register,
     UserAccountVerify,
     UserLogin,
-    UserPasswordReset
+    UserPasswordReset,
+    SearchJobs,
+    JobDetails
 } from "../pages/index";
 
 const router = createBrowserRouter([
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
                         path: "profile",
                         element: <Profile />,
                     },
+                    {
+                        path: "jobs",
+                        element: <SearchJobs />,
+                    },
+                    {
+                        path: "job/:jobId",
+                        element: <JobDetails />,
+                    }
                 ],
             },
             {
@@ -39,13 +49,13 @@ const router = createBrowserRouter([
                 element: <UserLogin />,
             },
             {
-              path: "user/verify",
+                path: "user/verify",
                 element: <UserAccountVerify />,
             },
             {
-              path: "user/reset-password",
+                path: "user/reset-password",
                 element: <UserPasswordReset />,
-            }
+            },
         ],
     },
 ]);

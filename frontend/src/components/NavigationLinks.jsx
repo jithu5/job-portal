@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 import { motion } from "framer-motion";
 
-function NavigationLinks() {
+function NavigationLinks({ setIsActive }) {
     const animation = {
         initial: { opacity: 0, rotateX: 90, translateX: -10, translateY: 10 },
         animate: (index) => ({
@@ -24,7 +24,7 @@ function NavigationLinks() {
         exit: {
             opacity: 0,
             transition: {
-                duration:0.5,
+                duration: 0.5,
                 ease: [0.215, 0.61, 0.355, 1],
             },
         },
@@ -40,7 +40,7 @@ function NavigationLinks() {
                             perspectiveOrigin: "bottom",
                         }}
                     >
-                        <motion.div
+                        <motion.div onClick={()=>setIsActive(false)}
                             variants={animation}
                             custom={index}
                             initial="initial"
