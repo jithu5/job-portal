@@ -10,7 +10,8 @@ import {
     UserLogin,
     UserPasswordReset,
     SearchJobs,
-    JobDetails
+    JobDetails,
+    EditUserProfile
 } from "../pages/index";
 
 const router = createBrowserRouter([
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
                     {
                         path: "profile",
                         element: <Profile />,
+                    },
+                    {
+                        path: "profile/edit",
+                        element: <EditUserProfile />,
                     },
                     {
                         path: "jobs",
