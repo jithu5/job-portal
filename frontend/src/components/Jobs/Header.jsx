@@ -2,10 +2,10 @@ import { Button, Input } from '@mui/material'
 import React, { useEffect } from 'react'
 
 function JobHeader({ setOpenFilter,title,handleChange,onFilterChange }) {
-    
-    useEffect(() => {
-      onFilterChange()
-    }, [title])
+    // console.log(onFilterChange)
+    // useEffect(() => {
+    //   onFilterChange()
+    // }, [title])
     
     return (
         <>

@@ -1,83 +1,50 @@
 import React from "react";
-import defaultAvatar from "../../assets/avatar.png"
+import coverImage from "../../assets/coverimage.jpg";
+import man from "../../assets/man.png";
+import { FaEdit } from "react-icons/fa";
 
 const Profile = () => {
     return (
-        <div className="min-h-screen py-10 px-4">
-            <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg">
-                {/* Header Section */}
-                <div className="relative bg-third h-32 rounded-t-lg">
-                    <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2">
-                        <img
-                            src={defaultAvatar}
-                            alt="Profile"
-                            className="w-24 h-24 rounded-full border-4 border-white"
-                        />
-                    </div>
+        <div className="w-full min-h-screen font-BarlowSemiCondensed mb-32">
+            <div className="w-full mt-10 relative">
+                <img
+                    src={coverImage}
+                    alt=""
+                    className="w-full h-32 md:h-72 object-cover rounded-t-2xl lg:rounded-t-[60px] rounded-b-lg"
+                />
+                <div className="h-14 w-14 md:w-32 md:h-32 object-cover absolute left-6 md:left-20 top-[100%] -translate-y-1/2 rounded-full bg-primary flex items-center justify-center">
+                    <img src={man} alt="" className="w-[90%]" />
                 </div>
-
-                {/* Profile Information */}
-                <div className="mt-16 text-center px-4">
-                    <h1 className="text-2xl font-bold text-gray-800">
-                        John Doe
-                    </h1>
-                    <p className="text-gray-600">Frontend Developer</p>
-                </div>
-
-                {/* About Section */}
-                <div className="px-6 py-4">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                        About Me
-                    </h2>
-                    <p className="text-gray-600">
-                        Passionate about building interactive and responsive
-                        applications with modern technologies.
+            </div>
+            <div className="w-[90%] mx-auto flex flex-col items-end mt-10">
+                <div className="flex flex-col items-center gap-3">
+                    <h1 className="text-xl font-medium ">Job Role</h1>
+                    <p className="bg-third rounded-lg px-3 py-2 text-white">
+                        Software Engineer
                     </p>
                 </div>
-
-                {/* Profile Details */}
-                <div className="px-6 py-4">
-                    <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                        Profile Details
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <h3 className="font-medium text-gray-600">
-                                Email:
-                            </h3>
-                            <p className="text-gray-800">johndoe@example.com</p>
-                        </div>
-                        <div>
-                            <h3 className="font-medium text-gray-600">
-                                Phone:
-                            </h3>
-                            <p className="text-gray-800">+123 456 7890</p>
-                        </div>
-                        <div>
-                            <h3 className="font-medium text-gray-600">
-                                Location:
-                            </h3>
-                            <p className="text-gray-800">New York, USA</p>
-                        </div>
-                        <div>
-                            <h3 className="font-medium text-gray-600">
-                                Joined:
-                            </h3>
-                            <p className="text-gray-800">January 2023</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Actions Section */}
-                <div className="px-6 py-4 border-t">
-                    <div className="flex justify-between items-center">
-                        <button className="bg-third text-white px-4 py-2 rounded-md hover:bg-purple-600 transition">
-                            Edit Profile
-                        </button>
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition">
-                            Logout
-                        </button>
-                    </div>
+            </div>
+            <div className="w-[90%] mx-auto flex flex-col gap-4">
+                <h1 className="text-xl md:text-3xl font-bold">
+                    Monkey D Luffy
+                </h1>
+                <p className="text-md md:texxt-lg font-medium">
+                    Software Engineer
+                </p>
+                <p className="text-md md:texxt-lg font-medium">
+                    luffy@sunny.com
+                </p>
+                <p className="text-md md:texxt-lg font-medium">
+                    6955217854
+                </p>
+                <p className="text-md md:text-lg font-normal">
+                    Foosha Village, Goa kingdom, East Blue
+                </p>
+                <div className="w-[90%] mx-auto flex items-center justify-start mt-10">
+                    <button className="bg-third text-md text-white font-semibold rounded-md py-2 px-4 flex items-center gap-2">
+                        <FaEdit className="text-md"/>
+                        View Profile
+                    </button>
                 </div>
             </div>
         </div>
