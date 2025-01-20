@@ -5,6 +5,7 @@ const usermodel = require('../models/usermodel.js');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
+
 passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{  
     console.log("Username",usernameOrEmail);
     console.log("Password",password);

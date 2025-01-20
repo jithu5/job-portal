@@ -1,9 +1,8 @@
 import React from 'react'
-import { Outlet } from 'react-router-dom'
-import { NavBar,Footer } from '../../components/index';
+import { Footer, NavBar } from '../../components/index'
+import { Outlet } from 'react-router-dom';
 
-function UserHome() {
-    
+function AdminLayout() {
   return (
       <>
           <div className="px-6 py-4">
@@ -15,4 +14,4 @@ function UserHome() {
   );
 }
 
-export default UserHome
+export default AdminLayout

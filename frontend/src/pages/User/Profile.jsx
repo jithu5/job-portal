@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import coverImage from "../../assets/coverimage.jpg";
 import man from "../../assets/man.png";
 import { FaEdit } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
+    useEffect(() => {
+            window.scrollTo(0, 0);
+        }, []); // Empty dependency array to run only once when the component mounts
     return (
         <div className="w-full min-h-screen font-BarlowSemiCondensed mb-32">
             <div className="w-full mt-10 relative">
@@ -41,10 +45,10 @@ const Profile = () => {
                     Foosha Village, Goa kingdom, East Blue
                 </p>
                 <div className="w-[90%] mx-auto flex items-center justify-start mt-10">
-                    <button className="bg-third text-md text-white font-semibold rounded-md py-2 px-4 flex items-center gap-2">
+                    <Link to={"/profile/edit"} className="bg-third text-md text-white font-semibold rounded-md py-2 px-4 flex items-center gap-2">
                         <FaEdit className="text-md"/>
-                        View Profile
-                    </button>
+                        Edit Profile
+                    </Link>
                 </div>
             </div>
         </div>

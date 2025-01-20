@@ -11,4 +11,9 @@ import NavigationLinks from "./NavigationLinks";
 import JobHeader from "./Jobs/Header";
 import JobSideBar from "./Jobs/SideBar";
 
-export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks, JobHeader, JobSideBar};
+import CommonAuth from "./Auth/Common";
+
+
+import AdminHome from "./Admin/Home";
+
+export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks, JobHeader, JobSideBar,CommonAuth,AdminHome};
