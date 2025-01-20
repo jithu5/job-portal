@@ -1,51 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
-const onboardingSteps = [
-    {
-        id: 1,
-        title: "Login or Signup",
-        description:
-            "Users need to create a new account or log in using their existing credentials.",
-        icon: "🔑",
-        color: "#5F4B8B",
-    },
-    {
-        id: 2,
-        title: "Verify Your Email",
-        description:
-            "This step involves securing the user's account by verifying their email address through an OTP.",
-        icon: "📧",
-        color: "#F45B69",
-    },
-    {
-        id: 3,
-        title: "Add Jobs to Your Profile",
-        description:
-            "Users can personalize their profiles by specifying the types of jobs they are interested in. This enables us to provide relevant job.",
-        icon: "📝",
-        color: "#2D9C9B",
-    },
-    {
-        id: 4,
-        title: "Search for Jobs",
-        description:
-            "Users can explore job opportunities using filters such as location, job type, and keywords to narrow down their search.",
-        icon: "🔍",
-        color: "#F1C40F",
-    },
-    {
-        id: 5,
-        title: "Apply for a Job",
-        description:
-            "In the final step, users can submit their applications for the jobs that align with their preferences and interests.",
-        icon: "✅",
-        color: "#27AE60",
-    },
-];
 
 
-function HowToUse() {
+
+function HowToUse({ onboardingSteps }) {
     const [mouseOver, setMouseOver] = useState(null); // Track which step is hovered
 
     useEffect(() => {

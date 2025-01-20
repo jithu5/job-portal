@@ -7,9 +7,8 @@ import {
     AnimationButton,
     ScrollLine,
     HowToUse,
-    RecommendedJobs,
     AboutUs,
-} from "../../components/index";
+} from "../index";
 
 const onboardingSteps = [
     {
@@ -30,32 +29,16 @@ const onboardingSteps = [
     },
     {
         id: 3,
-        title: "Add Jobs to Your Profile",
+        title: "Post Jobs",
         description:
             "Users can personalize their profiles by specifying the types of jobs they are interested in. This enables us to provide relevant job.",
         icon: "📝",
         color: "#2D9C9B",
     },
-    {
-        id: 4,
-        title: "Search for Jobs",
-        description:
-            "Users can explore job opportunities using filters such as location, job type, and keywords to narrow down their search.",
-        icon: "🔍",
-        color: "#F1C40F",
-    },
-    {
-        id: 5,
-        title: "Apply for a Job",
-        description:
-            "In the final step, users can submit their applications for the jobs that align with their preferences and interests.",
-        icon: "✅",
-        color: "#27AE60",
-    },
+    
 ];
 
-function Home() {
-    const currentUser = true;
+function AdminHome() {
     const parentVariants = {
         hidden: {
             opacity: 1,
@@ -108,32 +91,13 @@ function Home() {
                                 </div>
                             ))}
                         </motion.div>
-                        {currentUser ? (
-                            <AnimationButton
-                            destination={"/"}
-                                bgColor={"third"}
-                                colorCode={"#9263f3"}
-                            >
-                                Find a Job
-                            </AnimationButton>
-                        ) : (
-                            <div className="flex items-center gap-6">
-                                <AnimationButton
-                                    destination={"/user/login"}
-                                    bgColor={"secondary"}
-                                    colorCode={"#020204"}
-                                >
-                                    LOG IN
-                                </AnimationButton>
-                                <AnimationButton
-                                    destination={"/user/register"}
-                                    bgColor={"secondary"}
-                                    colorCode={"#020204"}
-                                >
-                                    SIGN UP
-                                </AnimationButton>
-                            </div>
-                        )}
+                        <AnimationButton
+                            destination={"/admin/dashboard"}
+                            bgColor={"third"}
+                            colorCode={"#9263f3"}
+                        >
+                            Post a Job
+                        </AnimationButton>
                     </div>
                     <div className="w-full sm:w-[37%] items-end">
                         {/* Add your image here */}
@@ -147,12 +111,10 @@ function Home() {
                 <ScrollLine />
                 <HowToUse onboardingSteps={onboardingSteps} />
                 <ScrollLine />
-                <RecommendedJobs />
-                <ScrollLine />
                 <AboutUs />
             </main>
         </>
     );
 }
 
-export default Home;
+export default AdminHome;

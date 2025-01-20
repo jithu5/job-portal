@@ -6,6 +6,7 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
 passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{   
+        
     try {
         const user = await usermodel.findOne({
            $or:[{username: usernameOrEmail},{email: usernameOrEmail}] 

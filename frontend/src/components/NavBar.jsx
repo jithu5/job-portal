@@ -102,19 +102,7 @@ function NavBar() {
     return (
         <>
             <header className="w-full flex items-center justify-end font-BarlowSemiCondensed font-medium md:px-10">
-                {/* <nav>
-                    <ul className="flex items-center gap-6 sm:gap-8 md:gap-20 md:px-5 text-sm sm:text-md sm:text-lg">
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <a href="#">Find Job</a>
-                        </li>
-                        <li>
-                            <a href="#">Services</a>
-                        </li>
-                    </ul>
-                </nav> */}
+            {/* logo */}
                 <nav>
                     <ul className="flex items-center gap-6">
                         {!currentUser && (
