@@ -10,7 +10,7 @@ var companyModel = require('./models/company');
 const path = require('path');
 const UserRouter = require('./routers/user.router.js');
 const CompanyRouter = require('./routers/company.router.js');
-const MogoStore = require('connect-mongo');
+const MongoStore = require('connect-mongo');
 const db = require('./db/connect');
 
 
@@ -23,7 +23,7 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     secret: process.env.SESSION_SECRET||"jobportalsecret",
-    store: new MogoStore({
+    store: new MongoStore({
         mongoUrl:'mongodb://127.0.0.1:27017/job-portal',
         ttl: 14 * 24 * 60 * 60, // = 14 days. Default
         }),

@@ -5,6 +5,7 @@ const UserSchema = mongoose.Schema(
     {
         username: {
             type: String,
+            index: true,
             required: true,
             unique: true,
             minlength: 5,
@@ -18,10 +19,17 @@ const UserSchema = mongoose.Schema(
         },
         email: {
             type: String,
+            index: true,
             required: true,
             unique: true,
             minlength: 5,
             maxlength: 50,
+        },
+        profileImage: {
+            type: String,
+        },
+        coverImage: {   
+            type: String,
         },
         gender: {
             type: String,

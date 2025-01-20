@@ -5,6 +5,7 @@ const CompanySchema = mongoose.Schema(
     {
         Cname: {
             type: String,
+            index:true,
             required: true,
             unique: true,
             minlength: 5,
@@ -12,10 +13,17 @@ const CompanySchema = mongoose.Schema(
         },
         email: {
             type: String,
+            index:true,
             required: true,
             unique: true,
             minlength: 5,
             maxlength: 50,
+        },
+        profileImage: {
+            type: String,
+        },
+        coverImage: {   
+            type: String,
         },
         address: {
             type: String,

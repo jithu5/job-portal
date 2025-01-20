@@ -5,22 +5,25 @@ const usermodel = require('../models/usermodel.js');
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
-passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{   
+passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{  
+    console.log("Username",usernameOrEmail);
+    console.log("Password",password);
     try {
-        const user = await usermodel.findOne({
-           $or:[{username: usernameOrEmail},{email: usernameOrEmail}] 
-        });
-        if (!user) {
-            return done(null,false,{message: "Invalid username"});
-        }
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
-            return done(null,false,{message: "Invalid password"});
-        }
-        return done(null,user);
-    } catch (error) {
-        return done(error);
-    }
+           const user = await usermodel.findOne({
+            $or:[{username: usernameOrEmail},{email: usernameOrEmail}]
+            });
+           console.log("Userfound",user);
+           if (!user) {
+               return done(null,false,{message: "Invalid username"});
+           }
+           const isMatch = await user.comparePassword(password);
+           if (!isMatch) {
+               return done(null,false,{message: "Invalid password"});
+           }
+           return done(null,user);
+       } catch (error) {
+           return done(error);
+       }
 }))
 
 passport.serializeUser((user,done)=>{
@@ -83,27 +86,33 @@ const UserRegister = asyncHandler(async(req,res)=>{
 
 //user login
 const UserLogin = asyncHandler(async(req, res, next) => {
-    passport.authenticate('local',(err, user,info) => {
-        console.log("User",user);
-        
-        if (err) {
-            throw new ApiError(500, "Internal server error");
-        }
-        if (!user) {
-            throw new ApiError(400, "Invalid credentials");
-        }
-        req.logIn(user, (err) => {
+    try {
+        passport.authenticate('local',(err, user,info) => {
+            console.log("err", err);
+            console.log("info", info);
+            console.log("Ur",user);
+            
             if (err) {
                 throw new ApiError(500, "Internal server error");
             }
-            return res.status(200).json(new ApiResponse(200, user, "User logged in successfully"));
-        });
-    })(req, res, next);
+            if (!user) {
+                throw new ApiError(400, "Invalid credentials");
+            }
+            req.logIn(user, (err) => {
+                if (err) {
+                    throw new ApiError(500, "Internal server error");
+                }
+                return res.status(200).json(new ApiResponse(200, user, "User logged in successfully"));
+            });
+        })(req, res, next);       
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message)
+    }
 })
 
 const GetUser = asyncHandler( async(req, res) => {
     // code
-})
+});
 
 module.exports = {
     UserRegister,

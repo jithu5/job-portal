@@ -6,12 +6,12 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
 passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{
-    
+    console.log("Username",usernameOrEmail);
+    console.log("password",password);
     try {
         const company = await companymodel.findOne({
             $or:[{Cname: usernameOrEmail},{email: usernameOrEmail}] 
         });
-        console.log("com",company);
         if (!company) {
             return done(null,false,{message: "Invalid username"});
         }
@@ -41,10 +41,8 @@ passport.deserializeUser(async(id,done)=>{
 
 //company register
 const CRegister = asyncHandler(async(req,res)=>{
-    console.log("co",req.body);
     
     const {cname,email,password,address,phone} = req.body;
-    console.log("c",cname,email,password,address,phone);
     
 
     if (!cname || !email || !password || !address || !phone) {

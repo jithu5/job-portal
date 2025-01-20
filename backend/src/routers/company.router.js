@@ -11,7 +11,7 @@ const { CRegister, GetUser,CLogin } = require('../controllers/company-controller
 
 
 
-CompanyRouter.get('/',GetUser);
+CompanyRouter.get('/com',GetUser);
 
 CompanyRouter.post('/cregister',CRegister);
 
