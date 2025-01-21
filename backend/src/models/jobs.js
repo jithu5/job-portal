@@ -7,21 +7,37 @@ const JobSchema = mongoose.Schema(
             required: true,
             ref: "Company",
         },
-        Title: {
+        title: {
             type: String,
             required: true,
         },
-        Description: {
+        description: {
             type: String,
             required: true,
         },
-        Location: {
+        location: {
             type: String,
             required: true,
         },
-        Date: {
+        date: {
             type: Date,
             required: true,
+        },
+        salary: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        workersCount: {
+            type: Number,
+            required: true,
+            default: 0,
+        },
+        status: {
+            type: String,
+            required: true,
+            default: "Active",
+            enum: ["Active", "Closed"],
         },
     },
     { timestamps: true }
