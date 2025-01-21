@@ -1,67 +1,42 @@
-const ApiResponse = require('../utils/ApiResponse.js');
-const ApiError = require('../utils/ApiError.js');
-const asyncHandler = require('../utils/Asynchandler.js');
-const usermodel = require('../models/usermodel.js');
-const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
+const ApiResponse = require("../utils/ApiResponse.js");
+const ApiError = require("../utils/ApiError.js");
+const asyncHandler = require("../utils/Asynchandler.js");
+const usermodel = require("../models/usermodel.js");
 
 
-passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{  
-    console.log("Username",usernameOrEmail);
-    console.log("Password",password);
-    try {
-           const user = await usermodel.findOne({
-            $or:[{username: usernameOrEmail},{email: usernameOrEmail}]
-            });
-           console.log("Userfound",user);
-           if (!user) {
-               return done(null,false,{message: "Invalid username"});
-           }
-           const isMatch = await user.comparePassword(password);
-           if (!isMatch) {
-               return done(null,false,{message: "Invalid password"});
-           }
-           return done(null,user);
-       } catch (error) {
-           return done(error);
-       }
-}))
 
-passport.serializeUser((user,done)=>{
-    done(null,user.id);
-})
 
-passport.deserializeUser(async(id,done)=>{
-    try {
-        const user = await usermodel.findById(id);
-        done(null,user);
-          
-    } catch (error) {
-        done(error);   
-    }
-})
+
 
 //user register
-const UserRegister = asyncHandler(async(req,res)=>{
-    
-    const {username,name,email,password,gender,address,phone,age} = req.body;
+const UserRegister = asyncHandler(async (req, res) => {
+    const { username, name, email, password, gender, address, phone, age } =
+        req.body;
 
-    if (!username || !name || !email || !password || !gender || !address || !phone || !age) {
-        throw new ApiError(400,"All fields are required")
+    if (
+        !username ||
+        !name ||
+        !email ||
+        !password ||
+        !gender ||
+        !address ||
+        !phone ||
+        !age
+    ) {
+        throw new ApiError(400, "All fields are required");
     }
     try {
         //check if username already exists
         const ExistingUser = await usermodel.findOne({
-            $or:[{username: username},{email: email}]
-        })
-        console.log("Exist",ExistingUser);
-        
+            $or: [{ username: username }, { email: email }],
+        });
+
         if (ExistingUser) {
-            throw new ApiError(400 , "User already exists");
+            throw new ApiError(400, "User already exists");
         }
 
-        // create user 
-        const newuser= new usermodel({
+        // create user
+        const newuser = new usermodel({
             username: username,
             name: name,
             email: email,
@@ -69,54 +44,83 @@ const UserRegister = asyncHandler(async(req,res)=>{
             address: address,
             phone: phone,
             age: age,
-            password: password
-        })
-        newuser.save();
-        // save user in session
-        req.session.user = {
-            id: newuser._id,
-            username: newuser.username,
-            email: newuser.email
-        }
+            password: password,
+        });
+        await newuser.save();
 
-        res.status(201).json(new ApiResponse(201,newuser,"User registered successfully"));
+        const token = await newuser.generateToken();
+
+        const cookieOptions = {
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        };
+        
+
+        res.
+        cookie("userToken",token,cookieOptions).json(
+            new ApiResponse(201, newuser, "User registered successfully")
+        );
     } catch (error) {
-        throw new ApiError(error.statusCode, error.message)
+        throw new ApiError(error.statusCode, error.message);
     }
-})
+});
 
 //user login
-const UserLogin = asyncHandler(async(req, res, next) => {
-    try {
-        passport.authenticate('local',(err, user,info) => {
-            console.log("err", err);
-            console.log("info", info);
-            console.log("Ur",user);
-            
-            if (err) {
-                throw new ApiError(500, "Internal server error");
-            }
-            if (!user) {
-                throw new ApiError(400, "Invalid credentials");
-            }
-            req.logIn(user, (err) => {
-                if (err) {
-                    throw new ApiError(500, "Internal server error");
-                }
-                return res.status(200).json(new ApiResponse(200, user, "User logged in successfully"));
-            });
-        })(req, res, next);       
-    } catch (error) {
-        throw new ApiError(error.statusCode, error.message)
+const UserLogin = asyncHandler(async (req, res, next) => {
+    console.log("Login route hit"); // Debug log
+    const { email, password } = req.body;
+    
+    if (!email ||!password) {
+        throw new ApiError(400, "All fields are required");
     }
-})
+    try {
+        const user = await usermodel.findOne({ email: email });
+        if (!user) {
+            throw new ApiError(401, "Invalid credentials");
+        }
+        const isMatch = await user.comparePassword(password);
+        if (!isMatch) {
+            throw new ApiError(401, "Invalid credentials");
+        }
+        const token = await user.generateToken();
+        
+        const cookieOptions = {
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        };
 
-const GetUser = asyncHandler( async(req, res) => {
-    // code
+        res.
+        cookie("userToken", token, cookieOptions).json(
+            new ApiResponse(200, user, "User logged in successfully")
+        );
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+
+
+const GetUser = asyncHandler(async (req, res) => {
+    const userId = req.user;
+    try {
+        const user = await usermodel.findById(userId);
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        res.json(new ApiResponse(200, user, "User fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+        
+    }
 });
 
 module.exports = {
     UserRegister,
     GetUser,
     UserLogin,
-}
+};
