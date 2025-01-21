@@ -6,13 +6,14 @@ const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 
 
-passport.use(new localStrategy(async(usernameOrEmail,password,done)=>{  
-    console.log("Username",usernameOrEmail);
+passport.use(new localStrategy(async(username,password,done)=>{  
+    console.log("Username",username);
     console.log("Password",password);
     try {
-           const user = await usermodel.findOne({
-            $or:[{username: usernameOrEmail},{email: usernameOrEmail}]
-            });
+        const allusers = await usermodel.find();
+        console.log("Allusers",allusers);
+        
+           const user = await usermodel.findOne({ username: username });
            console.log("Userfound",user);
            if (!user) {
                return done(null,false,{message: "Invalid username"});
