@@ -1,8 +1,8 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { useSelector } from "react-redux";
+// import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminHome, CommonAuth } from "../components/index";
+import { AdminApplication, AdminDashboard, CommonAuth } from "../components/index";
 import {
     Home,
     UserHome,
@@ -27,7 +27,7 @@ function Router() {
     const user ={
         username: "exampleUser",
         email: "example@example.com",
-        role:"user"
+        role:"admin"
     }
     const isAuthenticated = true;
     const router = createBrowserRouter([
@@ -83,7 +83,11 @@ function Router() {
                     children:[
                         {
                             index:true,
-                            element: <AdminHome/>,
+                            element: <AdminDashboard/>,
+                        },
+                        {
+                            path: "applications",
+                            element: <AdminApplication />,
                         }
                     ]
                 },

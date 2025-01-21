@@ -13,7 +13,28 @@ import JobSideBar from "./Jobs/SideBar";
 
 import CommonAuth from "./Auth/Common";
 
+import AdminNavBar from "./Admin/NavBar";
+import AdminDashboard from "./Admin/Dashboard";
+import AdminSideBar from "./Admin/SideBar";
+import AdminApplication from "./Admin/Application";
+import AdminDrawer from "./Admin/Drawer";
 
-import AdminHome from "./Admin/Home";
-
-export { NavBar, AnimationButton, ScrollLine, HowToUse, RecommendedJobs, Footer, AboutUs ,MenuButton, NavigationLinks, JobHeader, JobSideBar,CommonAuth,AdminHome};
+export {
+    NavBar,
+    AnimationButton,
+    ScrollLine,
+    HowToUse,
+    RecommendedJobs,
+    Footer,
+    AboutUs,
+    MenuButton,
+    NavigationLinks,
+    JobHeader,
+    JobSideBar,
+    CommonAuth,
+    AdminNavBar,
+    AdminDashboard,
+    AdminSideBar,
+    AdminApplication,
+    AdminDrawer
+};

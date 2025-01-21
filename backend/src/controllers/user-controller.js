@@ -4,10 +4,6 @@ const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
 
 
-
-
-
-
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
     const { username, name, email, password, gender, address, phone, age } =

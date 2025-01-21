@@ -4,6 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MenuButton, NavigationLinks } from "./index";
 
 import { HiOutlineUser } from "react-icons/hi";
+import { FaRegHeart } from "react-icons/fa";
+import { MdOutlineWorkHistory } from "react-icons/md";
 
 function NavBar() {
     const currentUser = true;
@@ -102,7 +104,7 @@ function NavBar() {
     return (
         <>
             <header className="w-full flex items-center justify-end font-BarlowSemiCondensed font-medium md:px-10">
-            {/* logo */}
+                {/* logo */}
                 <nav>
                     <ul className="flex items-center gap-6">
                         {!currentUser && (
@@ -123,6 +125,8 @@ function NavBar() {
                         )}
                         {currentUser && (
                             <>
+                                <FaRegHeart className="text-md sm:text-xl md:text-2xl" />
+                                <MdOutlineWorkHistory className="text-md sm:text-xl md:text-2xl" />
                                 <div className="flex justify-center items-center p-1 md:p-2 rounded-full border-[2px] border-secondary mr-7">
                                     <HiOutlineUser className="text-sm sm:text-md md:text-lg" />
                                 </div>
@@ -133,7 +137,11 @@ function NavBar() {
                                     className="bg-third rounded-2xl absolute top-4 right-6 md:right-16 z-10"
                                 >
                                     <AnimatePresence>
-                                        {isActive && <NavigationLinks setIsActive={setIsActive} />}
+                                        {isActive && (
+                                            <NavigationLinks
+                                                setIsActive={setIsActive}
+                                            />
+                                        )}
                                     </AnimatePresence>
                                 </motion.div>
                                 <MenuButton
