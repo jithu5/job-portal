@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminApplication, AdminDashboard, CommonAuth } from "../components/index";
+import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth } from "../components/index";
 import {
     Home,
     UserHome,
@@ -80,16 +80,24 @@ function Router() {
                 {
                     path: "admin/dashboard",
                     element: <AdminLayout />,
-                    children:[
+                    children: [
                         {
-                            index:true,
-                            element: <AdminDashboard/>,
+                            index: true,
+                            element: <AdminDashboard />,
                         },
                         {
                             path: "applications",
                             element: <AdminApplication />,
+                        },
+                        {
+                            path: "postajob",
+                            element: <AdminPostJob />,
+                        },
+                        {
+                            path: "profile",
+                            element: <AdminProfile />,
                         }
-                    ]
+                    ],
                 },
                 {
                     path: "api/admin",
@@ -109,7 +117,7 @@ function Router() {
         {
             path: "unauth-page",
             element: <h1>You have no permission to view that page</h1>,
-        }
+        },
     ]);
 
     return <RouterProvider router={router} />;

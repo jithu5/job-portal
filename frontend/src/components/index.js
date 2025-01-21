@@ -18,6 +18,8 @@ import AdminDashboard from "./Admin/Dashboard";
 import AdminSideBar from "./Admin/SideBar";
 import AdminApplication from "./Admin/Application";
 import AdminDrawer from "./Admin/Drawer";
+import AdminPostJob from "./Admin/PostJob";
+import AdminProfile from "./Admin/Profile";
 
 export {
     NavBar,
@@ -36,5 +38,7 @@ export {
     AdminDashboard,
     AdminSideBar,
     AdminApplication,
-    AdminDrawer
+    AdminDrawer,
+    AdminPostJob,
+    AdminProfile
 };

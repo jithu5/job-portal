@@ -64,7 +64,7 @@ function AdminDrawer({ isOpen, setIsOpen }) {
                         <ul className="flex flex-col gap-6">
                             {NavigationLink.map((link) => (
                                 <li key={link.path}>
-                                    <Link
+                                    <Link onClick={()=> setIsOpen(false)}
                                         to={link.path}
                                         className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-stone-800"
                                     >

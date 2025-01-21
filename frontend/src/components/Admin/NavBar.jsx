@@ -7,7 +7,7 @@ import { TiThMenu } from "react-icons/ti";
 function AdminNavBar({ setIsOpen}) {
   return (
       <>
-          <header className="px-1 md:px-14 py-5 md:py-7 lg:py-12 w-full font-BarlowSemiCondensed flex items-center justify-between">
+          <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between">
               <div className="md:hidden">
                   <TiThMenu className='text-lg' onClick={()=>setIsOpen(true)} />
               </div>

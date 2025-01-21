@@ -1,5 +1,6 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const jobs = [
     {
@@ -53,11 +54,13 @@ const jobs = [
 ];
 
 function AdminDashboard() {
+    const navigate = useNavigate();
+
     return (
         <>
             <main className="relative w-full py-1">
                 <div className="absolute top-0 right-3 md:right-6">
-                    <button className="bg-stone-800 text-white text-sm md:text-md px-2 md:px-6 py-1 md:py-2 rounded-lg hover:bg-stone-950 flex items-center justify-center gap-2">
+                    <button onClick={()=>navigate("/admin/dashboard/postajob")} className="bg-stone-800 text-white text-sm md:text-md px-2 md:px-6 py-1 md:py-2 rounded-lg hover:bg-stone-950 flex items-center justify-center gap-2">
                         <IoMdAdd className="text-sm md:text-lg lg:text-xl text-white" />
                         Post New Job
                     </button>
