@@ -23,6 +23,8 @@ import AdminDrawer from "./Admin/Drawer";
 import AdminPostJob from "./Admin/PostJob";
 import AdminProfile from "./Admin/Profile";
 import EditAdminProfile from "./Admin/EditProfile";
+import AdminJobDetails from "./Admin/JobDetails";
+import AdminEditJob from "./Admin/EditJob";
 
 export {
     NavBar,
@@ -46,5 +48,7 @@ export {
     AdminDrawer,
     AdminPostJob,
     AdminProfile,
-    EditAdminProfile
+    EditAdminProfile,
+    AdminJobDetails,
+    AdminEditJob
 };

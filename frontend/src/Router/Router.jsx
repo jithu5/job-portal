@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile } from "../components/index";
+import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile, AdminJobDetails, AdminEditJob } from "../components/index";
 import {
     Home,
     UserHome,
@@ -25,7 +25,7 @@ function Router() {
     const user ={
         username: "exampleUser",
         email: "example@example.com",
-        role:"user"
+        role:"admin"
     }
     const isAuthenticated = true;
     const router = createBrowserRouter([
@@ -86,6 +86,14 @@ function Router() {
                         {
                             path: "applications",
                             element: <AdminApplication />,
+                        },
+                        {
+                            path:"applications/:jobId",
+                            element: <AdminJobDetails />
+                        },
+                        {
+                            path:"applications/edit/:jobId",
+                            element: <AdminEditJob />
                         },
                         {
                             path: "postajob",

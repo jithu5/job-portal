@@ -1,4 +1,6 @@
-import React from 'react'
+import { Input } from '@mui/material';
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const jobs = [
     {
@@ -42,6 +44,17 @@ const jobs = [
 
 
 function AdminApplication() {
+    const [filteredJobs, setFilteredJobs] = useState(jobs);
+    const [title, setTitle] = useState("");
+
+    const handleChange = (e) => {
+        setTitle(e.target.value);
+        setFilteredJobs(
+            jobs.filter((job) =>
+                job.title.toLowerCase().includes(e.target.value.toLowerCase())
+            )
+        );
+    };
   return (
       <>
           <div className="w-full font-Oswald">
@@ -52,9 +65,20 @@ function AdminApplication() {
                   Welcome to the admin application.
               </p>
               {/* Admin application components */}
+              <div className='w-[300px] sm:w-[400px] md:w-[500px] mx-auto my-10'>
+
+              <Input
+                  type="text"
+                  name="title"
+                  value={title}
+                  onChange={handleChange}
+                  placeholder="Search your job here"
+                  className="w-[200px] md:w-md lg:w-[400px] placeholder:text-sm px-3"
+              />
+              </div>
               {/* Jobs Section */}
               <div className="flex flex-col gap-6 items-center my-16">
-                  {jobs.map((job) => (
+                  {filteredJobs.map((job) => (
                       <div
                           key={job.id}
                           className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6 flex flex-col gap-4"
@@ -120,9 +144,12 @@ function AdminApplication() {
 
                           {/* Show Details Button */}
                           <div className="text-right">
-                              <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                              <Link
+                                  to={`/admin/dashboard/applications/${job.id}`}
+                                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                              >
                                   Show Details
-                              </button>
+                              </Link>
                           </div>
                       </div>
                   ))}
