@@ -97,6 +97,10 @@ CompanySchema.methods.comparePassword = async function (password) {
 }
 
 CompanySchema.methods.generateToken = async function () {
+    if (!process.env.JWT_SECRET) {
+        console.log("Error: JWT_SECRET not found in .env file");
+        return;
+    }
     return await jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: 2 * 24 * 60 * 60 * 1000 });
 };
 
