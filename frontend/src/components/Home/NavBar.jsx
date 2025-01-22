@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
-import { MenuButton, NavigationLinks } from "./index";
+import { MenuButton, NavigationLinks } from "../index";
 
 import { HiOutlineUser } from "react-icons/hi";
 import { FaRegHeart } from "react-icons/fa";

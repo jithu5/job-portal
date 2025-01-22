@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import user from "../../assets/man.png";
-import { FaEdit } from "react-icons/fa";
+import CoverImage from "../../assets/coverImage.jpg";
+import ProfileImageEdit from "../common/ProfileImageEdit";
 
 const initialState = {
-    name: "Monkey D luffy",
     number: "25413695321",
-    image: user,
+    profileImage: user,
+    coverImage: CoverImage,
     email: "luffy@sunny.com",
     address: "123 Main St, Anytown, USA",
 };
 
-function EditUserProfile() {
+function EditAdminProfile() {
     const [input, setInput] = useState(initialState);
-    const fileInputRef = useRef(null);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -21,15 +21,11 @@ function EditUserProfile() {
     function handleChange(e) {
         const { name, value, files } = e.target;
         setInput((prev) => {
-            if (name === "image" && files) {
-                return { ...prev, image: URL.createObjectURL(files[0]) }; // handle image upload
+            if ((name === "profileImage" || name === "coverImage") && files) {
+                return { ...prev, [name]: URL.createObjectURL(files[0]) }; // handle image upload
             }
             return { ...prev, [name]: value };
         });
-    }
-
-    function handleFileClick() {
-        fileInputRef.current.click(); // Trigger file input click
     }
 
     function handleSubmit(e) {
@@ -37,12 +33,12 @@ function EditUserProfile() {
         // Do something with the updated user data
         console.log(input);
         const formData = new FormData();
-        formData.append("name", input.name);
         formData.append("number", input.number);
-        formData.append("image", input.image);
+        formData.append("profileImage", input.profileImage);
+        formData.append("coverImage", input.coverImage);
         formData.append("email", input.email);
         formData.append("address", input.address);
-        // print data 
+        // print data
         for (const pair of formData.entries()) {
             console.log(`${pair[0]}: ${pair[1]}`);
         }
@@ -52,11 +48,11 @@ function EditUserProfile() {
 
     return (
         <>
-            <div className="w-full md:w-[70%] mx-auto font-BarlowSemiCondensed mb-32">
-                <h1 className="text-lg sm:text-xl md:text-3xl font-semibold">
+            <div className="w-full md:w-[99%] mx-auto font-BarlowSemiCondensed mb-32">
+                <h1 className="text-lg sm:text-xl md:text-3xl font-semibold text-center">
                     User Information
                 </h1>
-                <div className="w-full mt-5">
+                <div className="w-full my-5 text-center">
                     <p className="text-md md:text-xl text-stone-800">
                         Here you can edit public information about yourself.
                     </p>
@@ -66,15 +62,12 @@ function EditUserProfile() {
                 </div>
                 <form
                     onSubmit={handleSubmit}
-                    className="w-full"
+                    className="w-full mt-10"
                     encType="multipart/form-data"
                     method="post"
                 >
-                    <div className="w-full mt-10 flex flex-col-reverse md:flex-row items-center md:items-start justify-between">
-                        <div
-                            encType="multipart/form-data"
-                            className="w-full md:w-[70%] flex flex-col gap-7"
-                        >
+                    <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-between">
+                        <div className="w-full md:w-[55%] flex flex-col items-center">
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
                                     Email
@@ -89,20 +82,7 @@ function EditUserProfile() {
                                     placeholder="Enter your email address"
                                 />
                             </div>
-                            <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
-                                <h2 className="text-md md:text-xl font-semibold">
-                                    Name
-                                </h2>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={input.name}
-                                    onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
-                                    placeholder="Enter your name"
-                                />
-                            </div>
+                         
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
                                     Phone Number
@@ -132,27 +112,11 @@ function EditUserProfile() {
                                 />
                             </div>
                         </div>
-                        <div className="w-full md:w-[26%] max-md:mx-auto flex justify-center md:justify-items-end mb-10">
-                            <div className="flex flex-col justify-center gap-7">
-                                <img
-                                    className="object-cover w-56 h-56 rounded-full"
-                                    src={input.image}
-                                    alt="User"
-                                />
-                                <div
-                                    onClick={handleFileClick}
-                                    className="bg-third rounded-md py-2 px-8 flex items-center gap-2 w-fit"
-                                >
-                                    <FaEdit className="text-md text-white" />
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        name="image"
-                                        ref={fileInputRef}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
+                        <div className="w-full md:w-[45%] flex flex-col items-center">
+                            <ProfileImageEdit
+                                input={input}
+                                handleChange={handleChange}
+                            />
                         </div>
                     </div>
                     <div className="w-full py-4 flex items-center justify-center mt-12">
@@ -169,4 +133,4 @@ function EditUserProfile() {
     );
 }
 
-export default EditUserProfile;
+export default EditAdminProfile;

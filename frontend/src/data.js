@@ -1,18 +1,18 @@
 export const NavLinks=[
     {
         label: 'Home',
-        href: '/',
+        href: '/user',
     },
     {
         label: 'Jobs',
-        href: '/jobs',
+        href: '/user/jobs',
     },
     {
         label: 'Profile',
-        href: 'profile',
+        href: '/user/profile',
     },
     {
         label: 'Logout',
-        href: '/user/logout',
+        href: '/user',
     },
 ]

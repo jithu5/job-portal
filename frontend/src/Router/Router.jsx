@@ -2,18 +2,16 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth } from "../components/index";
+import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile } from "../components/index";
 import {
     Home,
     UserHome,
-    Profile,
     Register,
     UserAccountVerify,
     UserLogin,
     UserPasswordReset,
     SearchJobs,
     JobDetails,
-    EditUserProfile,
     AdminLayout,
 } from "../pages/index";
 
@@ -27,7 +25,7 @@ function Router() {
     const user ={
         username: "exampleUser",
         email: "example@example.com",
-        role:"admin"
+        role:"user"
     }
     const isAuthenticated = true;
     const router = createBrowserRouter([
@@ -36,7 +34,7 @@ function Router() {
             element: wrapWithCommonAuth(<App />, { user, isAuthenticated }),
             children: [
                 {
-                    path: "/",
+                    path: "/user",
                     element: <UserHome />,
                     children: [
                         {
@@ -62,23 +60,23 @@ function Router() {
                     ],
                 },
                 {
-                    path: "user/register",
+                    path: "api/user/register",
                     element: <Register />,
                 },
                 {
-                    path: "user/login",
+                    path: "api/user/login",
                     element: <UserLogin />,
                 },
                 {
-                    path: "user/verify",
+                    path: "api/user/verify",
                     element: <UserAccountVerify />,
                 },
                 {
-                    path: "user/reset-password",
+                    path: "api/user/reset-password",
                     element: <UserPasswordReset />,
                 },
                 {
-                    path: "admin/dashboard",
+                    path: "/admin/dashboard",
                     element: <AdminLayout />,
                     children: [
                         {
@@ -96,6 +94,10 @@ function Router() {
                         {
                             path: "profile",
                             element: <AdminProfile />,
+                        },
+                        {
+                            path:"profile/edit",
+                            element: <EditAdminProfile />,
                         }
                     ],
                 },

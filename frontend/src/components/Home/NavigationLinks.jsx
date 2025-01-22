@@ -1,6 +1,6 @@
 import React from "react";
 
-import { NavLinks } from "../data";
+import { NavLinks } from "../../data";
 import { Link } from "react-router-dom";
 
 import { motion } from "framer-motion";

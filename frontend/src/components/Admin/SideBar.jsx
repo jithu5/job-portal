@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import { MdSpaceDashboard, MdWorkHistory, MdAddBox } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
@@ -38,15 +38,16 @@ function AdminSideBar() {
                     <ul className="flex flex-col gap-6">
                         {NavigationLink.map((link) => (
                             <li key={link.path}>
-                                <Link
+                                <NavLink
                                     to={link.path}
-                                    className="flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-stone-800"
+                                    end
+                                    className={({isActive})=>`flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-stone-800 ${isActive?"bg-stone-700":null}`}
                                 >
                                     {link.icon}
                                     <span className="ml-2 block">
                                         {link.name}
                                     </span>
-                                </Link>
+                                </NavLink>
                             </li>
                         ))}
                     </ul>

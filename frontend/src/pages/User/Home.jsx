@@ -110,7 +110,7 @@ function Home() {
                         </motion.div>
                         {currentUser ? (
                             <AnimationButton
-                            destination={"/"}
+                            destination={"/user/jobs"}
                                 bgColor={"third"}
                                 colorCode={"#9263f3"}
                             >
@@ -119,14 +119,14 @@ function Home() {
                         ) : (
                             <div className="flex items-center gap-6">
                                 <AnimationButton
-                                    destination={"/user/login"}
+                                    destination={"/api/user/login"}
                                     bgColor={"secondary"}
                                     colorCode={"#020204"}
                                 >
                                     LOG IN
                                 </AnimationButton>
                                 <AnimationButton
-                                    destination={"/user/register"}
+                                    destination={"/api/user/register"}
                                     bgColor={"secondary"}
                                     colorCode={"#020204"}
                                 >

@@ -6,10 +6,12 @@ function CommonAuth({ isAuthenticated, user, children }) {
 
     if (location.pathname === "/") {
         if (!isAuthenticated) {
-            return <Navigate to="/user/login" />;
+            return <Navigate to="/api/user/login" />;
         } else {
             if (user?.role === "admin") {
                 return <Navigate to="/admin/dashboard" />;
+            }else if (user?.role === "user") {
+                return <Navigate to="/user" />;
             }
         }
     }
@@ -17,18 +19,18 @@ function CommonAuth({ isAuthenticated, user, children }) {
       if (
           !isAuthenticated &&
           (
-              location.pathname==="/" ||
+              location.pathname==="/user" ||
               location.pathname.includes("/admin/dashboard") 
           )
       ) {
-          return <Navigate to="/user/login" />;
+          return <Navigate to="/api/user/login" />;
       }
 
     if (isAuthenticated ) {
        if (user?.role === "admin" && location.pathname.includes("/api/admin")) {
         return <Navigate to="admin/dashboard" />;
-       }else if(user?.role === "user" && location.pathname.includes("/user")){
-        return <Navigate to="/" />;
+       }else if(user?.role === "user" && location.pathname.includes("/api/user")){
+        return <Navigate to="/user" />;
        }
     }
 
@@ -36,7 +38,7 @@ function CommonAuth({ isAuthenticated, user, children }) {
         return <Navigate to="/unauth-page" />
     }
 
-    if (isAuthenticated && user?.role === "admin" && location.pathname === "/") {
+    if (isAuthenticated && user?.role === "admin" && location.pathname === "/user") {
         return <Navigate to="/admin/dashboard" />
     }
 
