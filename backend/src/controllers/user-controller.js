@@ -2,6 +2,7 @@ const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
+const crypto = require('crypto');
 
 
 //user register
@@ -115,8 +116,135 @@ const GetUser = asyncHandler(async (req, res) => {
     }
 });
 
+const Sendotp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+    try {
+        const user = await usermodel.findOne({ email: email });
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        if (user.isAccountVerified) {
+            throw new ApiError(400, "Account is already verified");
+        }
+        const otp = crypto.randomInt(1000,10000)
+        user.AccountVerificationOTP = otp;
+        user.AccountVerificationOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
+        await user.save();
+        // send otp to email
+        await sendMail(email, "Account Verification OTP", EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
+        return res.json(new ApiResponse(200, null, "OTP sent successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+const Verifyemail = asyncHandler(async (req, res) =>{
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+    try {
+        const user = await usermodel.findOne({ email: email });
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        if (!user.AccountVerificationOTPValidDate || user.AccountVerificationOTPValidDate < new Date()) {
+            throw new ApiError(400, "OTP expired or invalid");
+        }
+        if (user.AccountVerificationOTP!== parseInt(otp)) {
+            throw new ApiError(400, "Invalid OTP");
+        }
+        user.isAccountVerified = true;
+        user.AccountVerificationOTP = null;
+        user.AccountVerificationOTPValidDate = null;
+        await user.save();
+        return res.json(new ApiResponse(200, null, "Email verified successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+const SendResetPassword = asyncHandler(async(req,res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+    try {
+        const user = await usermodel.findOne({email: email});
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        const otp = crypto.randomInt(1000,10000);
+        user.resetPasswordOTP = otp;
+        user.resetPasswordOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
+        await user.save();
+        // send otp to email
+        await sendMail(email, "Reset Password OTP", PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
+        return res.json(new ApiResponse(200, null, "OTP sent successfully for reset password to your email"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+    try {
+        const user = await usermodel.findOne({email: email});
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        if (!user.resetPasswordOTPValidDate || user.resetPasswordOTPValidDate < new Date()) {
+            throw new ApiError(400, "OTP expired or invalid");
+        }
+        if (user.resetPasswordOTP!== parseInt(otp)) {
+            throw new ApiError(400, "Invalid OTP");
+        }
+        req.user = user;
+        next();
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
+
+const UpdatePassword = asyncHandler(async(req, res) => {
+    const { newPassword } = req.body;
+    if(!req.user) {
+        throw new ApiError(401, "Not authorized");
+    }
+    if (!newPassword) {
+        throw new ApiError(400, "New password is required");
+    }
+    try {
+        const user = req.user;
+        user.password = newPassword;
+        await user.save();
+        return res.json(new ApiResponse(200, null, "Password updated successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+
+
 module.exports = {
     UserRegister,
     GetUser,
     UserLogin,
+    Sendotp,
+    Verifyemail,
+    SendResetPassword,
+    VerifyResetOtp,
+    UpdatePassword,
+ 
 };

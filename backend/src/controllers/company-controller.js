@@ -2,6 +2,7 @@ const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
+const company = require("../models/company.js");
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
@@ -92,8 +93,108 @@ const GetCompany = asyncHandler(async (req, res) => {
     }
 });
 
+const Sendotp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+    try {
+        const company = await companymodel.findOne({ email: email });
+        if (!company) {
+            throw new ApiError(404, "company not found");
+        }
+        if (company.isAccountVerified) {
+            throw new ApiError(400, "Account is already verified");
+        }
+        const otp = crypto.randomInt(1000,10000)
+        company.AccountVerificationOTP = otp;
+        company.AccountVerificationOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
+        await company.save();
+        // send otp to email
+        await sendMail(email, "Account Verification OTP", EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
+        return res.json(new ApiResponse(200, null, "OTP sent successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+const Verifyemail = asyncHandler(async (req, res) =>{
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+    try {
+        const company = await companymodel.findOne({ email: email });
+        if (!company) {
+            throw new ApiError(404, "company not found");
+        }
+        if (!company.AccountVerificationOTPValidDate || company.AccountVerificationOTPValidDate < new Date()) {
+            throw new ApiError(400, "OTP expired or invalid");
+        }
+        if (company.AccountVerificationOTP!== parseInt(otp)) {
+            throw new ApiError(400, "Invalid OTP");
+        }
+        company.isAccountVerified = true;
+        company.AccountVerificationOTP = null;
+        company.AccountVerificationOTPValidDate = null;
+        await company.save();
+        return res.json(new ApiResponse(200, null, "Email verified successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+        throw new ApiError(400, "Email and OTP are required");
+    }
+    try {
+        const company = await companymodel.findOne({email: email});
+        if (!company) {
+            throw new ApiError(404, "company not found");
+        }
+        if (!company.resetPasswordOTPValidDate || company.resetPasswordOTPValidDate < new Date()) {
+            throw new ApiError(400, "OTP expired or invalid");
+        }
+        if (company.resetPasswordOTP!== parseInt(otp)) {
+            throw new ApiError(400, "Invalid OTP");
+        }
+        req.user = company;
+        next();
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
+
+const UpdatePassword = asyncHandler(async(req, res) => {
+    const { newPassword } = req.body;
+    if(!req.user) {
+        throw new ApiError(401, "Not authorized");
+    }
+    if (!newPassword) {
+        throw new ApiError(400, "New password is required");
+    }
+    try {
+        const company = req.user;
+        company.password = newPassword;
+        await company.save();
+        return res.json(new ApiResponse(200, null, "Password updated successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 module.exports = {
     CRegister,
     GetCompany,
     CLogin,
+    Sendotp,
+    Verifyemail,
+    VerifyResetOtp,
+    UpdatePassword,
 };
