@@ -13,6 +13,10 @@ import {
     AdminLayout,
     AdminLogin,
     AdminRegister,
+    AdminAccountVerify,
+    AdminPasswordReset,
+    UserPasswordReset,
+    UserAccountVerify,
 } from "../pages/index";
 import AccountVerify from "../components/common/AccountVerify";
 
@@ -70,11 +74,11 @@ function Router() {
                 },
                 {
                     path: "api/user/verify",
-                    element: <AccountVerify navigateTo={'/user'} />,
+                    element: <UserAccountVerify />,
                 },
                 {
                     path: "api/user/reset-password",
-                    element: <PasswordReset navigateTo={"/user"} />,
+                    element: <UserPasswordReset />,
                 },
                 {
                     path: "/admin/dashboard",
@@ -123,11 +127,11 @@ function Router() {
                         },
                         {
                             path: "verify",
-                            element: <AccountVerify navigateTo={'/admin/dashboard'} />,
+                            element: <AdminAccountVerify />,
                         },
                         {
                             path: "reset-password",
-                            element: <PasswordReset navigateTo={"/admin/dashboard"} />,
+                            element: <AdminPasswordReset />,
                         },
                     ],
                 },

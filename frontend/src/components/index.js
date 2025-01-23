@@ -27,6 +27,7 @@ import AdminJobDetails from "./Admin/JobDetails";
 import AdminEditJob from "./Admin/EditJob";
 
 import PasswordReset from "./common/PasswordReset";
+import AccountVerify from "./common/AccountVerify";
 
 export {
     NavBar,
@@ -53,5 +54,6 @@ export {
     EditAdminProfile,
     AdminJobDetails,
     AdminEditJob,
-    PasswordReset
+    PasswordReset,
+    AccountVerify
 };
