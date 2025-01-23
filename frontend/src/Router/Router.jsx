@@ -2,18 +2,19 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile, AdminJobDetails, AdminEditJob } from "../components/index";
+import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile, AdminJobDetails, AdminEditJob, PasswordReset } from "../components/index";
 import {
     Home,
     UserHome,
     Register,
-    UserAccountVerify,
     UserLogin,
-    UserPasswordReset,
     SearchJobs,
     JobDetails,
     AdminLayout,
+    AdminLogin,
+    AdminRegister,
 } from "../pages/index";
+import AccountVerify from "../components/common/AccountVerify";
 
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
@@ -27,7 +28,7 @@ function Router() {
         email: "example@example.com",
         role:"admin"
     }
-    const isAuthenticated = true;
+    const isAuthenticated = false;
     const router = createBrowserRouter([
         {
             path: "/",
@@ -69,11 +70,11 @@ function Router() {
                 },
                 {
                     path: "api/user/verify",
-                    element: <UserAccountVerify />,
+                    element: <AccountVerify navigateTo={'/user'} />,
                 },
                 {
                     path: "api/user/reset-password",
-                    element: <UserPasswordReset />,
+                    element: <PasswordReset navigateTo={"/user"} />,
                 },
                 {
                     path: "/admin/dashboard",
@@ -114,11 +115,19 @@ function Router() {
                     children: [
                         {
                             path: "login",
-                            element: <h1>Admin Login</h1>,
+                            element:<AdminLogin />,
                         },
                         {
                             path: "register",
-                            element: <h1>Admin Register</h1>,
+                            element: <AdminRegister />,
+                        },
+                        {
+                            path: "verify",
+                            element: <AccountVerify navigateTo={'/admin/dashboard'} />,
+                        },
+                        {
+                            path: "reset-password",
+                            element: <PasswordReset navigateTo={"/admin/dashboard"} />,
                         },
                     ],
                 },

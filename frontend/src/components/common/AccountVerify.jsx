@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function UserAccountVerify() {
+function AccountVerify({navigateTo}) {
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
 
@@ -29,7 +29,7 @@ function UserAccountVerify() {
 
         // Clear input after submission
         setOtp("");
-        navigate("/"); // Navigate to dashboard after successful OTP verification
+        navigate(navigateTo); // Navigate to dashboard after successful OTP verification
     };
 
     return (
@@ -73,4 +73,4 @@ function UserAccountVerify() {
     );
 }
 
-export default UserAccountVerify;
+export default AccountVerify;

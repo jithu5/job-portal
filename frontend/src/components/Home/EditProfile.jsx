@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import user from "../../assets/man.png";
-import CoverImage from "../../assets/coverImage.jpg";
-import ProfileImageEdit from "../common/ProfileImageEdit";
 
 const initialState = {
     name: "Monkey D luffy",
     number: "25413695321",
-    profileImage: user,
-    coverImage: CoverImage,
     email: "luffy@sunny.com",
     address: "123 Main St, Anytown, USA",
 };
@@ -20,11 +15,8 @@ function EditUserProfile() {
     }, []); // Empty dependency array to run only once when the component mounts
 
     function handleChange(e) {
-        const { name, value, files } = e.target;
+        const { name, value } = e.target;
         setInput((prev) => {
-            if ((name === "profileImage" || name === "coverImage") && files) {
-                return { ...prev, [name]: URL.createObjectURL(files[0]) }; // handle image upload
-            }
             return { ...prev, [name]: value };
         });
     }
@@ -36,8 +28,6 @@ function EditUserProfile() {
         const formData = new FormData();
         formData.append("name", input.name);
         formData.append("number", input.number);
-        formData.append("profileImage", input.profileImage);
-        formData.append("coverImage", input.coverImage);
         formData.append("email", input.email);
         formData.append("address", input.address);
         // print data
@@ -126,12 +116,6 @@ function EditUserProfile() {
                                     placeholder="Enter your address"
                                 />
                             </div>
-                        </div>
-                        <div className="w-full md:w-[45%] flex flex-col items-center">
-                            <ProfileImageEdit
-                                input={input}
-                                handleChange={handleChange}
-                            />
                         </div>
                     </div>
                     <div className="w-full py-4 flex items-center justify-center mt-12">

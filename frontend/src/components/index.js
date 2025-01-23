@@ -26,6 +26,8 @@ import EditAdminProfile from "./Admin/EditProfile";
 import AdminJobDetails from "./Admin/JobDetails";
 import AdminEditJob from "./Admin/EditJob";
 
+import PasswordReset from "./common/PasswordReset";
+
 export {
     NavBar,
     AnimationButton,
@@ -50,5 +52,6 @@ export {
     AdminProfile,
     EditAdminProfile,
     AdminJobDetails,
-    AdminEditJob
+    AdminEditJob,
+    PasswordReset
 };

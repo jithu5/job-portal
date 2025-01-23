@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Stepper, Step, StepLabel } from "@mui/material";
 
-function UserPasswordReset() {
+function PasswordReset({navigateTo}) {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
     const [otp, setOtp] = useState("");
     const [password, setPassword] = useState("");
@@ -66,7 +66,7 @@ function UserPasswordReset() {
         }
         setError("");
         setPassword("");
-        navigate("/user/login");
+        navigate(navigateTo);
     };
 
     return (
@@ -163,4 +163,4 @@ function UserPasswordReset() {
     );
 }
 
-export default UserPasswordReset;
+export default PasswordReset;
