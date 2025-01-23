@@ -2,7 +2,18 @@ import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 // import { useSelector } from "react-redux";
 import App from "../App";
-import { AdminApplication, AdminDashboard, AdminPostJob, AdminProfile, CommonAuth,Profile,EditUserProfile, EditAdminProfile, AdminJobDetails, AdminEditJob, PasswordReset } from "../components/index";
+import {
+    AdminApplication,
+    AdminDashboard,
+    AdminPostJob,
+    AdminProfile,
+    CommonAuth,
+    Profile,
+    EditUserProfile,
+    EditAdminProfile,
+    AdminJobDetails,
+    AdminEditJob,
+} from "../components/index";
 import {
     Home,
     UserHome,
@@ -18,7 +29,6 @@ import {
     UserPasswordReset,
     UserAccountVerify,
 } from "../pages/index";
-import AccountVerify from "../components/common/AccountVerify";
 
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
@@ -27,12 +37,12 @@ const wrapWithCommonAuth = (Component, props) => {
 
 // Main Router component
 function Router() {
-    const user ={
+    const user = {
         username: "exampleUser",
         email: "example@example.com",
-        role:"admin"
-    }
-    const isAuthenticated = false;
+        role: "admin",
+    };
+    const isAuthenticated = true;
     const router = createBrowserRouter([
         {
             path: "/",
@@ -93,12 +103,12 @@ function Router() {
                             element: <AdminApplication />,
                         },
                         {
-                            path:"applications/:jobId",
-                            element: <AdminJobDetails />
+                            path: "applications/:jobId",
+                            element: <AdminJobDetails />,
                         },
                         {
-                            path:"applications/edit/:jobId",
-                            element: <AdminEditJob />
+                            path: "applications/edit/:jobId",
+                            element: <AdminEditJob />,
                         },
                         {
                             path: "postajob",
@@ -109,9 +119,9 @@ function Router() {
                             element: <AdminProfile />,
                         },
                         {
-                            path:"profile/edit",
+                            path: "profile/edit",
                             element: <EditAdminProfile />,
-                        }
+                        },
                     ],
                 },
                 {
@@ -119,7 +129,7 @@ function Router() {
                     children: [
                         {
                             path: "login",
-                            element:<AdminLogin />,
+                            element: <AdminLogin />,
                         },
                         {
                             path: "register",

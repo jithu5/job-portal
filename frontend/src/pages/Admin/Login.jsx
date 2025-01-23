@@ -1,15 +1,16 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function AdminLogin() {
     const { handleSubmit,formState:{errors,isSubmitting},register,reset} = useForm()
 
-
+    const navigate = useNavigate()
 
     const onSubmit = async (data) => {
         console.log(data)
         reset()
+        navigate('/admin/dashboard')
     }
   return (
       <>

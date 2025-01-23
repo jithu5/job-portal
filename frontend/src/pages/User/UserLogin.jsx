@@ -98,7 +98,7 @@ function UserLogin() {
                 <p className="text-gray-600 text-sm sm:text-md md:text-lg">
                     Don't have an account?{" "}
                     <Link
-                        to={"/user/register"}
+                        to={"/api/user/register"}
                         className="text-pink-600 underline cursor-pointer"
                     >
                         Sign up
@@ -107,7 +107,7 @@ function UserLogin() {
                 <p className="text-gray-600 text-sm sm:text-md md:text-lg">
                     Forgot Password?{" "}
                     <Link
-                        to={"/user/reset-password"}
+                        to={"/api/user/reset-password"}
                         className="text-pink-600 underline cursor-pointer"
                     >
                         Reset Password

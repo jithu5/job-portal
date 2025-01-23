@@ -34,11 +34,12 @@ function CommonAuth({ isAuthenticated, user, children }) {
        }
     }
 
+
     if (isAuthenticated && user?.role === "user" && location.pathname.includes("admin")) {
         return <Navigate to="/unauth-page" />
     }
 
-    if (isAuthenticated && user?.role === "admin" && location.pathname === "/user") {
+    if (isAuthenticated && user?.role === "admin" && location.pathname.includes("user")) {
         return <Navigate to="/admin/dashboard" />
     }
 

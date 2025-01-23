@@ -68,14 +68,20 @@ function AdminJobDetails() {
                         {job.applicants.map((applicant) => (
                             <li
                                 key={applicant.id}
-                                className="p-4 border rounded shadow-md bg-white"
+                                className="p-4 border rounded shadow-md bg-white flex items-center justify-between w-full"
                             >
+                            <div>
+
                                 <p>
                                     <strong>Name:</strong> {applicant.name}
                                 </p>
                                 <p>
                                     <strong>Email:</strong> {applicant.email}
                                 </p>
+                            </div>
+                            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                View Profile
+                            </button>
                             </li>
                         ))}
                     </ul>
