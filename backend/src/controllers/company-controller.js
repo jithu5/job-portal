@@ -113,7 +113,7 @@ const Sendotp = asyncHandler(async (req, res) => {
         await company.save();
         // send otp to email
         await sendMail(email, "Account Verification OTP", EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
-        return res.json(new ApiResponse(200, null, "OTP sent successfully"));
+        return res.json(new ApiResponse(200, company, "OTP sent successfully"));
         
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -140,7 +140,7 @@ const Verifyemail = asyncHandler(async (req, res) =>{
         company.AccountVerificationOTP = null;
         company.AccountVerificationOTPValidDate = null;
         await company.save();
-        return res.json(new ApiResponse(200, null, "Email verified successfully"));
+        return res.json(new ApiResponse(200, company, "Email verified successfully"));
         
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -163,7 +163,7 @@ const SendResetOtp = asyncHandler(async(req,res) => {
         await company.save();
         // send otp to email
         await sendMail(email, "Reset Password OTP", PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp));
-        return res.json(new ApiResponse(200, null, "OTP sent successfully for reset password to your email"));
+        return res.json(new ApiResponse(200, company, "OTP sent successfully for reset password to your email"));
         
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -186,8 +186,7 @@ const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
         if (company.resetPasswordOTP!== parseInt(otp)) {
             throw new ApiError(400, "Invalid OTP");
         }
-        req.user = company;
-        next();
+        return res.json(new ApiResponse(200,company,"reset otp verified successfully"));
         
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -195,7 +194,7 @@ const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
 })
 
 const UpdatePassword = asyncHandler(async(req, res) => {
-    const { newPassword } = req.body;
+    const { email,newPassword } = req.body;
     if(!req.user) {
         throw new ApiError(401, "Not authorized");
     }
@@ -203,10 +202,10 @@ const UpdatePassword = asyncHandler(async(req, res) => {
         throw new ApiError(400, "New password is required");
     }
     try {
-        const company = req.user;
+        const company = await companymodel.findOne({ email: email });
         company.password = newPassword;
         await company.save();
-        return res.json(new ApiResponse(200, null, "Password updated successfully"));
+        return res.json(new ApiResponse(200, company, "Password updated successfully"));
         
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
