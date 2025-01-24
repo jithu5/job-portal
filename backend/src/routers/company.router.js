@@ -5,7 +5,7 @@ const protectCompanyMiddleware = require('../middlewares/companyAuth.middleware.
 
 
 
-CompanyRouter.get('/',protectCompanyMiddleware,GetCompany);
+CompanyRouter.get('/company',protectCompanyMiddleware,GetCompany);
 
 CompanyRouter.post('/register',CRegister);
 

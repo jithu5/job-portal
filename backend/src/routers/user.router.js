@@ -6,7 +6,7 @@ const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 
 
 
-UserRouter.get('/',protectUserMiddleware,GetUser);
+UserRouter.get('/user',protectUserMiddleware,GetUser);
 
 UserRouter.post('/register',UserRegister);
 
