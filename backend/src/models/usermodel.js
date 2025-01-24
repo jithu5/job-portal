@@ -59,7 +59,7 @@ const UserSchema = new mongoose.Schema(
             type: String,
             required: true,
             minlength: 8,
-            maxlength: 12,
+            maxlength: 1024,
         },
         role:{
             type: String,
@@ -96,11 +96,11 @@ UserSchema.pre("save", async function (next) {
         if (this.isModified("password")) {
             const salt = await bcrypt.genSalt(10);
             this.password = await bcrypt.hash(this.password, salt);
-            next();
         }
         next();
     } catch (error) {
         console.log(error);
+        next(error);
     }
 });
 
@@ -115,7 +115,7 @@ UserSchema.methods.comparePassword = async function (password) {
 };
 
 UserSchema.methods.generateToken = async function () {
-    if(!process.env.JWT_SECRET_KEY) {
+    if(!process.env.JWT_SECRET) {
        throw new Error("JWT secret key is missing");
     }
     return await jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: 2 *24* 60 * 60 * 1000 });
