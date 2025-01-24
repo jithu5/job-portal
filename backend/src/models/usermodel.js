@@ -115,7 +115,7 @@ UserSchema.methods.comparePassword = async function (password) {
 };
 
 UserSchema.methods.generateToken = async function () {
-    if(!process.env.JWT_SECRET_KEY) {
+    if(!process.env.JWT_SECRET) {
        throw new Error("JWT secret key is missing");
     }
     return await jwt.sign({ id: this._id }, process.env.JWT_SECRET, { expiresIn: 2 *24* 60 * 60 * 1000 });
