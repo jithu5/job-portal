@@ -2,7 +2,8 @@ const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
-const company = require("../models/company.js");
+const EMAIL_VERIFY_TEMPLATE = require('../utils/emailverifytemplate.js');
+const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
@@ -146,6 +147,29 @@ const Verifyemail = asyncHandler(async (req, res) =>{
     }
 });
 
+const SendResetOtp = asyncHandler(async(req,res) => {
+    const { email } = req.body;
+    if (!email) {
+        throw new ApiError(400, "Email is required");
+    }
+    try {
+        const company = await companymodel.findOne({email: email});
+        if (!company) {
+            throw new ApiError(404, "company not found");
+        }
+        const otp = crypto.randomInt(1000,10000);
+        company.resetPasswordOTP = otp;
+        company.resetPasswordOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
+        await company.save();
+        // send otp to email
+        await sendMail(email, "Reset Password OTP", PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp));
+        return res.json(new ApiResponse(200, null, "OTP sent successfully for reset password to your email"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -195,6 +219,7 @@ module.exports = {
     CLogin,
     Sendotp,
     Verifyemail,
+    SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
 };

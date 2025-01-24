@@ -5,6 +5,8 @@ const usermodel = require("../models/usermodel.js");
 const crypto = require('crypto');
 const sendMail = require('../utils/sendEmail.js');
 const EMAIL_VERIFY_TEMPLATE = require('../utils/emailverifytemplate.js');
+const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
+
 
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
@@ -129,7 +131,7 @@ const Sendotp = asyncHandler(async (req, res) => {
         if (!user) {
             throw new ApiError(404, "User not found");
         }
-        console.log("user",user);
+        
         if (user.isAccountVerified) {
             throw new ApiError(400, "Account is already verified");
         }
@@ -139,8 +141,8 @@ const Sendotp = asyncHandler(async (req, res) => {
         user.AccountVerificationOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await user.save();
         // send otp to email
-        console.log("user",user);
-        await sendMail(email, "Account Verification OTP", EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
+        
+        await sendMail(email, "Account Verification OTP", EMAIL_VERIFY_TEMPLATE.replace("{{otp}}", otp));
         return res.json(new ApiResponse(200, null, "OTP sent successfully"));
         
     } catch (error) {
@@ -175,7 +177,7 @@ const Verifyemail = asyncHandler(async (req, res) =>{
     }
 });
 
-const SendResetPassword = asyncHandler(async(req,res) => {
+const SendResetOtp = asyncHandler(async(req,res) => {
     const { email } = req.body;
     if (!email) {
         throw new ApiError(400, "Email is required");
@@ -190,7 +192,7 @@ const SendResetPassword = asyncHandler(async(req,res) => {
         user.resetPasswordOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await user.save();
         // send otp to email
-        await sendMail(email, "Reset Password OTP", PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp).replace("{{email}}", email));
+        await sendMail(email, "Reset Password OTP",PASSWORD_RESET_TEMPLATE.replace("{{otp}}", otp));
         return res.json(new ApiResponse(200, null, "OTP sent successfully for reset password to your email"));
         
     } catch (error) {
@@ -249,7 +251,7 @@ module.exports = {
     UserLogin,
     Sendotp,
     Verifyemail,
-    SendResetPassword,
+    SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
  

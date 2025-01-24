@@ -1,7 +1,7 @@
 const express = require('express');
 const UserRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
-const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,SendResetPassword,VerifyResetOtp,UpdatePassword } = require('../controllers/user-controller.js');
+const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,SendResetOtp,VerifyResetOtp,UpdatePassword } = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 
 
@@ -16,7 +16,7 @@ UserRouter.post("/send-otp",Sendotp);
 
 UserRouter.post('/verifyemail',Verifyemail);
 
-UserRouter.post('/sendresetpassword',SendResetPassword);
+UserRouter.post('/sendresetpassword',SendResetOtp);
 
 UserRouter.post('/verifyresetotp',VerifyResetOtp);
 
