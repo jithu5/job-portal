@@ -17,12 +17,23 @@ const Homepage = asyncHandler(async (req, res) => {
 
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
-    const { username, name, email, password, gender, address, phone, age } =
+    const { username, name, email, password, gender, address, phone, dob } =
         req.body;
     console.log(req.body);
     console.log(req.file);
-    
-    
+    const calculateage = async(dob) => {
+        const dobDate = new Date(dob);
+        const today = new Date();
+        const age = today.getFullYear() - dobDate.getFullYear();
+        if (age >= 18 ){
+            return age;
+        }
+        else{
+            throw new ApiError(400, "Age should be 18 or above");
+        }
+    }
+    const age = await calculateage(dob);
+
     if (
         !username ||
         !name ||
@@ -301,4 +312,5 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     uploadProfilePic,
+    Homepage,
 };
