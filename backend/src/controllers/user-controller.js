@@ -10,6 +10,11 @@ const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
 const Tesseract = require('tesseract.js')
 
 
+//homepage
+const Homepage = asyncHandler(async (req, res) => {
+    
+})  
+
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
     const { username, name, email, password, gender, address, phone, age } =

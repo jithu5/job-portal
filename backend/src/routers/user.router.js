@@ -3,9 +3,9 @@ const UserRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,SendResetOtp,VerifyResetOtp,UpdatePassword,uploadProfilePic } = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
+const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
 
-
-
+UserRouter.get('/home',nonUserMiddleware,Homepage);
 
 UserRouter.get('/user',protectUserMiddleware,GetUser);
 
