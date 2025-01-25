@@ -81,18 +81,9 @@ function ImageEditDrawer({ openDrawer, setOpenDrawer,handleSubmit,images,setImag
             open={openDrawer}
             onClose={() => setOpenDrawer(false)}
             anchor="right"
+            
         >
-            <Box
-                sx={{
-                    width: { xs: "100vw", sm: 360, md: 400 },
-                   
-                    px: { xs: 5, sm: 10 },
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-                role="presentation"
-            >
-                <div className="w-full flex justify-between items-center">
+                <div className="w-full flex justify-between items-center px-4">
                     <DialogTitle className="text-xl md:text-2xl">
                         Edit Images
                     </DialogTitle>
@@ -101,6 +92,16 @@ function ImageEditDrawer({ openDrawer, setOpenDrawer,handleSubmit,images,setImag
                         className="text-md md:text-2xl cursor-pointer"
                     />
                 </div>
+            <Box
+                sx={{
+                    width: { xs: "90vw", sm: 360, md: 400 },
+                   
+                    px: { xs: 5, sm: 10 },
+                    display: "flex",
+                    flexDirection: "column",
+                }}
+                role="presentation"
+            >
                 <form onSubmit={handleSubmit}
                     encType="multipart/form-data"
                     className="flex flex-col items-center w-full"

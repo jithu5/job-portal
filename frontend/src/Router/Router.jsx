@@ -13,6 +13,8 @@ import {
     EditAdminProfile,
     AdminJobDetails,
     AdminEditJob,
+    WishList,
+    UserJobHistory,
 } from "../components/index";
 import {
     Home,
@@ -40,8 +42,9 @@ function Router() {
     const user = {
         username: "exampleUser",
         email: "example@example.com",
-        role: "admin",
+        role: "user",
     };
+    // const user = null;
     const isAuthenticated = true;
     const router = createBrowserRouter([
         {
@@ -59,6 +62,14 @@ function Router() {
                         {
                             path: "profile",
                             element: <Profile />,
+                        },
+                        {
+                            path: "wishlist",
+                            element: <WishList />,
+                        },
+                        {
+                            path: "job-history",
+                            element: <UserJobHistory />,
                         },
                         {
                             path: "profile/edit",

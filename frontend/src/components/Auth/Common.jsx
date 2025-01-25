@@ -6,41 +6,51 @@ function CommonAuth({ isAuthenticated, user, children }) {
 
     if (location.pathname === "/") {
         if (!isAuthenticated) {
-            return <Navigate to="/api/user/login" />;
-        } else {
             if (user?.role === "admin") {
                 return <Navigate to="/admin/dashboard" />;
-            }else if (user?.role === "user") {
+            } else if (user?.role === "user") {
                 return <Navigate to="/user" />;
             }
+            return <Navigate to="/user" />;
         }
     }
 
-      if (
-          !isAuthenticated &&
-          (
-              location.pathname==="/user" ||
-              location.pathname.includes("/admin/dashboard") 
-          )
-      ) {
-          return <Navigate to="/api/user/login" />;
-      }
-
-    if (isAuthenticated ) {
-       if (user?.role === "admin" && location.pathname.includes("/api/admin")) {
-        return <Navigate to="admin/dashboard" />;
-       }else if(user?.role === "user" && location.pathname.includes("/api/user")){
-        return <Navigate to="/user" />;
-       }
+    if (
+        !isAuthenticated &&
+        (location.pathname.startsWith("/user/") ||
+            location.pathname.includes("/admin/dashboard"))
+    ) {
+        return <Navigate to="/api/user/login" />;
     }
 
-
-    if (isAuthenticated && user?.role === "user" && location.pathname.includes("admin")) {
-        return <Navigate to="/unauth-page" />
+    if (isAuthenticated) {
+        if (
+            user?.role === "admin" &&
+            location.pathname.includes("/api/admin")
+        ) {
+            return <Navigate to="admin/dashboard" />;
+        } else if (
+            user?.role === "user" &&
+            location.pathname.includes("/api/user")
+        ) {
+            return <Navigate to="/user" />;
+        }
     }
 
-    if (isAuthenticated && user?.role === "admin" && location.pathname.includes("user")) {
-        return <Navigate to="/admin/dashboard" />
+    if (
+        isAuthenticated &&
+        user?.role === "user" &&
+        location.pathname.includes("admin")
+    ) {
+        return <Navigate to="/unauth-page" />;
+    }
+
+    if (
+        isAuthenticated &&
+        user?.role === "admin" &&
+        location.pathname.includes("user")
+    ) {
+        return <Navigate to="/admin/dashboard" />;
     }
 
     return <>{children}</>;

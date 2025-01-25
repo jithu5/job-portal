@@ -9,6 +9,8 @@ import MenuButton from "./Home/MenuButton";
 import NavigationLinks from "./Home/NavigationLinks";
 import Profile from "./Home/Profile";
 import EditUserProfile from "./Home/EditProfile";
+import WishList from "./Home/WishList";
+import UserJobHistory from "./Home/JobHistory";
 
 import JobHeader from "./Jobs/Header";
 import JobSideBar from "./Jobs/SideBar";
@@ -55,5 +57,7 @@ export {
     AdminJobDetails,
     AdminEditJob,
     PasswordReset,
-    AccountVerify
+    AccountVerify,
+    WishList,
+    UserJobHistory
 };

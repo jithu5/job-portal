@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { MenuButton, NavigationLinks } from "../index";
 
 import { HiOutlineUser } from "react-icons/hi";
+import avatar from "../../assets/man.png";
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineWorkHistory } from "react-icons/md";
 
@@ -109,47 +110,40 @@ function NavBar() {
                     <ul className="flex items-center gap-6">
                         {!currentUser && (
                             <>
-                                <Link
-                                    to={"/"}
-                                    className="px-5 py-1 rounded-2xl border-[2px] border-secondary"
-                                >
-                                    Login
-                                </Link>
-                                <Link
-                                    to={"/"}
-                                    className="px-5 py-1 rounded-2xl border-[2px]   border-secondary"
-                                >
-                                    Sign up
-                                </Link>
+                                <div className="flex justify-center items-center p-1 md:p-2 rounded-full border-[2px] border-secondary mr-7">
+                                    <HiOutlineUser className="text-sm sm:text-md md:text-lg" />
+                                </div>
                             </>
                         )}
                         {currentUser && (
                             <>
-                                <FaRegHeart className="text-md sm:text-xl md:text-2xl" />
-                                <MdOutlineWorkHistory className="text-md sm:text-xl md:text-2xl" />
-                                <div className="flex justify-center items-center p-1 md:p-2 rounded-full border-[2px] border-secondary mr-7">
-                                    <HiOutlineUser className="text-sm sm:text-md md:text-lg" />
-                                </div>
-                                <motion.div
-                                    variants={variants}
-                                    animate={isActive ? "open" : "close"}
-                                    initial="close"
-                                    className="bg-third rounded-2xl absolute top-4 right-6 md:right-16 z-10"
-                                >
-                                    <AnimatePresence>
-                                        {isActive && (
-                                            <NavigationLinks
-                                                setIsActive={setIsActive}
-                                            />
-                                        )}
-                                    </AnimatePresence>
-                                </motion.div>
-                                <MenuButton
-                                    isActive={isActive}
-                                    setIsActive={setIsActive}
-                                />
+                                <Link to={"wishlist"}>
+                                    <FaRegHeart className="text-md sm:text-xl md:text-2xl" />
+                                </Link>
+                                <Link to={"job-history"}>
+                                    <MdOutlineWorkHistory className="text-md sm:text-xl md:text-2xl" />
+                                </Link>
+                                <img className="w-8 md:w-12" src={avatar} />
                             </>
                         )}
+                        <motion.div
+                            variants={variants}
+                            animate={isActive ? "open" : "close"}
+                            initial="close"
+                            className="bg-third rounded-2xl absolute top-4 right-6 md:right-16 z-10"
+                        >
+                            <AnimatePresence>
+                                {isActive && (
+                                    <NavigationLinks
+                                        setIsActive={setIsActive}
+                                    />
+                                )}
+                            </AnimatePresence>
+                        </motion.div>
+                        <MenuButton
+                            isActive={isActive}
+                            setIsActive={setIsActive}
+                        />
                     </ul>
                 </nav>
             </header>

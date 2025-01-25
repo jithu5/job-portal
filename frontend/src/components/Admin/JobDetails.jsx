@@ -56,9 +56,13 @@ function AdminJobDetails() {
                 <p>
                     <strong>Applied People:</strong> {job.appliedPeople}
                 </p>
+                <div className="flex items-end justify-start gap-4 md:gap-10 px-2 md:px-6">
+
                 <button onClick={()=>navigate(`/admin/dashboard/applications/edit/${job.id}`)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                     Edit Job
                 </button>
+                <button className="text-sm md:text-lg font-medium text-red-500 hover:text-red-600">Delete</button>
+                </div>
             </div>
 
             <section className="mt-8">
