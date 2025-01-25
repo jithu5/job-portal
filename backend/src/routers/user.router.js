@@ -1,14 +1,15 @@
 const express = require('express');
 const UserRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
-const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,SendResetOtp,VerifyResetOtp,UpdatePassword } = require('../controllers/user-controller.js');
+const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,SendResetOtp,VerifyResetOtp,UpdatePassword,uploadProfilePic } = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
+
 
 
 
 UserRouter.get('/user',protectUserMiddleware,GetUser);
 
-UserRouter.post('/register',UserRegister);
+UserRouter.post('/register',upload.single('file'),UserRegister);
 
 UserRouter.post("/login",UserLogin);
 
@@ -21,6 +22,8 @@ UserRouter.post('/sendresetpassword',SendResetOtp);
 UserRouter.post('/verifyresetotp',VerifyResetOtp);
 
 UserRouter.post('/updatepassword',UpdatePassword);
+
+UserRouter.post('/upload-profile-pic', uploadProfilePic);
 
 
 

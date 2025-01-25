@@ -3,16 +3,21 @@ const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
 const crypto = require('crypto');
+const fs = require('fs');
 const sendMail = require('../utils/sendEmail.js');
 const EMAIL_VERIFY_TEMPLATE = require('../utils/emailverifytemplate.js');
 const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
+const Tesseract = require('tesseract.js')
 
 
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
     const { username, name, email, password, gender, address, phone, age } =
         req.body;
-
+    console.log(req.body);
+    console.log(req.file);
+    
+    
     if (
         !username ||
         !name ||
@@ -21,7 +26,8 @@ const UserRegister = asyncHandler(async (req, res) => {
         !gender ||
         !address ||
         !phone ||
-        !age
+        !age ||
+        !req.file
     ) {
         throw new ApiError(400, "All fields are required");
     }
@@ -33,6 +39,24 @@ const UserRegister = asyncHandler(async (req, res) => {
 
         if (ExistingUser) {
             throw new ApiError(400, "User already exists");
+        }
+
+        //check id proof
+        const {data: {text}} = await Tesseract.recognize(req.file.path,'eng');
+        console.log(text);
+
+        const target = ['usniversity','school','college',name];
+        const containtarget = target.some(word => text.toLowerCase().includes(word));
+        if(!containtarget){
+            throw new ApiError(400, "invalid ID")
+        }
+        console.log("target: ", containtarget);
+
+        //delete temparary id proof file
+        try {
+            await fs.unlinkSync(req.file.path);
+        }catch(error){
+            console.error("Error deleting temporary file:", error);
         }
 
         // create user
@@ -242,6 +266,24 @@ const UpdatePassword = asyncHandler(async(req, res) => {
     }
 });
 
+const uploadProfilePic = asyncHandler(async(req, res) => {
+    const userId = req.user;
+    if (!req.file) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    const { filename } = req.file;
+    try {
+        const user = await usermodel.findByIdAndUpdate(userId, { profilePic: filename }, { new: true });
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        return res.json(new ApiResponse(200, user, "Profile picture updated successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 
 
 module.exports = {
@@ -253,5 +295,5 @@ module.exports = {
     SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
- 
+    uploadProfilePic,
 };
