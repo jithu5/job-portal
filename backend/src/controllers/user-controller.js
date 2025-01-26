@@ -8,6 +8,7 @@ const sendMail = require('../utils/sendEmail.js');
 const EMAIL_VERIFY_TEMPLATE = require('../utils/emailverifytemplate.js');
 const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
 const Tesseract = require('tesseract.js')
+const cloudinary = require('../utils/cloudinary.js');
 
 
 //homepage
@@ -143,7 +144,7 @@ const UserLogin = asyncHandler(async (req, res, next) => {
 });
 
 
-
+//usercontent
 const GetUser = asyncHandler(async (req, res) => {
     const userId = req.user;
     try {
@@ -159,6 +160,7 @@ const GetUser = asyncHandler(async (req, res) => {
     }
 });
 
+//send otp
 const Sendotp = asyncHandler(async (req, res) => {
     const { email } = req.body;
     console.log("email",email);
@@ -190,6 +192,7 @@ const Sendotp = asyncHandler(async (req, res) => {
     }
 });
 
+//verify email using otp
 const Verifyemail = asyncHandler(async (req, res) =>{
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -217,6 +220,7 @@ const Verifyemail = asyncHandler(async (req, res) =>{
     }
 });
 
+//send reset password otp 
 const SendResetOtp = asyncHandler(async(req,res) => {
     const { email } = req.body;
     if (!email) {
@@ -240,6 +244,7 @@ const SendResetOtp = asyncHandler(async(req,res) => {
     }
 });
 
+//verify reset password otp
 const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -263,6 +268,7 @@ const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
     }
 })
 
+//reset password
 const UpdatePassword = asyncHandler(async(req, res) => {
     const { email,newPassword } = req.body;
     if (!newPassword) {
@@ -282,21 +288,40 @@ const UpdatePassword = asyncHandler(async(req, res) => {
     }
 });
 
+//upload profile picture(pending... cloudinary)
 const uploadProfilePic = asyncHandler(async(req, res) => {
     const userId = req.user;
     if (!req.file) {
         throw new ApiError(400, "No file uploaded");
     }
-    const { filename } = req.file;
     try {
-        const user = await usermodel.findByIdAndUpdate(userId, { profilePic: filename }, { new: true });
-        if (!user) {
-            throw new ApiError(404, "User not found");
-        }
-        return res.json(new ApiResponse(200, user, "Profile picture updated successfully"));
-        
+        const profilepicpath = require.file.path;
+        const response = await cloudinary.uploadProfilePic(profilepicpath);
+        const user = await usermodel.findByIdAndUpdate(userId, { profileImage: response.secure_url }, { new: true });
+        return res.json(ApiResponse(200, user,"profile pic updated"));
     } catch (error) {
-        throw new ApiError(error.statusCode, error.message);
+        if(fs.existsSync(profilepicpath)){
+            fs.unlinkSync(profilepicpath); // delete the file after upload
+        }
+        console.log("some error occurred while uploading profile");
+    }
+});
+
+const uploadCoverPic = asyncHandler(async(req, res) => {
+    const userId = req.user;
+    if (!req.file) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    try {
+        const coverpicpath = require.file.path;
+        const response = await cloudinary.uploadCoverPic(coverpicpath);
+        const user = await usermodel.findByIdAndUpdate(userId, { coverImage: response.secure_url }, { new: true });
+        return res.json(ApiResponse(200, user,"profile pic updated"));
+    } catch (error) {
+        if(fs.existsSync(coverpicpath)){
+            fs.unlinkSync(coverpicpath); // delete the file after upload
+        }
+        console.log("some error occurred while uploading profile");
     }
 });
 
@@ -313,4 +338,5 @@ module.exports = {
     UpdatePassword,
     uploadProfilePic,
     Homepage,
+    uploadCoverPic,
 };
