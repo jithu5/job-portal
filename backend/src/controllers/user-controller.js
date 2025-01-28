@@ -105,6 +105,11 @@ const UserRegister = asyncHandler(async (req, res) => {
         );
     } catch (error) {
         
+        try {
+            await fs.unlinkSync(req.file.path);
+        }catch(error){
+            console.error("Error deleting temporary file:", error);
+        }
         throw new ApiError(error.statusCode, error.message);
     }
 });
@@ -136,7 +141,8 @@ const UserLogin = asyncHandler(async (req, res) => {
             secure: process.env.NODE_ENV === "production",
             sameSite: "lax",
         };
-
+        console.log("user",user);
+        
         res.
         cookie("userToken", token, cookieOptions).json(
             new ApiResponse(200, user, "User logged in successfully")
