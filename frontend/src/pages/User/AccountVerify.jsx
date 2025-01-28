@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { AccountVerify } from "../../components/index";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useSendOtpMutation, useVerifyEmailMutation } from "../../Store/Auth/Auth-Api";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Store/Auth";
 
 function UserAccountVerify() {
     const [otp, setOtp] = useState("");
@@ -10,6 +12,7 @@ function UserAccountVerify() {
 
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch = useDispatch()
     console.log(location.state);
     const email = location.state?.email; // Access email from state
     console.log(email);
@@ -48,13 +51,16 @@ function UserAccountVerify() {
         console.log("OTP Submitted:", otp);
         
         try {
-          const response = await verifyEmail(otp)
+          const response = await verifyEmail({otp:otp})
           console.log(response);
+          console.log(response.data.success);
           if (!response.data.success) {
             throw new Error(response.data.message);
           }
+          console.log(response)
           console.log(response.data.message);
           console.log(response.data.data);
+          dispatch(setUser(response.data.data))
           console.log("Email verified successfully!");
           navigate("/user"); // Navigate to dashboard after successful email verification
         } catch (error) {

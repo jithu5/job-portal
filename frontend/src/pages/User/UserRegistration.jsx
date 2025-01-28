@@ -43,7 +43,6 @@ const UserRegistration = () => {
                 console.log(response.data);
                 throw new Error("Invalid credentials");
             }
-            dispatch(setUser(response.data.data))
             console.log(response.data.data);
             navigate("/api/user/verify",{state:{email:response.data.data.email}});
             
