@@ -7,9 +7,11 @@ import { HiOutlineUser } from "react-icons/hi";
 import avatar from "../../assets/man.png";
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineWorkHistory } from "react-icons/md";
+import { useSelector } from "react-redux";
 
 function NavBar() {
-    const currentUser = true;
+
+    const { user: currentUser } = useSelector((state) => state.Auth);
 
     const [isActive, setIsActive] = useState(false);
 

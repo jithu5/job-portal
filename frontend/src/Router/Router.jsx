@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-// import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import App from "../App";
 import {
     AdminApplication,
@@ -31,7 +31,6 @@ import {
     UserPasswordReset,
     UserAccountVerify,
 } from "../pages/index";
-
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -39,13 +38,19 @@ const wrapWithCommonAuth = (Component, props) => {
 
 // Main Router component
 function Router() {
-    const user = {
-        username: "exampleUser",
-        email: "example@example.com",
-        role: "user",
-    };
-    // const user = null;
-    const isAuthenticated = true;
+    const { isAuthenticated, user, error, loading } = useSelector(
+        (state) => state.Auth
+    );
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+      
+    }, [dispatch])
+
+
+
+
+    
     const router = createBrowserRouter([
         {
             path: "/",

@@ -13,6 +13,9 @@ function CommonAuth({ isAuthenticated, user, children }) {
             }
             return <Navigate to="/user" />;
         }
+        else{
+            return <Navigate to="/user" />;
+        }
     }
 
     if (

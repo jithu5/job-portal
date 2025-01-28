@@ -1,22 +1,37 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
+import { useLoginUserMutation } from "../../Store/Auth/Auth-Api";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Store/Auth";
 
 function UserLogin() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset
+        reset,
     } = useForm();
 
-    const onSubmit = (data) => {
+    const [loginUser] = useLoginUserMutation();
+
+    const onSubmit = async (data) => {
         console.log("Login Data:", data);
-        alert("Login successful!");
+        try {
+            const response = await loginUser(data);
+            console.log(response);
+            if (!response.success) {
+                console.log(response.error.data.message);
+                throw new Error("Invalid credentials");
+            }
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        }
         reset();
-        navigate("/");
     };
 
     return (

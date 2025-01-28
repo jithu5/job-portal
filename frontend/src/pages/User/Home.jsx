@@ -10,6 +10,7 @@ import {
     RecommendedJobs,
     AboutUs,
 } from "../../components/index";
+import { useSelector } from "react-redux";
 
 const onboardingSteps = [
     {
@@ -55,7 +56,8 @@ const onboardingSteps = [
 ];
 
 function Home() {
-    const currentUser = true;
+    const { user: currentUser } = useSelector((state) => state.Auth);
+ 
     const parentVariants = {
         hidden: {
             opacity: 1,

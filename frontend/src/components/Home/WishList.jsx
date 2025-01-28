@@ -47,7 +47,7 @@ function WishList() {
                                 {job.location}
                             </p>
                         </div>
-                        <button className="text-sm md:tet-lg font-medium text-stone-700 hover:text-slate-900">Go to Job</button>
+                        <button onClick={()=>navigate('/user/jobs')} className="text-sm md:tet-lg font-medium text-stone-700 hover:text-slate-900">Go to Job</button>
                         </div>
                     ))}
                 </div>

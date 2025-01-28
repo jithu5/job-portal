@@ -62,7 +62,7 @@ const UserRegister = asyncHandler(async (req, res) => {
         const {data: {text}} = await Tesseract.recognize(req.file.path,'eng');
         console.log(text);
 
-        const target = ['usniversity','school','college',name];
+        const target = ['university','school','college',name];
         const containtarget = target.some(word => text.toLowerCase().includes(word));
         if(!containtarget){
             throw new ApiError(400, "invalid ID")
@@ -104,12 +104,13 @@ const UserRegister = asyncHandler(async (req, res) => {
             new ApiResponse(201, newuser, "User registered successfully")
         );
     } catch (error) {
+        
         throw new ApiError(error.statusCode, error.message);
     }
 });
 
 //user login
-const UserLogin = asyncHandler(async (req, res, next) => {
+const UserLogin = asyncHandler(async (req, res) => {
     console.log("Login route hit"); // Debug log
     const { email, password } = req.body;
     
@@ -117,13 +118,15 @@ const UserLogin = asyncHandler(async (req, res, next) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
-        const user = await usermodel.findOne({ email: email });
+        console.log(email, password);
+        const user = await usermodel.findOne({ email });
+        console.log(user);
         if (!user) {
-            throw new ApiError(401, "Invalid credentials");
+            throw new ApiError(401, "Invalid credentials v");
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            throw new ApiError(401, "Invalid credentials");
+            throw new ApiError(401, "Invalid credentials s");
         }
         const token = await user.generateToken();
         
@@ -139,6 +142,7 @@ const UserLogin = asyncHandler(async (req, res, next) => {
             new ApiResponse(200, user, "User logged in successfully")
         );
     } catch (error) {
+        console.log(error)
         throw new ApiError(error.statusCode, error.message);
     }
 });
