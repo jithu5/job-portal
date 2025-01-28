@@ -190,7 +190,7 @@ const Sendotp = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Account is already verified");
         }
         
-        const otp = crypto.randomInt(1000,10000)
+        const otp = crypto.randomInt(100000, 1000000)
         user.AccountVerificationOTP = otp;
         user.AccountVerificationOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await user.save();
@@ -206,17 +206,19 @@ const Sendotp = asyncHandler(async (req, res) => {
 
 //verify email using otp
 const Verifyemail = asyncHandler(async (req, res) =>{
-    const { email, otp } = req.body;
-    if (!email || !otp) {
-        throw new ApiError(400, "Email and OTP are required");
+    const otp  = req.body;
+    const userId = req.user;
+    if (!userId || !otp) {
+        throw new ApiError(400, "userId and OTP are required");
     }
     try {
-        const user = await usermodel.findOne({ email: email });
+        const user = await usermodel.findById(userId);
         if (!user) {
             throw new ApiError(404, "User not found");
         }
         if (!user.AccountVerificationOTPValidDate || user.AccountVerificationOTPValidDate < new Date()) {
             throw new ApiError(400, "OTP expired or invalid");
+
         }
         if (user.AccountVerificationOTP!== parseInt(otp)) {
             throw new ApiError(400, "Invalid OTP");
@@ -243,7 +245,7 @@ const SendResetOtp = asyncHandler(async(req,res) => {
         if (!user) {
             throw new ApiError(404, "User not found");
         }
-        const otp = crypto.randomInt(1000,10000);
+        const otp = crypto.randomInt(100000, 1000000);
         user.resetPasswordOTP = otp;
         user.resetPasswordOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await user.save();
