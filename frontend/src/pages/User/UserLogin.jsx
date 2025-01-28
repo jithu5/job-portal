@@ -29,7 +29,7 @@ function UserLogin() {
             }
             dispatch(setUser(response.data.data));
             console.log(response);
-            alert("Login successful!");
+            alert(response.data.message);
             navigate("/");
         } catch (error) {
             console.log(error);

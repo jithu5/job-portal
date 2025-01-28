@@ -33,6 +33,8 @@ import {
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
+import { Skeleton, Stack } from "@mui/material";
+import { useGetAdminQuery } from "../Store/AdminAuth/AdminAuth-Api";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -40,21 +42,36 @@ const wrapWithCommonAuth = (Component, props) => {
 
 // Main Router component
 function Router() {
-    const { isAuthenticated, user } = useSelector(
-        (state) => state.Auth
-    );
-    const dispatch = useDispatch()
+    const { isAuthenticated, user } = useSelector((state) => state.Auth);
+    const dispatch = useDispatch();
 
-    const {data,isLoading} = useGetUserQuery()
+    const { data, isLoading } = useGetUserQuery();
+    const { data: adminData, isLoading: adminIsLoading } = useGetAdminQuery();
     useEffect(() => {
-      if (user === null && data) {
-        console.log('inside')
-        dispatch(setUser(data))
-      }
-    }, [data,user])
+        if (user === null && data) {
+            console.log("inside");
+            dispatch(setUser(data));
+        }
+        else if(!user && adminData){
+            console.log("inside admin");
+            dispatch(setUser(adminData));
+        }
+    }, [data, user,adminData]);
 
-    if (isLoading) return <div>Loading...</div>;
-    
+    if (isLoading || adminIsLoading)
+        return (
+            <Stack spacing={1}>
+                {/* For variant="text", adjust the height via font-size */}
+                <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
+                <Skeleton
+                    variant="rectangular"
+                    width={"100vw"}
+                    height={"45vh"}
+                />
+                <Skeleton variant="rounded" width={"100vw"} height={"45vh"} />
+            </Stack>
+        );
+
     const router = createBrowserRouter([
         {
             path: "/",

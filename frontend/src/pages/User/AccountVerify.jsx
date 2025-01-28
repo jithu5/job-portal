@@ -22,10 +22,10 @@ function UserAccountVerify() {
         try {
             const response = sendOtp({ email: email });
             console.log(response);
-            if (!response.success) {
+            if (!response.data.success) {
                 throw new Error(response.data.message);
             }
-            console.log("OTP sent successfully!");
+            console.log(response.data.message);
         } catch (error) {
             console.log(error.message);
         }

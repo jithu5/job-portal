@@ -3,20 +3,22 @@ const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
+const crypto = require("crypto");
+const sendMail = require("../utils/sendEmail.js");
 const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
-    const { cname, email, password, address, phone } = req.body;
+    const { companyName, email, password, address, phone } = req.body;
 
-    if (!cname || !email || !password || !address || !phone) {
+    if (!companyName || !email || !password || !address || !phone) {
         throw new ApiError(400, "All fields are required");
     }
     try {
         //check if username already exists
         const ExistingC = await companymodel.findOne({
-            $or: [{ Cname: cname }, { email: email }],
+            $or: [{ companyName: companyName }, { email: email }],
         });
 
         if (ExistingC) {
@@ -25,7 +27,7 @@ const CRegister = asyncHandler(async (req, res) => {
 
         // create user
         const newcompany = new companymodel({
-            Cname: cname,
+            companyName: companyName,
             email: email,
             address: address,
             phone: phone,
@@ -51,7 +53,7 @@ const CRegister = asyncHandler(async (req, res) => {
 });
 
 //company login
-const CLogin = asyncHandler(async (req, res, next) => {
+const CLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -100,6 +102,7 @@ const GetCompany = asyncHandler(async (req, res) => {
 //send otp to company email
 const Sendotp = asyncHandler(async (req, res) => {
     const { email } = req.body;
+    console.log(email)
     if (!email) {
         throw new ApiError(400, "Email is required");
     }
@@ -136,6 +139,8 @@ const Sendotp = asyncHandler(async (req, res) => {
 const Verifyemail = asyncHandler(async (req, res) => {
     const { otp } = req.body;
     const companyId = req.company;
+    console.log(req.body)
+    console.log(companyId)
     if (!companyId || !otp) {
         throw new ApiError(400, "Email and OTP are required");
     }

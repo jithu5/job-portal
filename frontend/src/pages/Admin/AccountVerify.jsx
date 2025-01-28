@@ -1,12 +1,43 @@
-import React, { useState } from "react";
-import {AccountVerify} from "../../components/index";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { AccountVerify } from "../../components/index";
+import { useLocation, useNavigate } from "react-router-dom";
+import {
+    useSendOtpMutation,
+    useVerifyEmailMutation,
+} from "../../Store/AdminAuth/AdminAuth-Api.js";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Store/Auth/index.js";
 
 function AdminAccountVerify() {
     const [otp, setOtp] = useState("");
     const [error, setError] = useState("");
 
+    const location = useLocation();
+    const email = location.state.email;
+    console.log(email);
+
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const [sendOtp] = useSendOtpMutation();
+    const [verifyEmail] = useVerifyEmailMutation();
+
+    useEffect(() => {
+        async function sendotp() {
+            try {
+                const response = await sendOtp({ email: email });
+                console.log(response);
+                if (!response.data.success) {
+                    throw new Error(response.data.message);
+                }
+                console.log(response.data.message);
+            } catch (error) {
+                console.log(error.message);
+            }
+        }
+
+        sendotp();
+    }, []);
 
     const handleOtpChange = (e) => {
         const input = e.target.value;
@@ -17,7 +48,7 @@ function AdminAccountVerify() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (otp.length !== 6) {
             setError("Please enter a valid 6-digit OTP.");
@@ -26,11 +57,21 @@ function AdminAccountVerify() {
 
         // Simulate API call
         console.log("OTP Submitted:", otp);
-        alert("OTP verified successfully!");
 
-        // Clear input after submission
-        setOtp("");
-        navigate("/admin/dashboard"); // Navigate to dashboard after successful OTP verification
+        try {
+            const response = await verifyEmail({otp: otp});
+            console.log(response);
+            if (!response.data.success) {
+                console.log(response.data.message);
+                throw new Error("Invalid credentials");
+            }
+            console.log(response.data.message);
+            dispatch(setUser(response.data.data));
+            alert(response.data.message);
+            navigate("/admin/dashboard", { replace: true }); // Redirect to dashboard after successful verification
+        } catch (error) {
+            console.log(error.message);
+        }
     };
     return (
         <>

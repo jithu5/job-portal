@@ -34,7 +34,7 @@ const UserApi = createApi({
                 method: "POST",
                 body: user,
             }),
-            transformResponse: (response) => response.data,
+            transformResponse: (response) => response,
             invalidatesTags: ["Job", "User"],
         }),
         sendOtp: builder.mutation({
@@ -43,7 +43,7 @@ const UserApi = createApi({
                 method: "POST",
                 body: user,
             }),
-            transformResponse: (response) => response.data,
+            transformResponse: (response) => response,
             invalidatesTags: ["Job", "User"],
         }),
         verifyEmail: builder.mutation({

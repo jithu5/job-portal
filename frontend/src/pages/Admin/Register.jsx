@@ -1,6 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useRegisterAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Store/Auth";
 
 function AdminRegister() {
     const {
@@ -8,18 +11,26 @@ function AdminRegister() {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm();
+    const [ registerAdmin ] = useRegisterAdminMutation();
+    const dispatch = useDispatch()
     const navigate = useNavigate();
 
     const onSubmit = async (data) => {
         console.log("Submitting Data:", data);
         try {
-            // Simulate an API call
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            alert("Registration successful!");
+            const response = await registerAdmin(data);
+            console.log(response);
+            if (!response.data.success) {
+                console.log(response.data.message);
+                throw new Error("Invalid credentials");
+            }
+            console.log(response.data.data);
+            dispatch(setUser(response.data.data));
+            alert(response.data.message);
+            navigate("/api/admin/verify",{state:{email:response.data.data.email}});
         } catch (error) {
             console.error("Error during registration:", error);
         }
-        navigate("/api/admin/verify");
     };
 
     return (

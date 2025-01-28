@@ -1,5 +1,6 @@
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const jobs = [
@@ -56,6 +57,8 @@ const jobs = [
 function AdminDashboard() {
     const navigate = useNavigate();
 
+    const {user} = useSelector((state)=>state.Auth)
+
     return (
         <>
             <main className="relative w-full py-1">
@@ -67,7 +70,7 @@ function AdminDashboard() {
                 </div>
 
                 <h1 className="text-3xl font-bold text-center my-10">
-                    Company Dashboard
+                    {user?.companyName} Dashboard
                 </h1>
                 {/* Stats Section */}
                 <section className="grid grid-cols-1 sm:grid-cols-2 max-w-[700px] justify-items-center w-full gap-6 mt-10 mx-auto ">
