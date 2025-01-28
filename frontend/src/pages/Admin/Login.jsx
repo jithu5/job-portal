@@ -1,16 +1,34 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
+import { useDispatch } from 'react-redux'
 import { Link, useNavigate } from 'react-router-dom'
+import { useLoginAdminMutation } from '../../Store/AdminAuth/AdminAuth-Api'
+import { setUser } from '../../Store/Auth'
 
 function AdminLogin() {
     const { handleSubmit,formState:{errors,isSubmitting},register,reset} = useForm()
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+
+    const [ loginAdmin ] = useLoginAdminMutation()
 
     const onSubmit = async (data) => {
         console.log(data)
-        reset()
-        navigate('/admin/dashboard')
+        try {
+            const response = await loginAdmin(data);
+            if (!response.data.success) {
+                console.log(response.data.message);
+                throw new Error("Invalid credentials");
+            }
+            console.log(response.data.data);
+            dispatch(setUser(response.data.data));
+            alert(response.data.message);
+            reset()
+            navigate('/admin/dashboard')
+        } catch (error) {
+            console.log(error.message);
+        }
     }
   return (
       <>
@@ -22,16 +40,16 @@ function AdminLogin() {
                   <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
                       <div>
                           <label
-                              htmlFor="companyName"
+                              htmlFor="email"
                               className="block text-sm font-medium text-gray-600"
                           >
-                              Company Name
+                              Company Email
                           </label>
                           <input
-                              {...register("companyName", { required: true })}
-                              type="text"
-                              id="companyName"
-                              name="companyName"
+                              {...register("email", { required: true })}
+                              type="email"
+                              id="email"
+                              name="email"
                               required
                               placeholder="Enter your company name"
                               className="w-full px-4 py-2 mt-1 text-gray-700 bg-gray-100 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"

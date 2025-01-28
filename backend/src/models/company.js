@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const CompanySchema = mongoose.Schema(
     {
-        Cname: {
+        companyName: {
             type: String,
             index:true,
             required: true,
@@ -42,7 +42,6 @@ const CompanySchema = mongoose.Schema(
             type: String,
             required: true,
             minlength: 8,
-            maxlength: 12,
         },
         role: {
             type: String,

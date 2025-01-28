@@ -17,7 +17,7 @@ const UserApi = createApi({
                 url: "user",
             }),
             transformResponse: (response) => response.data,
-            providesTags:['User']
+            providesTags: ["User"],
         }),
         registerUser: builder.mutation({
             query: (user) => ({
@@ -26,7 +26,7 @@ const UserApi = createApi({
                 body: user,
             }),
             transformResponse: (response) => response,
-            invalidatesTags:['Job','User']
+            invalidatesTags: ["Job", "User"],
         }),
         loginUser: builder.mutation({
             query: (user) => ({
@@ -35,16 +35,35 @@ const UserApi = createApi({
                 body: user,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ['Job','User']
+            invalidatesTags: ["Job", "User"],
+        }),
+        sendOtp: builder.mutation({
+            query: (user) => ({
+                url: "send-otp",
+                method: "POST",
+                body: user,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job", "User"],
+        }),
+        verifyEmail: builder.mutation({
+            query: (user) => ({
+                url: "verifyemail",
+                method: "POST",
+                body: user,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job", "User"],
         }),
     }),
 });
-
 
 export const {
     useGetUserQuery,
     useRegisterUserMutation,
     useLoginUserMutation,
+    useSendOtpMutation,
+    useVerifyEmailMutation
 } = UserApi;
 
 export default UserApi;
