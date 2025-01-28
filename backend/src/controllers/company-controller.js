@@ -2,6 +2,7 @@ const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
+const jobmodel = require("../models/jobs.js");
 const EMAIL_VERIFY_TEMPLATE = require('../utils/emailverifytemplate.js');
 const PASSWORD_RESET_TEMPLATE = require('../utils/resetotp.js');
 
@@ -49,7 +50,7 @@ const CRegister = asyncHandler(async (req, res) => {
     }
 });
 
-//user login
+//company login
 const CLogin = asyncHandler(async (req, res, next) => {
     const {email,password} = req.body;
 
@@ -80,6 +81,7 @@ const CLogin = asyncHandler(async (req, res, next) => {
     }
 });
 
+//company content
 const GetCompany = asyncHandler(async (req, res) => {
     const companyId = req.company;
     try {
@@ -94,6 +96,7 @@ const GetCompany = asyncHandler(async (req, res) => {
     }
 });
 
+//send otp to company email
 const Sendotp = asyncHandler(async (req, res) => {
     const { email } = req.body;
     if (!email) {
@@ -107,7 +110,7 @@ const Sendotp = asyncHandler(async (req, res) => {
         if (company.isAccountVerified) {
             throw new ApiError(400, "Account is already verified");
         }
-        const otp = crypto.randomInt(1000,10000)
+        const otp = crypto.randomInt(100000, 1000000)
         company.AccountVerificationOTP = otp;
         company.AccountVerificationOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await company.save();
@@ -120,13 +123,15 @@ const Sendotp = asyncHandler(async (req, res) => {
     }
 });
 
+//verify otp
 const Verifyemail = asyncHandler(async (req, res) =>{
-    const { email, otp } = req.body;
-    if (!email || !otp) {
+    const otp = req.body;
+    const companyId = req.company;
+    if (!companyId || !otp) {
         throw new ApiError(400, "Email and OTP are required");
     }
     try {
-        const company = await companymodel.findOne({ email: email });
+        const company = await companymodel.findById(companyId);
         if (!company) {
             throw new ApiError(404, "company not found");
         }
@@ -147,6 +152,7 @@ const Verifyemail = asyncHandler(async (req, res) =>{
     }
 });
 
+//send reset password otp
 const SendResetOtp = asyncHandler(async(req,res) => {
     const { email } = req.body;
     if (!email) {
@@ -157,7 +163,7 @@ const SendResetOtp = asyncHandler(async(req,res) => {
         if (!company) {
             throw new ApiError(404, "company not found");
         }
-        const otp = crypto.randomInt(1000,10000);
+        const otp = crypto.randomInt(100000, 1000000);
         company.resetPasswordOTP = otp;
         company.resetPasswordOTPValidDate = new Date(Date.now() + 5 * 60 * 1000);
         await company.save();
@@ -170,6 +176,7 @@ const SendResetOtp = asyncHandler(async(req,res) => {
     }
 });
 
+//verify reset otp
 const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
     const { email, otp } = req.body;
     if (!email || !otp) {
@@ -193,6 +200,7 @@ const VerifyResetOtp = asyncHandler(async(req, res, next)=>{
     }
 })
 
+//update password
 const UpdatePassword = asyncHandler(async(req, res) => {
     const { email,newPassword } = req.body;
     if(!req.user) {
@@ -212,6 +220,38 @@ const UpdatePassword = asyncHandler(async(req, res) => {
     }
 });
 
+//post job
+const PostJob = asyncHandler(async(req,res) => {
+    const { title, description, location, salary, date, workersCount, } = req.body;
+    const companyId = req.company;
+     console.log(companyId);
+    if (!title || !description || !location || !salary || !date || !workersCount) {
+        throw new ApiError(400, "All fields are required");
+    }
+    try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
+
+        const newJob = new jobmodel({
+            company: companyId,
+            title,
+            description,
+            location,
+            salary,
+            date,
+            workersCount,
+        });
+        await newJob.save();
+        return res.json(new ApiResponse(201, newJob, "Job posted successfully"));
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+        
+
 module.exports = {
     CRegister,
     GetCompany,
@@ -221,4 +261,5 @@ module.exports = {
     SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
+    PostJob,
 };

@@ -15,7 +15,7 @@ UserRouter.post("/login",UserLogin);
 
 UserRouter.post("/send-otp",Sendotp);
 
-UserRouter.post('/verifyemail',Verifyemail);
+UserRouter.post('/verifyemail',protectUserMiddleware,Verifyemail);
 
 UserRouter.post('/sendresetpassword',SendResetOtp);
 
@@ -25,7 +25,6 @@ UserRouter.post('/updatepassword',UpdatePassword);
 
 UserRouter.post('/upload-profile-pic',upload.single('file'), uploadProfilePic);
 
-UserRouter.post('/upload-cover-pic',upload.single('file'), uploadCoverPic);
 
 
 
