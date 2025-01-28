@@ -125,7 +125,7 @@ const Sendotp = asyncHandler(async (req, res) => {
 
 //verify otp
 const Verifyemail = asyncHandler(async (req, res) =>{
-    const otp = req.body;
+    const { otp } = req.body;
     const companyId = req.company;
     if (!companyId || !otp) {
         throw new ApiError(400, "Email and OTP are required");

@@ -23,7 +23,7 @@ UserRouter.post('/verifyresetotp',VerifyResetOtp);
 
 UserRouter.post('/updatepassword',UpdatePassword);
 
-UserRouter.post('/upload-profile-pic',upload.single('file'), uploadProfilePic);
+UserRouter.post('/upload-profile-pic',upload.fields([{name:'profilepic',maxCount:1},{name:'coverpic',maxCount:1}]), uploadProfilePic);
 
 
 

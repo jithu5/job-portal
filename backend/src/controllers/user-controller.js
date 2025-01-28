@@ -206,7 +206,7 @@ const Sendotp = asyncHandler(async (req, res) => {
 
 //verify email using otp
 const Verifyemail = asyncHandler(async (req, res) =>{
-    const otp  = req.body;
+    const { otp } = req.body;
     const userId = req.user;
     if (!userId || !otp) {
         throw new ApiError(400, "userId and OTP are required");
@@ -304,18 +304,37 @@ const UpdatePassword = asyncHandler(async(req, res) => {
 
 //upload profile picture(pending... cloudinary)
 const uploadProfilePic = asyncHandler(async(req, res) => {
-    const userId = req.user;
-    if (!req.file) {
+    let profilepicpath = null;
+    let coverImage = null;
+    // const userId = req.user;
+    console.log("file",req.files)
+    if (!req.files) {
         throw new ApiError(400, "No file uploaded");
     }
     try {
-        const profilepicpath = require.file.path;
-        const response = await cloudinary.uploadProfilePic(profilepicpath);
-        const user = await usermodel.findByIdAndUpdate(userId, { profileImage: response.secure_url }, { new: true });
-        return res.json(ApiResponse(200, user,"profile pic updated"));
+        profilepicpath = req.files?.profilepic?.[0]?.path;
+        coverImage = req.files?.coverpic?.[0]?.path;
+  
+        // Validate file existence
+        if (!profilepicpath || !coverImage) {
+          return res.status(400).json({
+            message: "Both profile picture and cover picture are required",
+          });
+        }
+        console.log("profilepic",profilepicpath,coverImage);
+
+
+        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+        const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
+        
+        const user = await usermodel.findByIdAndUpdate(userId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
+        return res.json(ApiResponse(200,user,"profile pic updated"));
     } catch (error) {
         if(fs.existsSync(profilepicpath)){
             fs.unlinkSync(profilepicpath); // delete the file after upload
+        }
+        if(fs.existsSync(coverImage)){
+            fs.unlinkSync(coverImage); // delete the file after upload
         }
         console.log("some error occurred while uploading profile");
     }
