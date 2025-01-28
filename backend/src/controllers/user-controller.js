@@ -62,7 +62,7 @@ const UserRegister = asyncHandler(async (req, res) => {
         const {data: {text}} = await Tesseract.recognize(req.file.path,'eng');
         console.log(text);
 
-        const target = ['university','school','college',name];
+        const target = ['university','school','college','student',name];
         const containtarget = target.some(word => text.toLowerCase().includes(word));
         if(!containtarget){
             throw new ApiError(400, "invalid ID")
@@ -149,6 +149,7 @@ const UserLogin = asyncHandler(async (req, res) => {
         cookie("userToken", token, cookieOptions).json(
             new ApiResponse(200, user, "User logged in successfully")
         );
+        console.log('after successful login')
     } catch (error) {
         console.log(error)
         throw new ApiError(error.statusCode, error.message);

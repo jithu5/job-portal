@@ -9,7 +9,7 @@ UserRouter.get('/home',nonUserMiddleware,Homepage);
 
 UserRouter.get('/user',protectUserMiddleware,GetUser);
 
-UserRouter.post('/register',upload.single('file'),UserRegister);
+UserRouter.post('/register',upload.single('idProof'),UserRegister);
 
 UserRouter.post("/login",UserLogin);
 

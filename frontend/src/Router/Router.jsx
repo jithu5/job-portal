@@ -40,13 +40,12 @@ const wrapWithCommonAuth = (Component, props) => {
 
 // Main Router component
 function Router() {
-    const { isAuthenticated, user, error, loading } = useSelector(
+    const { isAuthenticated, user } = useSelector(
         (state) => state.Auth
     );
     const dispatch = useDispatch()
 
-    const {data,isLoading,isSuccess} = useGetUserQuery()
-    console.log(data)
+    const {data,isLoading} = useGetUserQuery()
     useEffect(() => {
       if (user === null && data) {
         console.log('inside')
@@ -54,7 +53,7 @@ function Router() {
       }
     }, [data,user])
 
-    if (loading && user?.isAuthenticated === true) return <div>Loading...</div>;
+    if (isLoading) return <div>Loading...</div>;
     
     const router = createBrowserRouter([
         {

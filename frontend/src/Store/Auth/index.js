@@ -36,8 +36,8 @@ const AuthSlice = createSlice({
         setUser: (state, action) => {
             console.log(action.payload)
             state.loading = false;
-            state.isAuthenticated = true;
             state.user = action.payload;
+            state.isAuthenticated = action.payload.isAccountVerified;
         },
     },
     // extraReducers:(builder)=>{

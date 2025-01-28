@@ -7,8 +7,8 @@ import store from "./Store/store.js";
 
 createRoot(document.getElementById("root")).render(
     <Provider store={store}>
-        <StrictMode>
+    
             <Router />
-        </StrictMode>
+        
     </Provider>
 );
