@@ -31,6 +31,8 @@ import {
     UserPasswordReset,
     UserAccountVerify,
 } from "../pages/index";
+import { useGetUserQuery } from "../Store/Auth/Auth-Api";
+import { setUser } from "../Store/Auth";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -43,13 +45,16 @@ function Router() {
     );
     const dispatch = useDispatch()
 
+    const {data,isLoading,isSuccess} = useGetUserQuery()
+    console.log(data)
     useEffect(() => {
-      
-    }, [dispatch])
+      if (user === null && data) {
+        console.log('inside')
+        dispatch(setUser(data))
+      }
+    }, [data,user])
 
-
-
-
+    if (loading && user?.isAuthenticated === true) return <div>Loading...</div>;
     
     const router = createBrowserRouter([
         {

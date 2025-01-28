@@ -23,11 +23,14 @@ function UserLogin() {
         try {
             const response = await loginUser(data);
             console.log(response);
-            if (!response.success) {
-                console.log(response.error.data.message);
+            if (!response.data.success) {
+                console.log(response.data.data);
                 throw new Error("Invalid credentials");
             }
+            dispatch(setUser(response.data.data));
             console.log(response);
+            alert("Login successful!");
+            navigate("/");
         } catch (error) {
             console.log(error);
         }

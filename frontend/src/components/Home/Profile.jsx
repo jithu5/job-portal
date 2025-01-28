@@ -3,10 +3,13 @@ import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ProfileImages from "../common/ProfileImages";
 import ImageEditDrawer from "../common/ImageEditdDawer";
+import { useSelector } from "react-redux";
 
 const Profile = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
         const [images, setImages] = useState({ profile: null, cover: null });
+
+        const { user } = useSelector((state) => state.Auth);
         
         const handleSubmit = (e) => {
             e.preventDefault();
@@ -15,25 +18,6 @@ const Profile = () => {
             const formData = new FormData();
             formData.append("profileImage", images.profile);
             formData.append("coverImage", images.cover);
-    
-            // Log file details for debugging
-            if (images.profile) {
-                console.log("Profile Image:");
-                console.log("Name:", images.profile.name);
-                console.log("Type:", images.profile.type);
-                console.log("Size:", images.profile.size, "bytes");
-            } else {
-                console.error("Profile image is not selected.");
-            }
-    
-            if (images.cover) {
-                console.log("Cover Image:");
-                console.log("Name:", images.cover.name);
-                console.log("Type:", images.cover.type);
-                console.log("Size:", images.cover.size, "bytes");
-            } else {
-                console.error("Cover image is not selected.");
-            }
     
             // Debug FormData entries
             for (const pair of formData.entries()) {
@@ -64,17 +48,15 @@ const Profile = () => {
             </div>
             <div className="w-[90%] mx-auto flex flex-col gap-4">
                 <h1 className="text-xl md:text-3xl font-bold">
-                    Monkey D Luffy
+                    {user.username}
                 </h1>
                 <p className="text-md md:texxt-lg font-medium">
                     Software Engineer
                 </p>
-                <p className="text-md md:texxt-lg font-medium">
-                    luffy@sunny.com
-                </p>
-                <p className="text-md md:texxt-lg font-medium">6955217854</p>
+                <p className="text-md md:texxt-lg font-medium">{user.email}</p>
+                <p className="text-md md:texxt-lg font-medium">{user.phone}</p>
                 <p className="text-md md:text-lg font-normal">
-                    Foosha Village, Goa kingdom, East Blue
+                    {user.address}
                 </p>
                 <div className="w-[90%] mx-auto flex items-center justify-start mt-10">
                     <Link

@@ -14,7 +14,7 @@ const UserApi = createApi({
     endpoints: (builder) => ({
         getUser: builder.query({
             query: () => ({
-                url: "",
+                url: "user",
             }),
             transformResponse: (response) => response.data,
             providesTags:['User']
@@ -34,7 +34,7 @@ const UserApi = createApi({
                 method: "POST",
                 body: user,
             }),
-            transformResponse: (response) => response.data,
+            transformResponse: (response) => response,
             invalidatesTags: ['Job','User']
         }),
     }),

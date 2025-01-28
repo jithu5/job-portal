@@ -123,6 +123,8 @@ const UserLogin = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
+        const users = await usermodel.find({})
+        console.log(users);
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
