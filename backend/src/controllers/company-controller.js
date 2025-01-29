@@ -340,7 +340,7 @@ const uploadProfileAndCover = asyncHandler(async(req, res) => {
         }
         await company.save({ validateBeforeSave: false });
        
-        return res.json(new ApiResponse(200,company,"profile pic updated"));
+        return res.json(new ApiResponse(200,company,"profile pic uploaded successfully"));
     } catch (error) {
         if (profilepicpath && fs.existsSync(profilepicpath)) {
             fs.unlinkSync(profilepicpath); // delete the file after upload
@@ -364,15 +364,8 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
     try {
         profilepicpath = req.files?.profileImage?.[0]?.path;
         coverpicpath = req.files?.coverImage?.[0]?.path;
-
-        // Validate file existence
-        if (!profilepicpath || !coverpicpath) {
-          return res.status(400).json({
-            message: "Both profile picture and cover picture are empty",
-          });
-        }
         
-        //user
+        //company
         const company = await companymodel.findById(companyId);
         if (!company) {
             throw new ApiError(404, "User not found");
@@ -382,33 +375,32 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
         const existingprofileImage = company.profileImage;
         const existingcoverImage = company.coverImage;
 
-        //deleting old profile and cover images
-        if (existingprofileImage) {
-            const publicId = extractPublicId(existingprofileImage);
-            const response = await cloudinary.deleteImageByPublicId(publicId);
-            if (!response) {
-                throw new ApiError(500, "Failed to delete profile image");
+        //deleting old and updating profile and cover images
+        if (profilepicpath) {
+            if (existingprofileImage) {
+                const publicId = extractPublicId(existingprofileImage);
+                const response = await cloudinary.deleteImageByPublicId(publicId);
+                if (!response) {
+                    throw new ApiError(500, "Failed to delete profile image");
+                }
             }
-        }
-        if (existingcoverImage) {
-            const publicId = extractPublicId(existingcoverImage);
-            const response = await cloudinary.deleteImageByPublicId(publicId);
-            if (!response) {
-                throw new ApiError(500, "Failed to delete cover image");
-            }
+                const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+                company.profileImage = profileresponse.secure_url;
+                
         }
 
-        // Validate file existence and upload profile and cover images
-        if (profilepicpath) {
-            const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
-            company.profileImage = profileresponse.secure_url;
-            
-        }
         if (coverpicpath) {
-            const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
-            company.coverImage = coverresponse.secure_url;
+            if (existingcoverImage) {
+                const publicId = extractPublicId(existingcoverImage);
+                const response = await cloudinary.deleteImageByPublicId(publicId);
+                if (!response) {
+                    throw new ApiError(500, "Failed to delete cover image");
+                }
+            }
+                const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+                company.coverImage = coverresponse.secure_url;
         }
-        company.save();
+        await company.save();
 
         return res.json(new ApiResponse(200, company, "Profile and cover pic updated"));
     } catch (error) {
