@@ -13,7 +13,7 @@ async function uploadImageToCloudinary(filePath) {
         if (!filePath) {
             return null;
         }
-        const response = cloudinary.uploader.upload(filePath,{
+        const response = await cloudinary.uploader.upload(filePath,{
             folder: 'job-portal',
             allowed_formats: ['jpg', 'png', 'jpeg']
         })

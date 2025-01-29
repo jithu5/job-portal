@@ -4,9 +4,11 @@ const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
 const crypto = require("crypto");
+const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
 const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
+const cloudinary = require("../utils/cloudinary.js");
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
