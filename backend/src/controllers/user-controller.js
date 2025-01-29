@@ -9,6 +9,7 @@ const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const Tesseract = require("tesseract.js");
 const cloudinary = require("../utils/cloudinary.js");
+const extractPublicId = require("../utils/ExtractPublicId.js");
 
 //homepage
 const Homepage = asyncHandler(async (req, res) => {});
@@ -315,7 +316,15 @@ const UpdatePassword = asyncHandler(async (req, res) => {
         }
         user.password = newPassword;
         await user.save();
-        return res.json(
+        const token = await user.generateToken();
+
+        const cookieOptions = {
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        };
+        res.cookie("userToken", token, cookieOptions).json(
             new ApiResponse(200, user, "Password updated successfully")
         );
     } catch (error) {
@@ -323,7 +332,7 @@ const UpdatePassword = asyncHandler(async (req, res) => {
     }
 });
 
-//upload profile picture(pending... cloudinary)
+//upload profile and cover image 
 const uploadProfileAndCover = asyncHandler(async(req, res) => {
     let profilepicpath = null;
     let coverImage = null;
@@ -337,15 +346,14 @@ const uploadProfileAndCover = asyncHandler(async(req, res) => {
         coverImage = req.files?.coverImage?.[0]?.path;
   
         // Validate file existence
-        if (!profilepicpath || !coverImage) {
-          return res.status(400).json({
-            message: "Both profile picture and cover picture are required",
-          });
+        if (profilepicpath) {
+            const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+
         }
         console.log("profilepic",profilepicpath,coverImage);
 
 
-        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+        
         const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
         console.log("profilepic",profileresponse,coverresponse);
         const user = await usermodel.findByIdAndUpdate(userId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
@@ -359,9 +367,72 @@ const uploadProfileAndCover = asyncHandler(async(req, res) => {
         if(coverImage && fs.existsSync(coverImage)){
             fs.unlinkSync(coverImage); // delete the file after upload
         }
-        console.log("some error occurred while uploading profile",error);
+        throw new ApiError(error.statusCode, error.message);
     }
 });
+
+//update profile and cover image
+const updateProfileAndCover = asyncHandler(async (req, res) => {
+    let profilepicpath = null;
+    let coverpicpath = null;
+    const userId = req.user;
+    console.log("user",userId)
+    if (!req.files) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    try {
+        profilepicpath = req.files?.profileImage?.[0]?.path;
+        coverpicpath = req.files?.coverImage?.[0]?.path;
+
+        // Validate file existence
+        if (!profilepicpath || !coverpicpath) {
+          return res.status(400).json({
+            message: "Both profile picture and cover picture are empty",
+          });
+        }
+        
+        //user
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        //extracting profile image
+        const existingprofileImage = user.profileImage;
+        const existingcoverImage = user.coverImage;
+        //deleting old profile and cover images
+        if (existingprofileImage) {
+            const publicId = extractPublicId(existingprofileImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if (!response) {
+                throw new ApiError(500, "Failed to delete profile image");
+            }
+        }
+        if (existingcoverImage) {
+            const publicId = extractPublicId(existingcoverImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if (!response) {
+                throw new ApiError(500, "Failed to delete cover image");
+            }
+        }
+        //upload new profile and cover images
+        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+        const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+        //update user with new profile and cover images
+        user.profileImage = profileresponse.secure_url;
+        user.coverImage = coverresponse.secure_url;
+        await user.save();
+        return res.json(new ApiResponse(200, user, "Profile pic updated"));
+    } catch (error) {
+        if (profilepicpath && fs.existsSync(profilepicpath)) {
+            fs.unlinkSync(profilepicpath); // delete the file after upload
+        }   
+        if (coverpicpath && fs.existsSync(coverpicpath)) {
+            fs.unlinkSync(coverpicpath); // delete the file after upload
+        }
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 
 
 
@@ -375,5 +446,6 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     uploadProfileAndCover,
+    updateProfileAndCover,
     Homepage,
 };

@@ -248,8 +248,20 @@ const UpdatePassword = asyncHandler(async (req, res) => {
         const company = await companymodel.findOne({ email: email });
         company.password = newPassword;
         await company.save();
-        return res.json(
-            new ApiResponse(200, company, "Password updated successfully")
+
+        const token = await company.generateToken();
+        const cookieOptions = {
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        };
+        res.cookie("companyToken", token, cookieOptions).json(
+            new ApiResponse(
+                200,
+                company,
+                "Password updated successfully and logged in successfully"
+            )
         );
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -296,6 +308,48 @@ const PostJob = asyncHandler(async (req, res) => {
     }
 });
 
+//upload profile and cover image 
+const uploadProfileAndCover = asyncHandler(async(req, res) => {
+    let profilepicpath = null;
+    let coverImage = null;
+    const companyId = req.company;
+    console.log("user",companyId)
+    if (!req.files) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    try {
+        profilepicpath = req.files?.profileImage?.[0]?.path;
+        coverImage = req.files?.coverImage?.[0]?.path;
+  
+        // Validate file existence
+        if (!profilepicpath || !coverImage) {
+          return res.status(400).json({
+            message: "Both profile picture and cover picture are empty",
+          });
+        }
+        console.log("profilepic",profilepicpath,coverImage);
+
+
+        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+        const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
+        console.log("profilepic",profileresponse,coverresponse);
+        const company = await companymodel.findByIdAndUpdate(companyId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
+        console.log("company",company);
+        
+        return res.json(new ApiResponse(200,company,"profile pic updated"));
+    } catch (error) {
+        if (profilepicpath && fs.existsSync(profilepicpath)) {
+            fs.unlinkSync(profilepicpath); // delete the file after upload
+        }
+        if(coverImage && fs.existsSync(coverImage)){
+            fs.unlinkSync(coverImage); // delete the file after upload
+        }
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+
+
 module.exports = {
     CRegister,
     GetCompany,
@@ -306,4 +360,6 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     PostJob,
+    uploadProfileAndCover,
+
 };
