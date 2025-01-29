@@ -8,7 +8,7 @@ import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 
 import { TiThMenu } from "react-icons/ti";
-import { Avatar, Box, IconButton, Tooltip } from "@mui/material";
+import { Avatar, IconButton, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 
 function AdminNavBar({ setIsOpen }) {

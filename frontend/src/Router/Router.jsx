@@ -33,7 +33,7 @@ import {
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
-import { Skeleton, Stack } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import { useGetAdminQuery } from "../Store/AdminAuth/AdminAuth-Api";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
@@ -60,16 +60,9 @@ function Router() {
 
     if (isLoading || adminIsLoading)
         return (
-            <Stack spacing={1}>
-                {/* For variant="text", adjust the height via font-size */}
-                <Skeleton variant="text" sx={{ fontSize: "1rem" }} />
-                <Skeleton
-                    variant="rectangular"
-                    width={"100vw"}
-                    height={"45vh"}
-                />
-                <Skeleton variant="rounded" width={"100vw"} height={"45vh"} />
-            </Stack>
+            <Box sx={{ display: "flex", width:'100vw', height:"100vh",justifyContent:"center",alignItems:"center" }}>
+                <CircularProgress className="w-12 h-12 md:w-48 md:h-48" />
+            </Box>
         );
 
     const router = createBrowserRouter([

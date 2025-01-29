@@ -38,8 +38,8 @@ function UserLogin() {
     };
 
     return (
-        <div className="relative min-h-screen flex items-center justify-center">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <div className="min-h-screen flex items-center justify-center">
+            <div className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-md pb-16 px-7">
                 <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Email Input */}
@@ -111,26 +111,26 @@ function UserLogin() {
                         Login
                     </button>
                 </form>
-            </div>
-            <div className="absolute bottom-10 w-full sm:w-[90vw] md:w-[70vw] mx-auto flex items-center justify-between">
-                <p className="text-gray-600 text-sm sm:text-md md:text-lg">
-                    Don't have an account?{" "}
-                    <Link
-                        to={"/api/user/register"}
-                        className="text-pink-600 underline cursor-pointer"
-                    >
-                        Sign up
-                    </Link>
-                </p>
-                <p className="text-gray-600 text-sm sm:text-md md:text-lg">
-                    Forgot Password?{" "}
-                    <Link
-                        to={"/api/user/reset-password"}
-                        className="text-pink-600 underline cursor-pointer"
-                    >
-                        Reset Password
-                    </Link>
-                </p>
+                <div className="absolute bottom-2 w-full mx-auto flex flex-col gap-2 items-center justify-center overflow-hidden left-0">
+                    <p className="text-gray-600 text-sm">
+                        Don't have an account?{" "}
+                        <Link
+                            to={"/api/user/register"}
+                            className="text-pink-600 underline cursor-pointer"
+                        >
+                            Sign up
+                        </Link>
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                        Forgot Password?{" "}
+                        <Link
+                            to={"/api/user/reset-password"}
+                            className="text-pink-600 underline cursor-pointer"
+                        >
+                            Reset Password
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );
