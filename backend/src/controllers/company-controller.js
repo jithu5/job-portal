@@ -210,11 +210,13 @@ const SendResetOtp = asyncHandler(async (req, res) => {
 });
 
 //verify reset otp
-const VerifyResetOtp = asyncHandler(async (req, res, next) => {
+const VerifyResetOtp = asyncHandler(async (req, res) => {
     const { email, otp } = req.body;
     if (!email || !otp) {
         throw new ApiError(400, "Email and OTP are required");
     }
+    console.log(email);
+    console.log(otp);
     try {
         const company = await companymodel.findOne({ email: email });
         if (!company) {
@@ -240,9 +242,7 @@ const VerifyResetOtp = asyncHandler(async (req, res, next) => {
 //update password
 const UpdatePassword = asyncHandler(async (req, res) => {
     const { email, newPassword } = req.body;
-    if (!req.user) {
-        throw new ApiError(401, "Not authorized");
-    }
+  
     if (!newPassword) {
         throw new ApiError(400, "New password is required");
     }
