@@ -335,7 +335,7 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 //upload profile and cover image 
 const uploadProfileAndCover = asyncHandler(async(req, res) => {
     let profilepicpath = null;
-    let coverImage = null;
+    let coverpicpath = null;
     const userId = req.user;
     console.log("user",userId)
     if (!req.files) {
@@ -343,21 +343,24 @@ const uploadProfileAndCover = asyncHandler(async(req, res) => {
     }
     try {
         profilepicpath = req.files?.profileImage?.[0]?.path;
-        coverImage = req.files?.coverImage?.[0]?.path;
-  
-        // Validate file existence
+        coverpicpath = req.files?.coverImage?.[0]?.path;
+        
+         //user
+         const user = await usermodel.findById(userId);
+         if (!user) {
+             throw new ApiError(404, "User not found");
+         }
+
+        // Validate file existence and upload profile and cover images
         if (profilepicpath) {
             const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
-
+            user.profileImage = profileresponse.secure_url;
         }
-        console.log("profilepic",profilepicpath,coverImage);
-
-
-        
-        const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
-        console.log("profilepic",profileresponse,coverresponse);
-        const user = await usermodel.findByIdAndUpdate(userId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
-        console.log("user",user);
+        if (coverpicpath) {
+            const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+            user.coverImage = coverresponse.secure_url;
+        }
+        await user.save({ validateBeforeSave: false });
         
         return res.json(new ApiResponse(200,user,"profile pic updated"));
     } catch (error) {
@@ -396,9 +399,11 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
         if (!user) {
             throw new ApiError(404, "User not found");
         }
+
         //extracting profile image
         const existingprofileImage = user.profileImage;
         const existingcoverImage = user.coverImage;
+
         //deleting old profile and cover images
         if (existingprofileImage) {
             const publicId = extractPublicId(existingprofileImage);
@@ -414,14 +419,19 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
                 throw new ApiError(500, "Failed to delete cover image");
             }
         }
-        //upload new profile and cover images
-        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
-        const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
-        //update user with new profile and cover images
-        user.profileImage = profileresponse.secure_url;
-        user.coverImage = coverresponse.secure_url;
+
+        // Validate file existence and upload profile and cover images
+        if (profilepicpath) {
+            const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+            user.profileImage = profileresponse.secure_url;
+        }
+        if (coverpicpath) {
+            const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+            user.coverImage = coverresponse.secure_url;
+        }
         await user.save();
-        return res.json(new ApiResponse(200, user, "Profile pic updated"));
+
+        return res.json(new ApiResponse(200, user, "Profile and cover pic updated"));
     } catch (error) {
         if (profilepicpath && fs.existsSync(profilepicpath)) {
             fs.unlinkSync(profilepicpath); // delete the file after upload

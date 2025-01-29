@@ -9,6 +9,8 @@ const sendMail = require("../utils/sendEmail.js");
 const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const cloudinary = require("../utils/cloudinary.js");
+const extractPublicId = require("../utils/ExtractPublicId.js");
+
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
@@ -311,38 +313,110 @@ const PostJob = asyncHandler(async (req, res) => {
 //upload profile and cover image 
 const uploadProfileAndCover = asyncHandler(async(req, res) => {
     let profilepicpath = null;
-    let coverImage = null;
+    let coverpicpath = null;
     const companyId = req.company;
-    console.log("user",companyId)
+    console.log("company",companyId)
     if (!req.files) {
         throw new ApiError(400, "No file uploaded");
     }
     try {
         profilepicpath = req.files?.profileImage?.[0]?.path;
-        coverImage = req.files?.coverImage?.[0]?.path;
-  
-        // Validate file existence
-        if (!profilepicpath || !coverImage) {
-          return res.status(400).json({
-            message: "Both profile picture and cover picture are empty",
-          });
+        coverpicpath = req.files?.coverImage?.[0]?.path;
+
+        //company
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
         }
-        console.log("profilepic",profilepicpath,coverImage);
 
-
-        const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
-        const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
-        console.log("profilepic",profileresponse,coverresponse);
-        const company = await companymodel.findByIdAndUpdate(companyId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
-        console.log("company",company);
-        
+         // Validate file existence and upload profile and cover images
+        if (profilepicpath) {
+            const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+            company.profileImage = profileresponse.secure_url;
+        }
+        if (coverpicpath) {
+            const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+            company.coverImage = coverresponse.secure_url;
+        }
+        await company.save({ validateBeforeSave: false });
+       
         return res.json(new ApiResponse(200,company,"profile pic updated"));
     } catch (error) {
         if (profilepicpath && fs.existsSync(profilepicpath)) {
             fs.unlinkSync(profilepicpath); // delete the file after upload
         }
-        if(coverImage && fs.existsSync(coverImage)){
-            fs.unlinkSync(coverImage); // delete the file after upload
+        if(coverpicpath && fs.existsSync(coverpicpath)){
+            fs.unlinkSync(coverpicpath); // delete the file after upload
+        }
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//update profile and cover image
+const updateProfileAndCover = asyncHandler(async (req, res) => {
+    let profilepicpath = null;
+    let coverpicpath = null;
+    const companyId = req.company;
+    console.log("company",companyId)
+    if (!req.files) {
+        throw new ApiError(400, "No file uploaded");
+    }
+    try {
+        profilepicpath = req.files?.profileImage?.[0]?.path;
+        coverpicpath = req.files?.coverImage?.[0]?.path;
+
+        // Validate file existence
+        if (!profilepicpath || !coverpicpath) {
+          return res.status(400).json({
+            message: "Both profile picture and cover picture are empty",
+          });
+        }
+        
+        //user
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "User not found");
+        }
+        
+        //extracting profile image
+        const existingprofileImage = company.profileImage;
+        const existingcoverImage = company.coverImage;
+
+        //deleting old profile and cover images
+        if (existingprofileImage) {
+            const publicId = extractPublicId(existingprofileImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if (!response) {
+                throw new ApiError(500, "Failed to delete profile image");
+            }
+        }
+        if (existingcoverImage) {
+            const publicId = extractPublicId(existingcoverImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if (!response) {
+                throw new ApiError(500, "Failed to delete cover image");
+            }
+        }
+
+        // Validate file existence and upload profile and cover images
+        if (profilepicpath) {
+            const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
+            company.profileImage = profileresponse.secure_url;
+            
+        }
+        if (coverpicpath) {
+            const coverresponse = await cloudinary.uploadImageToCloudinary(coverpicpath);
+            company.coverImage = coverresponse.secure_url;
+        }
+        company.save();
+
+        return res.json(new ApiResponse(200, company, "Profile and cover pic updated"));
+    } catch (error) {
+        if (profilepicpath && fs.existsSync(profilepicpath)) {
+            fs.unlinkSync(profilepicpath); // delete the file after upload
+        }   
+        if (coverpicpath && fs.existsSync(coverpicpath)) {
+            fs.unlinkSync(coverpicpath); // delete the file after upload
         }
         throw new ApiError(error.statusCode, error.message);
     }
@@ -361,5 +435,5 @@ module.exports = {
     UpdatePassword,
     PostJob,
     uploadProfileAndCover,
-
+    updateProfileAndCover,
 };
