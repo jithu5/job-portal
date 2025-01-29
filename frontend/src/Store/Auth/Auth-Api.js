@@ -17,7 +17,7 @@ const UserApi = createApi({
                 url: "user",
             }),
             transformResponse: (response) => response.data,
-            providesTags: ["User"],
+            providesTags: ["User","Job"],
         }),
         registerUser: builder.mutation({
             query: (user) => ({
@@ -60,7 +60,6 @@ const UserApi = createApi({
                 url: "sendresetpassword",
                 method: "POST",
                 body: data,
-                
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["User"],
@@ -79,7 +78,6 @@ const UserApi = createApi({
                 url: "updatepassword",
                 method: "POST",
                 body: data,
-                
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["User"],
@@ -87,9 +85,9 @@ const UserApi = createApi({
         logoutUser: builder.mutation({
             query: () => ({
                 url: "logout",
+                method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["User", "Job"],
         }),
     }),
 });
@@ -103,6 +101,7 @@ export const {
     useResetPasswordOtpMutation,
     useVerifyResetOtpMutation,
     useUpdatePasswordMutation,
+    useLogoutUserMutation,
 } = UserApi;
 
 export default UserApi;

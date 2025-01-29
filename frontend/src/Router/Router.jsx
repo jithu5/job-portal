@@ -48,7 +48,9 @@ function Router() {
     const { data, isLoading } = useGetUserQuery();
     const { data: adminData, isLoading: adminIsLoading } = useGetAdminQuery();
     useEffect(() => {
-        if (user === null && data) {
+        console.log(user)
+        if (!user && data) {
+            console.log(data)
             console.log("inside");
             dispatch(setUser(data));
         }

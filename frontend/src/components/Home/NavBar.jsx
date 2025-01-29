@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { MenuButton, NavigationLinks } from "../index";
 
@@ -7,29 +7,35 @@ import { HiOutlineUser } from "react-icons/hi";
 import avatar from "../../assets/man.png";
 import { FaRegHeart } from "react-icons/fa";
 import { MdOutlineWorkHistory } from "react-icons/md";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
+import { useLogoutUserMutation } from "../../Store/Auth/Auth-Api";
+import { clearUserData } from "../../Store/Auth/index";
 
 function NavBar() {
-
     const { user: currentUser } = useSelector((state) => state.Auth);
 
     const [isActive, setIsActive] = useState(false);
 
     const [screenSize, setScreenSize] = useState(window.innerWidth);
     const [anchorEl, setAnchorEl] = useState(null);
-        const open = Boolean(anchorEl);
-        const handleClick = (event) => {
-            setAnchorEl(event.currentTarget);
-        };
-        const handleClose = () => {
-            setAnchorEl(null);
-        };
+
+    const [logoutUser] = useLogoutUserMutation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+
+    const open = Boolean(anchorEl);
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
 
     useEffect(() => {
         const handleResize = () => {
@@ -41,6 +47,23 @@ function NavBar() {
             window.removeEventListener("resize", handleResize);
         };
     }, []);
+
+    const handleLogout = async () => {
+        // Logout logic here
+        try {
+            const response = await logoutUser().unwrap();
+            console.log(response);
+            if (!response.success) {
+                console.log(response.message);
+            }
+            console.log(response);
+            dispatch(clearUserData());
+            navigate("/api/user/login");
+            console.log('navigated successfully')
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     const getResponsiveSize = () => {
         if (screenSize < 768) {
@@ -216,7 +239,12 @@ function NavBar() {
                                     </MenuItem>
                                     <Divider />
 
-                                    <MenuItem onClick={handleClose}>
+                                    <MenuItem
+                                        onClick={() => {
+                                            handleClose();
+                                            handleLogout();
+                                        }}
+                                    >
                                         <ListItemIcon>
                                             <Logout fontSize="small" />
                                         </ListItemIcon>

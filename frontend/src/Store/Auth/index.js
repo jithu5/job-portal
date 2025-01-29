@@ -25,19 +25,27 @@ const URL = import.meta.env.VITE_SERVER_URL;
 
 
 const AuthSlice = createSlice({
-    name: 'auth',
+    name: "auth",
     initialState: {
         isAuthenticated: false,
         user: null,
         error: null,
         loading: true,
     },
-    reducers:{
+    reducers: {
         setUser: (state, action) => {
-            console.log(action.payload)
+            console.log(action.payload);
             state.loading = false;
             state.user = action.payload;
-            state.isAuthenticated = action.payload.isAccountVerified;
+            state.isAuthenticated = action.payload?.isAccountVerified
+                ? true
+                : false;
+        },
+        clearUserData: (state) => {
+            state.user = null;
+            state.isAuthenticated = false;
+            state.error = null;
+            state.loading = false;
         },
     },
     // extraReducers:(builder)=>{
@@ -62,9 +70,8 @@ const AuthSlice = createSlice({
     //         state.user = null;
     //     })
     // }
-    
-})
+});
 
-export const { setUser } = AuthSlice.actions;
+export const { setUser,clearUserData } = AuthSlice.actions;
 
 export default AuthSlice.reducer;
