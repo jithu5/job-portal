@@ -121,8 +121,8 @@ const UserLogin = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
-        const users = await usermodel.find({});
-        console.log(users);
+        // const users = await usermodel.find({});
+        // console.log(users);
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
@@ -435,8 +435,32 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
     }
 });
 
+//logout
 const Logout = asyncHandler(async (req, res) => {
     res.clearCookie("userToken").json(new ApiResponse(200, null, "User logged out"));
+});
+
+//edit profile
+const EditProfile = asyncHandler(async (req, res) => {
+    const userId = req.user;
+    const { username, name, address, phone, dob } = req.body;
+
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        user.username = username || user.username;
+        user.name = name || user.name;
+        user.address = address || user.address;
+        user.phone = phone || user.phone;
+        user.dob = dob || user.dob;
+        await user.save();
+        return res.json(new ApiResponse(200, user, "Profile updated successfully"));
+
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
 });
 
 
@@ -453,4 +477,5 @@ module.exports = {
     updateProfileAndCover,
     Homepage,
     Logout,
+    EditProfile,
 };

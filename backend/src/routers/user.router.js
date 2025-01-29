@@ -3,7 +3,7 @@ const UserRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,uploadProfileAndCover,
-    updateProfileAndCover,Homepage,Logout } = require('../controllers/user-controller.js');
+    updateProfileAndCover,Homepage,Logout,EditProfile } = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
 
@@ -25,10 +25,28 @@ UserRouter.post('/verifyresetotp',VerifyResetOtp);
 
 UserRouter.post('/updatepassword',UpdatePassword);
 
-UserRouter.post('/upload-profile-cover',upload.fields([{name:'profileImage',maxCount:1},{name:'coverImage',maxCount:1}]),protectUserMiddleware, uploadProfileAndCover);
+UserRouter.post(
+    '/upload-profile-cover',
+    upload.fields([
+        {name:'profileImage',maxCount:1},
+        {name:'coverImage',maxCount:1}
+    ]),
+    protectUserMiddleware,
+    uploadProfileAndCover
+);
 
-UserRouter.post('/update-profile-cover',upload.fields([{name:'profileImage',maxCount:1},{name:'coverImage',maxCount:1}]),protectUserMiddleware, updateProfileAndCover);
+UserRouter.post(
+    '/update-profile-cover',
+    upload.fields([
+        {name:'profileImage',maxCount:1},
+        {name:'coverImage',maxCount:1}
+    ]),
+    protectUserMiddleware,
+    updateProfileAndCover
+);
 
 UserRouter.post('/logout',protectUserMiddleware,Logout);
+
+UserRouter.post('/edit-profile',protectUserMiddleware,EditProfile);
 
 module.exports = UserRouter;
