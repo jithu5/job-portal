@@ -435,7 +435,9 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
     }
 });
 
-
+const Logout = asyncHandler(async (req, res) => {
+    res.clearCookie("userToken").json(new ApiResponse(200, null, "User logged out"));
+});
 
 
 module.exports = {
@@ -450,4 +452,5 @@ module.exports = {
     uploadProfileAndCover,
     updateProfileAndCover,
     Homepage,
+    Logout,
 };

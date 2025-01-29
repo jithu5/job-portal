@@ -414,6 +414,13 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
     }
 });
 
+//logout
+const Logout = asyncHandler(async (req, res) => {
+    res.clearCookie("companyToken").json(
+        new ApiResponse(200, null, "Company logged out successfully")
+    );
+});
+
 
 
 module.exports = {
@@ -428,4 +435,5 @@ module.exports = {
     PostJob,
     uploadProfileAndCover,
     updateProfileAndCover,
+    Logout,
 };
