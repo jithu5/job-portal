@@ -55,6 +55,35 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job", "User"],
         }),
+        resetPasswordOtp: builder.mutation({
+            query: (data) => ({
+                url: "sendresetpassword",
+                method: "POST",
+                body: data,
+                
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
+        verifyResetOtp: builder.mutation({
+            query: (data) => ({
+                url: "verifyresetotp",
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
+        updatePassword: builder.mutation({
+            query: (data) => ({
+                url: "updatepassword",
+                method: "POST",
+                body: data,
+                
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
     }),
 });
 
@@ -63,7 +92,10 @@ export const {
     useRegisterUserMutation,
     useLoginUserMutation,
     useSendOtpMutation,
-    useVerifyEmailMutation
+    useVerifyEmailMutation,
+    useResetPasswordOtpMutation,
+    useVerifyResetOtpMutation,
+    useUpdatePasswordMutation,
 } = UserApi;
 
 export default UserApi;

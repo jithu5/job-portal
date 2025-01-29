@@ -77,10 +77,8 @@ const AdminApi = createApi({
             query: (data) => ({
                 url: "verifyresetotp",
                 method: "POST",
-                body: JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                body: data,
+                
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["admin"],

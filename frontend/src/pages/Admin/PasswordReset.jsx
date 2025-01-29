@@ -8,9 +8,11 @@ import {
     useVerifyResetOtpMutation,
     useUpdatePasswordMutation,
 } from "../../Store/AdminAuth/AdminAuth-Api";
+import { setUser } from "../../Store/Auth";
 
 function AdminPasswordReset() {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
+    const [currentEmail, setCurrentEmail] = useState('')
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [resetPasswordOtp] = useResetPasswordOtpMutation();
@@ -42,34 +44,68 @@ function AdminPasswordReset() {
         }
         console.log(data.email)
         try {
-            // const response = await resetPasswordOtp(data)
+            const response = await resetPasswordOtp(data)
+            console.log(response);
+            if (!response.data.success) {
+                throw new Error(response.data.message);
+            }
+            console.log(response.data.message);
+            setCurrentEmail(data.email)
+            setInputStatus("otp");
+            resetField("email");
+
         } catch (error) {
+            console.log(error.message);
             
         }
-        setInputStatus("otp");
-        resetField("email");
+     
     };
 
-    const handleOtpSubmit = (data) => {
+    const handleOtpSubmit = async (data) => {
         if (data.otp.length < 6) {
             setError("otp", {
                 message: "Invalid OTP. Please enter a 6-digit OTP.",
             });
             return;
         }
-        setInputStatus("password");
-        resetField("otp");
+        try {
+            console.log(currentEmail);
+            console.log(data.otp)
+            const response = await verifyResetOtp({email:currentEmail , otp: data.otp});
+            console.log(response);
+            if (!response.data?.success) {
+                throw new Error(response.data);
+            }
+            console.log(response.data.message);
+            setInputStatus("password");
+            resetField("otp");
+        } catch (error) {
+            console.log(error);
+            
+        }
     };
 
-    const handlePasswordSubmit = (data) => {
+    const handlePasswordSubmit = async (data) => {
         if (data.password.length < 8) {
             setError("password", {
                 message: "Password must be at least 8 characters long.",
             });
             return;
         }
-        resetField("password");
-        navigate("/admin/dashboard");
+        try {
+            const response = await updatePassword({email:currentEmail, newPassword:data.password});
+            console.log(response);
+            if (!response.data?.success) {
+                throw new Error(response.data);
+            }
+            console.log(response.data.message);
+            alert(response.data.message);
+            dispatch(setUser(response.data.data))
+            navigate("/admin/dashboard");
+            resetField("password");
+        } catch (error) {
+            console.log(error.message);
+        }
     };
 
     return (
