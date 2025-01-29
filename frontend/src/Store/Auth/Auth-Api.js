@@ -63,7 +63,7 @@ const UserApi = createApi({
                 
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["User"],
         }),
         verifyResetOtp: builder.mutation({
             query: (data) => ({
@@ -72,7 +72,7 @@ const UserApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["User"],
         }),
         updatePassword: builder.mutation({
             query: (data) => ({
@@ -82,7 +82,14 @@ const UserApi = createApi({
                 
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["User"],
+        }),
+        logoutUser: builder.mutation({
+            query: () => ({
+                url: "logout",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User", "Job"],
         }),
     }),
 });
