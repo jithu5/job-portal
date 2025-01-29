@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const asyncHandler = require("../utils/Asynchandler.js");
+const ApiError = require("../utils/ApiError.js");
 
 const protectCompanyMiddleware = asyncHandler(async (req, res, next) => {
     let token;

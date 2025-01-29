@@ -324,17 +324,17 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 });
 
 //upload profile picture(pending... cloudinary)
-const uploadProfilePic = asyncHandler(async(req, res) => {
+const uploadProfileAndCover = asyncHandler(async(req, res) => {
     let profilepicpath = null;
     let coverImage = null;
-    // const userId = req.user;
-    console.log("file",req.files)
+    const userId = req.user;
+    console.log("user",userId)
     if (!req.files) {
         throw new ApiError(400, "No file uploaded");
     }
     try {
-        profilepicpath = req.files?.profilepic?.[0]?.path;
-        coverImage = req.files?.coverpic?.[0]?.path;
+        profilepicpath = req.files?.profileImage?.[0]?.path;
+        coverImage = req.files?.coverImage?.[0]?.path;
   
         // Validate file existence
         if (!profilepicpath || !coverImage) {
@@ -347,41 +347,23 @@ const uploadProfilePic = asyncHandler(async(req, res) => {
 
         const profileresponse = await cloudinary.uploadImageToCloudinary(profilepicpath);
         const coverresponse = await cloudinary.uploadImageToCloudinary(coverImage);
-        
+        console.log("profilepic",profileresponse,coverresponse);
         const user = await usermodel.findByIdAndUpdate(userId, { profileImage: profileresponse.secure_url , coverImage: coverresponse.secure_url }, { new: true });
-        return res.json(ApiResponse(200,user,"profile pic updated"));
+        console.log("user",user);
+        
+        return res.json(new ApiResponse(200,user,"profile pic updated"));
     } catch (error) {
-        if (fs.existsSync(profilepicpath)) {
+        if (profilepicpath && fs.existsSync(profilepicpath)) {
             fs.unlinkSync(profilepicpath); // delete the file after upload
         }
-        if(fs.existsSync(coverImage)){
+        if(coverImage && fs.existsSync(coverImage)){
             fs.unlinkSync(coverImage); // delete the file after upload
         }
-        console.log("some error occurred while uploading profile");
+        console.log("some error occurred while uploading profile",error);
     }
 });
 
-const uploadCoverPic = asyncHandler(async (req, res) => {
-    const userId = req.user;
-    if (!req.file) {
-        throw new ApiError(400, "No file uploaded");
-    }
-    try {
-        const coverpicpath = require.file.path;
-        const response = await cloudinary.uploadCoverPic(coverpicpath);
-        const user = await usermodel.findByIdAndUpdate(
-            userId,
-            { coverImage: response.secure_url },
-            { new: true }
-        );
-        return res.json(ApiResponse(200, user, "profile pic updated"));
-    } catch (error) {
-        if (fs.existsSync(coverpicpath)) {
-            fs.unlinkSync(coverpicpath); // delete the file after upload
-        }
-        console.log("some error occurred while uploading profile");
-    }
-});
+
 
 module.exports = {
     UserRegister,
@@ -392,7 +374,6 @@ module.exports = {
     SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
-    uploadProfilePic,
+    uploadProfileAndCover,
     Homepage,
-    uploadCoverPic,
 };
