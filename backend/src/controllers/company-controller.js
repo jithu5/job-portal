@@ -423,7 +423,7 @@ const Logout = asyncHandler(async (req, res) => {
 
 //edit profile
 const EditProfile = asyncHandler(async (req, res) => {
-    const { companyId } = req.body;
+    const companyId = req.company;
     const { address, phone } = req.body;
     if (!companyId) {
         throw new ApiError(400, "Company id is required");
