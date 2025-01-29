@@ -24,6 +24,25 @@ CompanyRouter.post('/updatepassword',UpdatePassword);
 
 CompanyRouter.post('/postjob',protectCompanyMiddleware,PostJob);
 
+CompanyRouter.post(
+    "/upload-profile-cover",
+    upload.fields([
+        { name: "profileImage", maxCount: 1 },
+        { name: "coverImage", maxCount: 1 },
+    ]),
+    protectCompanyMiddleware,
+    uploadProfileAndCover
+);
+
+CompanyRouter.post(
+    "/update-profile-cover",
+    upload.fields([
+        { name: "profileImage", maxCount: 1 },
+        { name: "coverImage", maxCount: 1 },
+    ]),
+    protectCompanyMiddleware,
+    updateProfileAndCover
+);
 
 
 module.exports = CompanyRouter;
