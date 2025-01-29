@@ -1,7 +1,9 @@
 const express = require('express');
 const CompanyRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
-const { CRegister, GetCompany,CLogin,Sendotp,Verifyemail,SendResetOtp,VerifyResetOtp,UpdatePassword,PostJob,uploadProfileAndCover,updateProfileAndCover } = require('../controllers/company-controller.js');
+const { CRegister, GetCompany,CLogin,Sendotp,Verifyemail,
+    SendResetOtp,VerifyResetOtp,UpdatePassword,PostJob,
+    uploadProfileAndCover,updateProfileAndCover,Logout,EditProfile,EditJob,Deletejob } = require('../controllers/company-controller.js');
 const protectCompanyMiddleware = require('../middlewares/companyAuth.middleware.js');
 
 
@@ -44,5 +46,12 @@ CompanyRouter.post(
     updateProfileAndCover
 );
 
+CompanyRouter.post('/logout',protectCompanyMiddleware,Logout);
+
+CompanyRouter.post('/edit-profile',protectCompanyMiddleware,EditProfile);
+
+CompanyRouter.post('/editjob',protectCompanyMiddleware,EditJob);
+
+CompanyRouter.post('/deletejob',protectCompanyMiddleware,Deletejob);
 
 module.exports = CompanyRouter;

@@ -22,7 +22,6 @@ const protectUserMiddleware = asyncHandler(async (req, res, next) => {
     try {
         // Verify the token
         const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-        console.log("secret",process.env.JWT_SECRET);
         
         req.user = decoded.id; // Attach the user to the request object
 
