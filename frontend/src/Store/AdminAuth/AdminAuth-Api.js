@@ -57,7 +57,42 @@ const AdminApi = createApi({
                 url: "verifyemail",
                 method: "POST",
                 body: data,
-               
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
+        resetPasswordOtp: builder.mutation({
+            query: (data) => ({
+                url: "sendresetpassword",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
+        verifyResetOtp: builder.mutation({
+            query: (data) => ({
+                url: "verifyresetotp",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
+        updatePassword: builder.mutation({
+            query: (data) => ({
+                url: "updatepassword",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["admin"],
@@ -71,6 +106,9 @@ export const {
     useLoginAdminMutation,
     useSendOtpMutation,
     useVerifyEmailMutation,
+    useResetPasswordOtpMutation,
+    useVerifyResetOtpMutation,
+    useUpdatePasswordMutation,
 } = AdminApi;
 
 export default AdminApi;

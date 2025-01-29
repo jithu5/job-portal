@@ -2,10 +2,20 @@ import React, { useState } from "react";
 import { PasswordReset } from "../../components/index";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import {
+    useResetPasswordOtpMutation,
+    useVerifyResetOtpMutation,
+    useUpdatePasswordMutation,
+} from "../../Store/AdminAuth/AdminAuth-Api";
 
 function AdminPasswordReset() {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [resetPasswordOtp] = useResetPasswordOtpMutation();
+    const [verifyResetOtp] = useVerifyResetOtpMutation();
+    const [updatePassword] = useUpdatePasswordMutation();
 
     const steps = ["Enter Email", "Verify OTP", "Reset Password"];
     const activeStep = steps.indexOf(
@@ -25,10 +35,16 @@ function AdminPasswordReset() {
         formState: { errors, isSubmitting },
     } = useForm();
 
-    const handleEmailSubmit = (data) => {
+    const handleEmailSubmit = async (data) => {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
             setError("email", { message: "Please enter a valid email." });
             return;
+        }
+        console.log(data.email)
+        try {
+            // const response = await resetPasswordOtp(data)
+        } catch (error) {
+            
         }
         setInputStatus("otp");
         resetField("email");
