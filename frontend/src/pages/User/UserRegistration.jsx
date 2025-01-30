@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { useRegisterUserMutation } from "../../Store/Auth/Auth-Api";
 import { setUser } from "../../Store/Auth";
+import { toast } from "react-toastify";
 
 const UserRegistration = () => {
     const navigate = useNavigate();
@@ -37,17 +38,21 @@ const UserRegistration = () => {
         }
 
         try {
-            const response = await registerUser(userData);
+            const response = await registerUser(userData).unwrap();
             console.log(response);
-            if (!response.data.success) {
-                console.log(response.data);
-                throw new Error("Invalid credentials");
+            if (!response.success) {
+                toast.error(response.message);
+                return;
             }
-            console.log(response.data.data);
-            navigate("/api/user/verify",{state:{email:response.data.data.email}});
-            
+            toast.success(response.message);
+            setTimeout(() => {
+                dispatch(setUser(response.data));
+                navigate("/api/user/verify", {
+                    state: { email: response.data.data.email },
+                });
+            }, 1000);
         } catch (error) {
-            console.error("Error during registration:", error);
+            toast.error("Error during registration:", error);
         }
     };
 

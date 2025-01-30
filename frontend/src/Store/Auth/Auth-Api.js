@@ -16,8 +16,8 @@ const UserApi = createApi({
             query: () => ({
                 url: "user",
             }),
-            transformResponse: (response) => response.data,
-            providesTags: ["User","Job"],
+            transformResponse: (response) => response,
+            providesTags: ["User"],
         }),
         registerUser: builder.mutation({
             query: (user) => ({
@@ -44,7 +44,7 @@ const UserApi = createApi({
                 body: user,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["Job", "User"],
+            invalidatesTags: ["User"],
         }),
         verifyEmail: builder.mutation({
             query: (user) => ({
@@ -80,7 +80,7 @@ const UserApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["User"],
+            invalidatesTags: ["User", "Job"],
         }),
         logoutUser: builder.mutation({
             query: () => ({
@@ -88,6 +88,7 @@ const UserApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
+            invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
     }),
 });

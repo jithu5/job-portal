@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "../../Store/Auth/Auth-Api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Store/Auth";
+import { toast } from "react-toastify";
 
 function UserLogin() {
     const navigate = useNavigate();
@@ -21,20 +22,21 @@ function UserLogin() {
     const onSubmit = async (data) => {
         console.log("Login Data:", data);
         try {
-            const response = await loginUser(data);
+            const response = await loginUser(data).unwrap();
             console.log(response);
-            if (!response.data.success) {
-                console.log(response.data.data);
-                throw new Error("Invalid credentials");
+            if (!response.success) {
+                toast.error(response.message);
+                return;
             }
-            dispatch(setUser(response.data.data));
-            console.log(response);
-            alert(response.data.message);
-            navigate("/");
+            reset();
+            toast.success(response.message);
+            setTimeout(() => {
+                dispatch(setUser(response.data));
+                navigate("/user");
+            }, 1200);
         } catch (error) {
-            console.log(error);
+            toast.error(error);
         }
-        reset();
     };
 
     return (

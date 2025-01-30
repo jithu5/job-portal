@@ -45,24 +45,41 @@ function Router() {
     const { isAuthenticated, user } = useSelector((state) => state.Auth);
     const dispatch = useDispatch();
 
-    const { data, isLoading } = useGetUserQuery();
+    const { data, isLoading, isSuccess,isFetching } = useGetUserQuery(undefined, {
+        refetchOnMountOrArgChange: true,
+    });
     const { data: adminData, isLoading: adminIsLoading } = useGetAdminQuery();
     useEffect(() => {
-        console.log(user)
-        if (!user && data) {
-            console.log(data)
+        console.log(user);
+        if (!user && data && isSuccess) {
+            console.log(data);
             console.log("inside");
-            dispatch(setUser(data));
-        }
-        else if(!user && adminData){
+
+            dispatch(setUser(data.data));
+        } else if (!user && adminData) {
             console.log("inside admin");
             dispatch(setUser(adminData));
         }
-    }, [data, user,adminData]);
+    }, [data, user, adminData, isSuccess]);
+
+    useEffect(() => {
+        console.log("User Data:", data);
+        console.log("isLoading:", isLoading);
+        console.log("isFetching:", isFetching);
+    }, [data, isLoading, isFetching]);
+
 
     if (isLoading || adminIsLoading)
         return (
-            <Box sx={{ display: "flex", width:'100vw', height:"100vh",justifyContent:"center",alignItems:"center" }}>
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100vw",
+                    height: "100vh",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <CircularProgress className="w-12 h-12 md:w-48 md:h-48" />
             </Box>
         );

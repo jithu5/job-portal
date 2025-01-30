@@ -16,6 +16,8 @@ import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 import { useLogoutUserMutation } from "../../Store/Auth/Auth-Api";
 import { clearUserData } from "../../Store/Auth/index";
+import UserApi from "../../Store/Auth/Auth-Api";
+import { toast } from "react-toastify";
 
 function NavBar() {
     const { user: currentUser } = useSelector((state) => state.Auth);
@@ -27,7 +29,7 @@ function NavBar() {
 
     const [logoutUser] = useLogoutUserMutation();
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -54,14 +56,16 @@ function NavBar() {
             const response = await logoutUser().unwrap();
             console.log(response);
             if (!response.success) {
-                console.log(response.message);
+                toast.error(response.message);
             }
-            console.log(response);
-            dispatch(clearUserData());
-            navigate("/api/user/login");
-            console.log('navigated successfully')
+            toast.success(response.message);
+            setTimeout(() => {
+                dispatch(clearUserData());
+                dispatch(UserApi.util.resetApiState());
+                navigate("/api/user/login");
+            }, 1000);
         } catch (error) {
-            console.log(error);
+            toast.error(error);
         }
     };
 

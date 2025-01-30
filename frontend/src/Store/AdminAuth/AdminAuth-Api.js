@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
 const AdminApi = createApi({
     reducerPath: "admins",
     baseQuery,
-    tagTypes: ["admin"],
+    tagTypes: ["admin", "Job"],
     endpoints: (builder) => ({
         getAdmin: builder.query({
             query: () => ({
@@ -29,7 +29,7 @@ const AdminApi = createApi({
                 },
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["admin", "Job"],
         }),
         loginAdmin: builder.mutation({
             query: (data) => ({
@@ -38,7 +38,7 @@ const AdminApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["admin", "Job"],
         }),
         sendOtp: builder.mutation({
             query: (data) => ({
@@ -59,7 +59,7 @@ const AdminApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["admin", "Job"],
         }),
         resetPasswordOtp: builder.mutation({
             query: (data) => ({
@@ -78,7 +78,6 @@ const AdminApi = createApi({
                 url: "verifyresetotp",
                 method: "POST",
                 body: data,
-                
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["admin"],
@@ -93,7 +92,27 @@ const AdminApi = createApi({
                 },
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["admin", "Job"],
+        }),
+        logoutAdmin: builder.mutation({
+            query: () => ({
+                url: "logout",
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin", "Job"],
+        }),
+        postJob: builder.mutation({
+            query: (data) => ({
+                url: "postjob",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job"],
         }),
     }),
 });
@@ -107,6 +126,8 @@ export const {
     useResetPasswordOtpMutation,
     useVerifyResetOtpMutation,
     useUpdatePasswordMutation,
+    useLogoutAdminMutation,
+    usePostJobMutation
 } = AdminApi;
 
 export default AdminApi;

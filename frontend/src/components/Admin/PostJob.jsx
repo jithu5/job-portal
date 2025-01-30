@@ -1,13 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { usePostJobMutation } from "../../Store/AdminAuth/AdminAuth-Api";
+import { useNavigate } from "react-router-dom";
 
-// title
-//         description
-//         location
-//         date
-//         salary
-//         workersCount
-//         status
 
 function AdminPostJob() {
     const {
@@ -17,9 +13,28 @@ function AdminPostJob() {
         formState: { errors, isSubmitting },
     } = useForm();
 
-    const onSubmit = (data) => {
+    const [ postJob ] = usePostJobMutation()
+    const navigate = useNavigate()
+
+    const onSubmit = async (data) => {
         console.log(data);
-        reset();
+        try {
+            const response = await postJob(data).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.data.message);
+                return;
+            }
+            toast.success("Job posted successfully");
+            reset();
+            setTimeout(() => {
+              navigate("/admin/dashboard/applications");
+            }, 1000)
+            
+        } catch (error) {
+            toast.error(error);
+        }
+       
     };
 
     return (

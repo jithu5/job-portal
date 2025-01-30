@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import avatar from "../../assets/man.png";
 
 import Menu from "@mui/material/Menu";
@@ -9,13 +9,43 @@ import Logout from "@mui/icons-material/Logout";
 
 import { TiThMenu } from "react-icons/ti";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useLogoutAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
+import { useDispatch } from "react-redux";
+import { clearUserData } from "../../Store/Auth";
+import AdminApi from "../../Store/AdminAuth/AdminAuth-Api";
+import { toast } from "react-toastify";
 
 function AdminNavBar({ setIsOpen }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const [logoutAdmin] = useLogoutAdminMutation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleLogout = async () => {
+        // Logout logic here
+        try {
+            const response = await logoutAdmin().unwrap();
+            console.log(response);
+            if (!response.success) {
+                console.log(response.message);
+            }
+              toast.success("Logged Out Successfully!");
+
+              
+              // Delay navigation to allow toast to show
+              setTimeout(() => {
+                  dispatch(clearUserData());
+                  dispatch(AdminApi.util.resetApiState());
+                  navigate("/api/admin/login");
+              }, 1000);
+        } catch (error) {
+            console.log(error);
+        }
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -102,7 +132,12 @@ function AdminNavBar({ setIsOpen }) {
                     </MenuItem>
                     <Divider />
 
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem
+                        onClick={() => {
+                            handleClose();
+                            handleLogout();
+                        }}
+                    >
                         <ListItemIcon>
                             <Logout fontSize="small" />
                         </ListItemIcon>

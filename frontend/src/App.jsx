@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
 import "./App.css"
 import Lenis from "@studio-freight/lenis";
+import {ToastContainer,Zoom} from "react-toastify"
 
 function App() {
   
@@ -29,13 +30,25 @@ function App() {
   }, []);
 
   return (
-    <>
-    <div className='min-h-screen w-full bg-primary'>
-    <Outlet/>
-      
-    </div>
-    </>
-  )
+      <>
+          <div className="min-h-screen w-full bg-primary">
+          <ToastContainer
+              position="top-right"
+              autoClose={4000}
+              hideProgressBar
+              newestOnTop
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light"
+              transition={Zoom}
+          />
+              <Outlet />
+          </div>
+      </>
+  );
 }
 
 export default App

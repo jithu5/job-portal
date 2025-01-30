@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useRegisterAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Store/Auth";
+import { toast } from "react-toastify";
 
 function AdminRegister() {
     const {
@@ -21,15 +22,15 @@ function AdminRegister() {
             const response = await registerAdmin(data);
             console.log(response);
             if (!response.data.success) {
-                console.log(response.data.message);
-                throw new Error("Invalid credentials");
+                toast.error(response.data.message);
+               
             }
             console.log(response.data.data);
             dispatch(setUser(response.data.data));
-            alert(response.data.message);
+            toast.success(response.data.message);
             navigate("/api/admin/verify",{state:{email:response.data.data.email}});
         } catch (error) {
-            console.error("Error during registration:", error);
+            toast.error("Error during registration:", error);
         }
     };
 
