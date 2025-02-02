@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const HistorySchema = mongoose.Schema(
+const ApplicantSchema = mongoose.Schema(
     {
         userId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -21,4 +21,4 @@ const HistorySchema = mongoose.Schema(
     }
 );
 
-module.exports = mongoose.model('History', HistorySchema);
+module.exports = mongoose.model('Applicants', ApplicantSchema);

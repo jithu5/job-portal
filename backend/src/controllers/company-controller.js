@@ -3,6 +3,7 @@ const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
+const applicantmodel = require("../models/applicants.js");
 const crypto = require("crypto");
 const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
@@ -299,6 +300,7 @@ const PostJob = asyncHandler(async (req, res) => {
             salary,
             date,
             workersCount,
+            workersNeeded: workersCount,
         });
         await newJob.save();
         return res.json(
@@ -513,6 +515,10 @@ const Deletejob = asyncHandler(async (req, res) => {
         const job = await jobmodel.findByIdAndDelete(jobId);
         if (!job) {
             throw new ApiError(404, "Job not found");
+        }
+        const applicants = await applicantmodel.findByIdAndDelete(jobId);
+        if (!applicants) {
+            throw new ApiError(404, "Applicants not found");
         }
         res.json(new ApiResponse(200, null, "Job deleted successfully"));
     } catch (error) {

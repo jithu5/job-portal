@@ -2,6 +2,8 @@ const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
 const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
+const applicantmodel = require("../models/applicants.js");
+const jobmodel = require("../models/jobs.js");
 const crypto = require("crypto");
 const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
@@ -163,6 +165,17 @@ const GetUser = asyncHandler(async (req, res) => {
             throw new ApiError(404, "User not found");
         }
         res.json(new ApiResponse(200, user, "User fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//get all jobs
+const GetJobs = asyncHandler(async (req, res) => {
+    try {
+        const jobs = await jobmodel.find({});
+        res.json(new ApiResponse(200, jobs, "Jobs fetched successfully"));
+        console.log("jobs fetched",jobs);
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
@@ -498,9 +511,97 @@ const EditProfile = asyncHandler(async (req, res) => {
     }
 });
 
+//apply job
+const ApplyJob = asyncHandler(async (req, res) => {
+    const userId = req.user;
+    const jobId = req.query.id;
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
+        const applicant = await applicantmodel.findOne({
+            userId: userId,
+            jobId: jobId,
+        });
+        if (applicant) {
+            throw new ApiError(400, "You have already applied for this job");
+        }
+
+        const workersNeeded = await job.workersNeeded;
+        if (job.status === "Closed") {
+
+            throw new ApiError(
+                400,
+                "This job is full. Please try another job or check back later."
+            );
+        }   else if (workersNeeded > 0) {
+            await job.workersNeeded--;
+            if (job.workersNeeded === 0) {
+                job.status = "Closed";
+            }
+            await job.save();
+        }
+
+
+        const newApplicant = new applicantmodel({
+            userId: userId,
+            jobId: jobId,
+        });
+        await newApplicant.save();
+        return res.json(
+            new ApiResponse(200, newApplicant, "Job applied successfully")
+        );
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//cancel job
+const Canceljob = asyncHandler(async (req, res) => {
+    const userId = req.user;
+    const jobId = req.query.id;
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
+        const applicant = await applicantmodel.findOne({
+            userId: userId,
+            jobId: jobId,
+        });
+        if (!applicant) {
+            throw new ApiError(400, "You haven't applied for this job");
+        }
+        await applicant.deleteOne();
+        await job.workersNeeded++;
+        if (job.status === "Closed") {
+            job.status = "Active";
+        }
+        await job.save();
+
+        return res.json(
+            new ApiResponse(200, null, "Job cancellation successful")
+        );
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+
 module.exports = {
     UserRegister,
     GetUser,
+    GetJobs,
     UserLogin,
     Sendotp,
     Verifyemail,
@@ -512,4 +613,6 @@ module.exports = {
     Homepage,
     Logout,
     EditProfile,
+    ApplyJob,
+    Canceljob,
 };
