@@ -19,6 +19,10 @@ const JobSchema = mongoose.Schema(
             type: String,
             required: true,
         },
+        district: {
+            type: String,
+            required: true,
+        },
         date: {
             type: Date,
             required: true,
@@ -37,7 +41,7 @@ const JobSchema = mongoose.Schema(
             type: Number,
             required: true,
             default: 0,
-        },
+        },  
         status: {
             type: String,
             required: true,

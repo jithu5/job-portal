@@ -272,7 +272,7 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 
 //post job
 const PostJob = asyncHandler(async (req, res) => {
-    const { title, description, location, salary, date, workersCount } =
+    const { title, description, location, district, salary, date, workersCount } =
         req.body;
     const companyId = req.company;
     console.log(companyId);
@@ -280,6 +280,7 @@ const PostJob = asyncHandler(async (req, res) => {
         !title ||
         !description ||
         !location ||
+        !district ||
         !salary ||
         !date ||
         !workersCount
@@ -297,6 +298,7 @@ const PostJob = asyncHandler(async (req, res) => {
             title,
             description,
             location,
+            district,
             salary,
             date,
             workersCount,
@@ -446,8 +448,8 @@ const EditProfile = asyncHandler(async (req, res) => {
         const updatedCompany = await companymodel.findOneAndUpdate(
             { _id: companyId },
             {
-                address: address,
-                phone: phone,
+                address: address || company.address,
+                phone: phone || company.phone,
             },
             { new: true }
         );
@@ -472,7 +474,7 @@ const EditProfile = asyncHandler(async (req, res) => {
 const EditJob = asyncHandler(async (req, res) => {
     const jobId = req.query.id;
     console.log("req", jobId);
-    const { title, description, location, salary, date, workersCount } =
+    const { title, description, location,district, salary, date, workersCount } =
         req.body;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
@@ -485,12 +487,13 @@ const EditJob = asyncHandler(async (req, res) => {
         const updatedJob = await jobmodel.findOneAndUpdate(
             { _id: jobId },
             {
-                title: title,
-                description: description,
-                location: location,
-                salary: salary,
-                date: date,
-                workersCount: workersCount,
+                title: title || job.title,
+                description: description || job.description,
+                location: location || job.location,
+                district: district || job.district,
+                salary: salary  || job.salary,
+                date: date || job.date,
+                workersCount: workersCount || job.workersCount,
             },
             { new: true }
         );

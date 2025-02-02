@@ -53,9 +53,25 @@ const UserRegister = asyncHandler(async (req, res) => {
             $or: [{ username: username }, { email: email }],
         });
 
-        if (ExistingUser) {
+        if (ExistingUser && ExistingUser.isAccountVerified) {
             throw new ApiError(400, "User already exists");
         }
+        //check user verified or not
+        if (ExistingUser && !ExistingUser.isAccountVerified) {
+            const user = await ExistingUser.updateOne({
+                username: username,
+                name: name,
+                email: email,
+                gender: gender,
+                address: address,
+                phone: phone,
+                age: age,
+                password: password,
+        });
+        await user.save();
+
+        }
+
 
         //check id proof
         const {
@@ -128,8 +144,8 @@ const UserLogin = asyncHandler(async (req, res) => {
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
-        if (!user) {
-            throw new ApiError(401, "Invalid credentials v");
+        if (!user && !user.isAccountVerified) {
+            throw new ApiError(401, "user not found or not verified");
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
@@ -173,9 +189,9 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
-        const jobs = await jobmodel.find({});
-        res.json(new ApiResponse(200, jobs, "Jobs fetched successfully"));
-        console.log("jobs fetched",jobs);
+        const jobs = await jobmodel.find().sort({ createdAt: -1 }).limit(6);
+        const Alljobs = await jobmodel.find({});
+        res.json(new ApiResponse(200,Alljobs, jobs, "Jobs fetched successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
@@ -486,16 +502,20 @@ const EditProfile = asyncHandler(async (req, res) => {
         if (!user) {
             throw new ApiError(404, "User not found");
         }
+        const existingusername = await usermodel.findOne({ username: username ,_id : { $ne:userId } });
+        if (existingusername) {
+            throw new ApiError(400, "Username already exists");
+        }
         const updatedUser = await usermodel.findOneAndUpdate(
             {
                 _id: userId,
             },
             {
-                username: username,
-                name: name,
-                address: address,
-                phone: phone,
-                dob: dob,
+                username: username || user.username,
+                name: name || user.name,
+                address: address || user.address,
+                phone: phone || user.phone,
+                dob: dob || user.dob,
             },
             { new: true, runValidators: true }
         );
