@@ -28,6 +28,14 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job", "User"],
         }),
+        checkUsernameUnique: builder.mutation({
+            query: (username) => ({
+                url: `checkusernameunique?username=${username}`,
+                method: "GET",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"],
+        }),
         loginUser: builder.mutation({
             query: (user) => ({
                 url: "login",
@@ -90,6 +98,13 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
+        getJobs:builder.query({
+            query: () => ({
+                url: "jobs",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        })
     }),
 });
 
@@ -103,6 +118,8 @@ export const {
     useVerifyResetOtpMutation,
     useUpdatePasswordMutation,
     useLogoutUserMutation,
+    useCheckUsernameUniqueMutation,
+    useGetJobsQuery,
 } = UserApi;
 
 export default UserApi;

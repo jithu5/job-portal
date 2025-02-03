@@ -189,9 +189,11 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
-        const jobs = await jobmodel.find().sort({ createdAt: -1 }).limit(6);
         const Alljobs = await jobmodel.find({});
-        res.json(new ApiResponse(200,Alljobs, jobs, "Jobs fetched successfully"));
+        if (!Alljobs) {
+            throw new ApiError(404, "Job not found");
+        }
+        res.json(new ApiResponse(200,Alljobs, "Jobs fetched successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
@@ -617,6 +619,24 @@ const Canceljob = asyncHandler(async (req, res) => {
     }
 });
 
+const checkUsernameUnique = asyncHandler(async(req,res)=>{
+    const username = req.query.username; // Accessing query parameter
+
+    console.log(username)
+
+    try {
+        const user = await usermodel.findOne({
+            username: username,isAccountVerified:true
+        })
+        if(user){
+            return res.json(new ApiResponse(200, true, "Username already taken"));
+        }
+        return res.json(new ApiResponse(200, true, "Username available"));
+    } catch (error) {
+        throw new ApiError(500,error?.message)
+    }
+})
+
 
 module.exports = {
     UserRegister,
@@ -635,4 +655,5 @@ module.exports = {
     EditProfile,
     ApplyJob,
     Canceljob,
+    checkUsernameUnique,
 };

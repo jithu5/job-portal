@@ -1,25 +1,71 @@
-import React from "react";
+import  { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { useRegisterUserMutation } from "../../Store/Auth/Auth-Api";
+import {
+    useCheckUsernameUniqueMutation,
+    useRegisterUserMutation,
+} from "../../Store/Auth/Auth-Api";
 import { setUser } from "../../Store/Auth";
 import { toast } from "react-toastify";
+import { Loader2 } from "lucide-react";
+import useDebounceCallback from "../../hooks/useDebouncedCallback"; // Import the custom hook
 
 const UserRegistration = () => {
     const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [checkUsernameMessage, setCheckUsernameMessage] = useState("");
+    const [isChecking, setisChecking] = useState(false)
 
     const dispatch = useDispatch();
     const [registerUser] = useRegisterUserMutation();
+    const [checkUsernameUnique] = useCheckUsernameUniqueMutation();
+
+    // Create the debounced version of setValue with a 1300ms delay
+    const debounced = useDebounceCallback(setUsername, 1300);
 
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        setValue,
+        formState: { errors, isSubmitting },
     } = useForm();
 
+    
+    useEffect(() => {
+        setCheckUsernameMessage('')
+        setisChecking(false)
+        async function checkusernameunique() {
+            if (username.length >= 5) {
+                setisChecking(true)
+                try {
+                    const response = await checkUsernameUnique(username);
+                    console.log(response.data.message);
+                    if (response.data.success) {
+                        setCheckUsernameMessage(response.data.message);
+                    } else {
+                        setCheckUsernameMessage(response.data.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+                finally{
+                    setisChecking(false)
+                }
+            }
+        }
+        checkusernameunique();
+    }, [username]);
+
+    // Handle debounced change for username field
+    const handleUsernameChange = (event) => {
+        const { value } = event.target;
+        setValue("username", value); // Update the form state
+        debounced(value); // Debounced update of username
+    };
+
     const onSubmit = async (data) => {
-        console.log("Form Data Submitted:", data);
+        // console.log("Form Data Submitted:", data);
 
         const userData = new FormData();
         userData.append("username", data.username);
@@ -33,9 +79,9 @@ const UserRegistration = () => {
         userData.append("address", data.address);
 
         // print in loop
-        for (const pair of userData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
+        // for (const pair of userData.entries()) {
+        //     console.log(`${pair[0]}: ${pair[1]}`);
+        // }
 
         try {
             const response = await registerUser(userData).unwrap();
@@ -104,7 +150,20 @@ const UserRegistration = () => {
                                 })}
                                 className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
                                 placeholder="Enter your username"
+                                onChange={handleUsernameChange}
                             />
+                            {
+                                isChecking && (
+                                    <Loader2 className="inline-block ml-2 w-4 h-4 animate-spin" />
+                                )
+                            }
+                            {
+                                checkUsernameMessage && (
+                                    <p className="text-blue-600 text-sm mt-1">
+                                        {checkUsernameMessage}
+                                    </p>
+                                )
+                            }
                             {errors.username && (
                                 <p className="text-red-600 text-sm mt-1">
                                     {errors.username.message}
@@ -269,7 +328,14 @@ const UserRegistration = () => {
                             type="submit"
                             className="w-full bg-third text-white py-3 rounded-md font-medium text-lg hover:bg-purple-500 transition duration-300"
                         >
-                            Register
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin mr-4" />
+                                    Please wait...
+                                </>
+                            ) : (
+                                "Sign Up"
+                            )}
                         </button>
                     </div>
                 </form>

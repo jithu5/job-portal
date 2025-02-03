@@ -34,7 +34,7 @@ function CommonAuth({ isAuthenticated, user, children }) {
             return <Navigate to="admin/dashboard" />;
         } else if (
             user?.role === "user" &&
-            location.pathname.includes("/api/user")
+            location.pathname.startsWith("/api/user")
         ) {
             return <Navigate to="/user" />;
         }
