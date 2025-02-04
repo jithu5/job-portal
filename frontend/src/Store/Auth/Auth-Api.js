@@ -90,6 +90,15 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["User", "Job"],
         }),
+        uploadIages: builder.mutation({
+            query: (images) => ({
+                url: "update-profile-cover",
+                method: "POST",
+                body: images,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"], // Forces re-fetch of "User" queries
+        }),
         logoutUser: builder.mutation({
             query: () => ({
                 url: "logout",
@@ -98,13 +107,28 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
-        getJobs:builder.query({
+        getJobs: builder.query({
             query: () => ({
                 url: "jobs",
             }),
             transformResponse: (response) => response,
             providesTags: ["Job"],
-        })
+        }),
+        getJobById: builder.query({
+            query: (id) => ({
+                url: `job/${id}`,
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        }),
+        applyForJob: builder.mutation({
+            query: (jobId) => ({
+                url: `applyjob/${jobId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job"],
+        }),
     }),
 });
 
@@ -120,6 +144,9 @@ export const {
     useLogoutUserMutation,
     useCheckUsernameUniqueMutation,
     useGetJobsQuery,
+    useGetJobByIdQuery,
+    useApplyForJobMutation,
+    useUploadIagesMutation,
 } = UserApi;
 
 export default UserApi;

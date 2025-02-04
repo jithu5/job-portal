@@ -1,29 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-const URL = import.meta.env.VITE_SERVER_URL;
-
-
-// export const loginUser = createAsyncThunk(
-//     'api/loginUser',
-//     async (formData) =>{
-//        try {
-//         const { data } = await axios.post(`${URL}/api/auth/user/login`,
-//             formData,
-//             {
-//                 withCredentials:true
-//             }
-//         );
-//         return data;
-//        } catch (error) {
-//         console.log(error.response.data);
-//         return error.response.data;
-//        }
-
-//     }
-// )
-
-
 const AuthSlice = createSlice({
     name: "auth",
     initialState: {
@@ -31,6 +7,7 @@ const AuthSlice = createSlice({
         user: null,
         error: null,
         loading: true,
+        appliedJobs: [],
     },
     reducers: {
         setUser: (state, action) => {
@@ -47,31 +24,22 @@ const AuthSlice = createSlice({
             state.error = null;
             state.loading = false;
         },
+        setAppliedJobs: (state, action) => {
+            state.appliedJobs = action.payload;
+        },
+        addAppliedJobs: (state, action) => {
+            // check if it exists in applied jobs
+            const appliedJob = state.appliedJobs.find(
+                (job) => job._id === action.payload._id
+            );
+            if (!appliedJob) {
+                state.appliedJobs.push(action.payload);
+            }
+        },
     },
-    // extraReducers:(builder)=>{
-    //     builder
-    //     .addCase(loginUser.pending, (state, action) => {
-    //         state.loading = true;
-    //         state.error = null;
-    //         state.isAuthenticated = false;
-    //         state.user = null;
-    //     })
-    //     .addCase(loginUser.fulfilled, (state, action) => {
-    //         console.log(action.payload)
-    //         state.loading = false;
-    //         state.isAuthenticated = true;
-    //         state.user = action.payload.data;
-    //         state.error = null
-    //     })
-    //     .addCase(loginUser.rejected, (state, action) => {
-    //         state.loading = false;
-    //         state.error = action.payload;
-    //         state.isAuthenticated = false;
-    //         state.user = null;
-    //     })
-    // }
 });
 
-export const { setUser,clearUserData } = AuthSlice.actions;
+export const { setUser, clearUserData, setAppliedJobs, addAppliedJobs } =
+    AuthSlice.actions;
 
 export default AuthSlice.reducer;

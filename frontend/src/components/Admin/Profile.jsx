@@ -48,7 +48,7 @@ function AdminProfile() {
             <div className="w-[99%] mx-auto min-h-screen font-BarlowSemiCondensed mb-32">
                 {/* drawer  */}
                 <ImageEditdDawer openDrawer={openDrawer} setOpenDrawer={setOpenDrawer} images={images} setImages={setImages} handleSubmit={handleSubmit}/>
-                <ProfileImages setOpenDrawer={setOpenDrawer} />
+                <ProfileImages setOpenDrawer={setOpenDrawer} user={user}/>
                 <div className="w-[90%] mx-auto flex flex-col items-end mt-10">
                     <div className="flex flex-col items-center gap-3">
                         <h1 className="text-xl font-medium ">Job Role</h1>

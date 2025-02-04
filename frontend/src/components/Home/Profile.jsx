@@ -1,29 +1,44 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ProfileImages from "../common/ProfileImages";
 import ImageEditDrawer from "../common/ImageEditdDawer";
 import { useSelector } from "react-redux";
+import { useUploadIagesMutation } from "../../Store/Auth/Auth-Api";
+import { toast } from "react-toastify";
 
 const Profile = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
-        const [images, setImages] = useState({ profile: null, cover: null });
+    const [images, setImages] = useState({ profile: null, cover: null });
 
-        const { user } = useSelector((state) => state.Auth);
-        
-        const handleSubmit = (e) => {
-            e.preventDefault();
-            console.log("Images state:", images);
+    const { user } = useSelector((state) => state.Auth);
+    const [ uploadIages ] = useUploadIagesMutation()
     
-            const formData = new FormData();
-            formData.append("profileImage", images.profile);
-            formData.append("coverImage", images.cover);
-    
-            // Debug FormData entries
-            for (const pair of formData.entries()) {
-                console.log(`${pair[0]}: ${pair[1]}`);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log("Images state:", images);
+
+        const formData = new FormData();
+        formData.append("profileImage", images.profile);
+        formData.append("coverImage", images.cover);
+
+        // Debug FormData entries
+        for (const pair of formData.entries()) {
+            console.log(`${pair[0]}: ${pair[1]}`);
+        }
+        try {
+            const response = await uploadIages(formData).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
             }
-        };
+            toast.success(response.message);
+        } catch (error) {
+            toast.error("Failed to upload")
+            console.error(error);
+        }
+    };
 
     useEffect(() => {
             window.scrollTo(0, 0);
@@ -37,7 +52,7 @@ const Profile = () => {
                 setImages={setImages}
                 handleSubmit={handleSubmit}
             />
-            <ProfileImages setOpenDrawer={setOpenDrawer} />
+            <ProfileImages setOpenDrawer={setOpenDrawer} user={user} />
             <div className="w-[90%] mx-auto flex flex-col items-end mt-10">
                 <div className="flex flex-col items-center gap-3">
                     <h1 className="text-xl font-medium ">Job Role</h1>

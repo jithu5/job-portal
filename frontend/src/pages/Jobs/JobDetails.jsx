@@ -1,74 +1,107 @@
-import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom';
-
-const allJobs = [
-    {
-        id: 1,
-        title: "Software Engineer",
-        place: "New York",
-        salary: 800,
-        type: "Full-time",
-    },
-    {
-        id: 2,
-        title: "Data Scientist",
-        place: "San Francisco",
-        salary: 1200,
-        type: "Full-time",
-    },
-    {
-        id: 3,
-        title: "Frontend Developer",
-        place: "Los Angeles",
-        salary: 700,
-        type: "Part-time",
-    },
-    {
-        id: 4,
-        title: "Backend Developer",
-        place: "Chicago",
-        salary: 950,
-        type: "Full-time",
-    },
-    {
-        id: 5,
-        title: "Product Manager",
-        place: "Austin",
-        salary: 1100,
-        type: "Full-time",
-    },
-];
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useGetJobByIdQuery } from "../../Store/Auth/Auth-Api";
+import {
+    Box,
+    Typography,
+    Card,
+    CardContent,
+    CircularProgress,
+    Button,
+} from "@mui/material";
+import { Bookmark } from "lucide-react";
 
 function JobDetails() {
     const { jobId } = useParams();
-    const [selectedJob, setSelectedJob] = useState({});
-
-    function slectjob() {
-        const job = allJobs.find((j) => j.id === Number(jobId));
-        setSelectedJob(job);
-    }
-    useEffect(() => {
-        console.log(allJobs);
-        console.log(typeof jobId);
-        slectjob();
-    }, [jobId]);
+    const { data: job, isLoading, isError } = useGetJobByIdQuery(jobId);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-    }, []); // Empty dependency array to run only once when the component mounts
-    
-    console.log(selectedJob);
+    }, []);
+
+    const handleApply = async (job) => {
+        console.log(job)
+    }
+
+    if (isLoading) {
+        return (
+            <Box className="min-h-screen flex justify-center items-center">
+                <CircularProgress size={60} />
+            </Box>
+        );
+    }
+
+    if (isError || !job) {
+        return (
+            <Box className="min-h-screen flex justify-center items-center">
+                <Typography variant="h5" color="error">
+                    Job not found or an error occurred.
+                </Typography>
+            </Box>
+        );
+    }
 
     return (
-        <>
-            <div className="min-h-screen w-[90%] sm:w-[80%] md:w-[70%] mx-auto">
-                <h1 className='text-xl md:text-4xl font-Oswald font-medium md:font-semibold text-center'>{selectedJob.title}</h1>
-                <div className="flex flex-col gap-6 my-12 md:my-24">
-
-                </div>
-            </div>
-        </>
+        <Box className="min-h-screen w-[90%] sm:w-[80%] md:w-[70%] mx-auto py-16">
+            <Card className="p-6 shadow-lg rounded-xl">
+                <CardContent>
+                    <Typography variant="h4" className="font-bold text-center">
+                        {job.data.title}
+                    </Typography>
+                    <Typography
+                        variant="subtitle2"
+                        className="my-5 text-md md:text-lg"
+                    >
+                        {job.data.description}
+                    </Typography>
+                    <Typography variant="subtitle1" className="text-gray-600r">
+                        {job.data.location}, {job.data.district}
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        className="mt-4 leading-relaxed"
+                    >
+                        {job.description}
+                    </Typography>
+                    <Box className="mt-6 space-y-3">
+                        <Typography variant="h6">
+                            💰 Salary: ₹{job.data.salary}
+                        </Typography>
+                        <Typography variant="h6">
+                            👥 Workers Needed: {job.data.workersNeeded}
+                        </Typography>
+                        <Typography variant="h6">
+                            📅 Date:{" "}
+                            {new Date(job.data.date).toLocaleDateString()}
+                        </Typography>
+                        <Typography
+                            variant="h6"
+                            className={
+                                job.data.status === "Active"
+                                    ? "text-green-600"
+                                    : "text-red-600"
+                            }
+                        >
+                            Status: {job.data.status}
+                        </Typography>
+                    </Box>
+                    <Box className="flex justify-end gap-5">
+                        <button>
+                            <Bookmark className="text-blue-600" />
+                        </button>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleApply(job.data)}
+                        >
+                            APPLY
+                        </Button>
+                    </Box>
+                   
+                </CardContent>
+            </Card>
+        </Box>
     );
 }
 
-export default JobDetails
+export default JobDetails;

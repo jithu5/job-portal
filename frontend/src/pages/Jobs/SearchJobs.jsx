@@ -1,8 +1,14 @@
 import  { useState, useEffect, useCallback, useMemo } from "react";
 import { JobHeader, JobSideBar } from "../../components/index";
-import { CircularProgress } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import _ from "lodash"; // For debounce/throttle functions
-import { useGetJobsQuery } from "../../Store/Auth/Auth-Api";
+import { useApplyForJobMutation, useGetJobsQuery } from "../../Store/Auth/Auth-Api";
+import { Bookmark, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addAppliedJobs } from "../../Store/Auth";
+import { toast } from "react-toastify";
+
 
 
 const SearchJobs = () => {
@@ -19,9 +25,13 @@ const SearchJobs = () => {
     const [allJobs, setAllJobs] = useState([]);
     const [error, setError] = useState(null);
 
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+
     const itemsPerPage = 15;
 
     const { data: datas, isLoading, isError } = useGetJobsQuery();
+    const [ applyForJob ] = useApplyForJobMutation()
 
     useEffect(() => {
         if (datas?.data && !isLoading) {
@@ -90,11 +100,35 @@ const SearchJobs = () => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [handleScroll]);
 
+    const handleApply = async(job)=>{
+        try {
+            const response = await applyForJob(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
+            }
+            dispatch(addAppliedJobs(job))
+            toast.success(response.message);
+        } catch (error) {
+            console.log(error)
+            toast.error('Failed to apply');
+        }
+    }
+
     if (isLoading) {
         return (
-            <div className="w-full flex justify-center mt-10">
-                <CircularProgress />
-            </div>
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100vw",
+                    height: "100vh",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <Loader2 className="w-12 h-12 md:w-48 md:h-48 animate-spin" />
+            </Box>
         );
     }
 
@@ -148,61 +182,72 @@ const SearchJobs = () => {
                             <div className="w-full flex flex-col items-center gap-7">
                                 {currentJobs.map((job) => (
                                     <div
-                                        className="w-full flex flex-col px-4 md:px-6 py-6 md:py-10 gap-6 bg-[#F9F9F9] rounded-lg shadow-md"
-                                        key={job._id} // Using _id for the key
+                                        key={job._id}
+                                        className="w-full px-3 md:px-8 py-3 md:py-6 bg-white rounded-md flex flex-col gap-1"
                                     >
-                                        {/* Job Title */}
-                                        <h2 className="text-xl font-bold text-gray-900">
-                                            {job.title}
-                                        </h2>
-
-                                        {/* Job Description */}
-                                        <p className="text-gray-700 mb-4">
-                                            {job.description}
-                                        </p>
-
-                                        <div className="flex justify-between items-center">
-                                            {/* Salary */}
-                                            <p className="text-lg font-semibold text-green-600">
-                                                Salary: ${job.salary}
-                                            </p>
-
-                                            {/* Location */}
-                                            <p className="text-sm text-gray-600">
-                                                <strong>Location:</strong>{" "}
-                                                {job.location}, {job.district}
-                                            </p>
+                                        <div className="w-full flex items-center justify-between">
+                                            <h1 className="text-xl md:text-3xl font-Abel font-semibold text-secondary mb-4">
+                                                {job.title}
+                                            </h1>
+                                            <h2
+                                                className={`text-md md:text-lg font-semibold tracking-wide ${
+                                                    job.status === "Active"?"text-green-600":"text-red-600"
+                                                }`}
+                                            >
+                                                {job.status}
+                                            </h2>
                                         </div>
-
-                                        {/* Workers Info */}
-                                        <div className="mt-4 flex justify-between items-center text-gray-700">
-                                            <p>
-                                                <strong>Workers Needed:</strong>{" "}
+                                        <p className="text-sm md:text-base font-Poppins text-gray-600">
+                                            {job.description.slice(0, 400)}...
+                                        </p>
+                                        <p className="text-sm md:text-lg font-medium">
+                                            {job.district}
+                                        </p>
+                                        <p className="text-sm md:text-md font-medium">
+                                            {job.location}
+                                        </p>
+                                        <p className="text-sm md:text-lg font-medium text-blue-500">
+                                            ₹{job.salary}
+                                        </p>
+                                        <h3>
+                                            open:{" "}
+                                            <span
+                                                className={`text-sm md:text-lg font-bold ${
+                                                    job.workersCount > 3
+                                                        ? "text-green-600"
+                                                        : "text-red-600"
+                                                }`}
+                                            >
                                                 {job.workersNeeded}
-                                            </p>
-                                            <p>
-                                                <strong>Workers Count:</strong>{" "}
-                                                {job.workersCount}
-                                            </p>
-                                        </div>
+                                            </span>
+                                        </h3>
+                                        <div className="w-full flex items-center pt-5 justify-between">
+                                            <Button variant="text"
+                                                onClick={() => {
+                                                    navigate(`/user/job/${job._id}`);
+                                                }}
+                                            >
+                                                View Details
+                                            </Button>
+                                            <div className="flex w-[20%] items-center justify-between">
+                                                <button>
+                                                    <Bookmark />
+                                                </button>
 
-                                        {/* Job Status */}
-                                        <p
-                                            className={`mt-4 text-sm font-medium ${
-                                                job.status === "Active"
-                                                    ? "text-green-500"
-                                                    : "text-red-500"
-                                            }`}
-                                        >
-                                            <strong>Status:</strong>{" "}
-                                            {job.status}
-                                        </p>
+                                            <Button variant="contained"
+                                              
+                                              onClick={() =>handleApply(job)}
+                                              >
+                                                Apply
+                                            </Button>
+                                                </div>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                             {loading && (
                                 <div className="w-full flex justify-center mt-10">
-                                    <CircularProgress />
+                                    <Loader2 />
                                 </div>
                             )}
                         </div>

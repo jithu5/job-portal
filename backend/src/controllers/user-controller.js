@@ -199,6 +199,20 @@ const GetJobs = asyncHandler(async (req, res) => {
     }
 });
 
+const GetJobById = asyncHandler(async (req, res) => {
+    try {
+        const {jobId} = req.params;
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
+        return res.json(new ApiResponse(200, job, "Job fetched successfully"));
+
+    } catch (error) {
+        throw new ApiError(error.statusCode,error.message)
+    }
+});
+
 //send otp
 const Sendotp = asyncHandler(async (req, res) => {
     const { email } = req.body;
@@ -364,50 +378,53 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 });
 
 //upload profile and cover image
-const uploadProfileAndCover = asyncHandler(async (req, res) => {
-    let profilepicpath = null;
-    let coverpicpath = null;
-    const userId = req.user;
-    console.log("user", userId);
-    if (!req.files) {
-        throw new ApiError(400, "No file uploaded");
-    }
-    try {
-        profilepicpath = req.files?.profileImage?.[0]?.path;
-        coverpicpath = req.files?.coverImage?.[0]?.path;
 
-        //user
-        const user = await usermodel.findById(userId);
-        if (!user) {
-            throw new ApiError(404, "User not found");
-        }
+// this is not needed 
 
-        // Validate file existence and upload profile and cover images
-        if (profilepicpath) {
-            const profileresponse =
-                await cloudinary.uploadImageToCloudinary(profilepicpath);
-            user.profileImage = profileresponse.secure_url;
-        }
-        if (coverpicpath) {
-            const coverresponse =
-                await cloudinary.uploadImageToCloudinary(coverpicpath);
-            user.coverImage = coverresponse.secure_url;
-        }
-        await user.save({ validateBeforeSave: false });
+// const uploadProfileAndCover = asyncHandler(async (req, res) => {
+//     let profilepicpath = null;
+//     let coverpicpath = null;
+//     const userId = req.user;
+//     console.log("user", userId);
+//     if (!req.files) {
+//         throw new ApiError(400, "No file uploaded");
+//     }
+//     try {
+//         profilepicpath = req.files?.profileImage?.[0]?.path;
+//         coverpicpath = req.files?.coverImage?.[0]?.path;
 
-        return res.json(
-            new ApiResponse(200, user, "profile pic uploaded successfully")
-        );
-    } catch (error) {
-        if (profilepicpath && fs.existsSync(profilepicpath)) {
-            fs.unlinkSync(profilepicpath); // delete the file after upload
-        }
-        if (coverImage && fs.existsSync(coverImage)) {
-            fs.unlinkSync(coverImage); // delete the file after upload
-        }
-        throw new ApiError(error.statusCode, error.message);
-    }
-});
+//         //user
+//         const user = await usermodel.findById(userId);
+//         if (!user) {
+//             throw new ApiError(404, "User not found");
+//         }
+
+//         // Validate file existence and upload profile and cover images
+//         if (profilepicpath) {
+//             const profileresponse =
+//                 await cloudinary.uploadImageToCloudinary(profilepicpath);
+//             user.profileImage = profileresponse.secure_url;
+//         }
+//         if (coverpicpath) {
+//             const coverresponse =
+//                 await cloudinary.uploadImageToCloudinary(coverpicpath);
+//             user.coverImage = coverresponse.secure_url;
+//         }
+//         await user.save({ validateBeforeSave: false });
+
+//         return res.json(
+//             new ApiResponse(200, user, "profile pic uploaded successfully")
+//         );
+//     } catch (error) {
+//         if (profilepicpath && fs.existsSync(profilepicpath)) {
+//             fs.unlinkSync(profilepicpath); // delete the file after upload
+//         }
+//         if (coverImage && fs.existsSync(coverImage)) {
+//             fs.unlinkSync(coverImage); // delete the file after upload
+//         }
+//         throw new ApiError(error.statusCode, error.message);
+//     }
+// });
 
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
@@ -466,6 +483,7 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
             new ApiResponse(200, user, "Profile and cover pic updated")
         );
     } catch (error) {
+        console.log(error)
         if (profilepicpath && fs.existsSync(profilepicpath)) {
             fs.unlinkSync(profilepicpath); // delete the file after upload
         }
@@ -536,7 +554,9 @@ const EditProfile = asyncHandler(async (req, res) => {
 //apply job
 const ApplyJob = asyncHandler(async (req, res) => {
     const userId = req.user;
-    const jobId = req.query.id;
+    console.log(req.params)
+    const {jobId} = req.params;
+    console.log(jobId)
     try {
         const user = await usermodel.findById(userId);
         if (!user) {
@@ -546,28 +566,31 @@ const ApplyJob = asyncHandler(async (req, res) => {
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
+        console.log(job)
         const applicant = await applicantmodel.findOne({
             userId: userId,
             jobId: jobId,
         });
+        console.log(applicant)
         if (applicant) {
             throw new ApiError(400, "You have already applied for this job");
         }
+        // there is error in here the commente codes
 
-        const workersNeeded = await job.workersNeeded;
-        if (job.status === "Closed") {
+        // const workersNeeded = await job.workersNeeded;
+        // if (job.status === "Closed") {
 
-            throw new ApiError(
-                400,
-                "This job is full. Please try another job or check back later."
-            );
-        }   else if (workersNeeded > 0) {
-            await job.workersNeeded--;
-            if (job.workersNeeded === 0) {
-                job.status = "Closed";
-            }
-            await job.save();
-        }
+        //     throw new ApiError(
+        //         400,
+        //         "This job is full. Please try another job or check back later."
+        //     );
+        // }   else if (workersNeeded > 0) {
+        //     await job.workersNeeded--;
+        //     if (job.workersNeeded === 0) {
+        //         job.status = "Closed";
+        //     }
+        //     await job.save();
+        // }
 
 
         const newApplicant = new applicantmodel({
@@ -575,6 +598,7 @@ const ApplyJob = asyncHandler(async (req, res) => {
             jobId: jobId,
         });
         await newApplicant.save();
+        console.log(newApplicant)
         return res.json(
             new ApiResponse(200, newApplicant, "Job applied successfully")
         );
@@ -642,13 +666,13 @@ module.exports = {
     UserRegister,
     GetUser,
     GetJobs,
+    GetJobById,
     UserLogin,
     Sendotp,
     Verifyemail,
     SendResetOtp,
     VerifyResetOtp,
     UpdatePassword,
-    uploadProfileAndCover,
     updateProfileAndCover,
     Homepage,
     Logout,

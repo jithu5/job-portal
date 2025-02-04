@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { MenuButton, NavigationLinks } from "../index";
@@ -20,7 +20,9 @@ import UserApi from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
 
 function NavBar() {
-    const { user: currentUser } = useSelector((state) => state.Auth);
+    const { user: currentUser, appliedJobs } = useSelector(
+        (state) => state.Auth
+    );
 
     const [isActive, setIsActive] = useState(false);
 
@@ -163,12 +165,13 @@ function NavBar() {
                                 <Link to={"wishlist"}>
                                     <FaRegHeart className="text-md sm:text-xl md:text-2xl" />
                                 </Link>
-                                <Link to={"job-history"}>
+                                <Link to={"job-history"} className="relative">
                                     <MdOutlineWorkHistory className="text-md sm:text-xl md:text-2xl" />
+                                   {appliedJobs.length > 0 && <p className="absolute -top-4 -right-4 bg-yellow-300 w-7 h-7 rounded-full flex justify-center items-center">{appliedJobs.length}</p>}
                                 </Link>
                                 <Tooltip title="Account settings">
                                     <IconButton
-                                        onClick={handleClick}
+                                        onClick={handleClick} 
                                         size="small"
                                         sx={{ ml: 2 }}
                                         aria-controls={
@@ -179,11 +182,11 @@ function NavBar() {
                                             open ? "true" : undefined
                                         }
                                     >
-                                        <Avatar sx={{ width: 32, height: 32 }}>
+                                        <Avatar sx={{ width: 40, height: 40 }}>
                                             <img
-                                                src={avatar}
+                                                src={currentUser?.profileImage || avatar}
                                                 alt=""
-                                                className="w-full h-full"
+                                                className="w-full h-full object-cover"
                                             />
                                         </Avatar>
                                     </IconButton>

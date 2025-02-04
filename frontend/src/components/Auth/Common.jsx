@@ -1,59 +1,78 @@
-import React from "react";
+import { Box, CircularProgress } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 
-function CommonAuth({ isAuthenticated, user, children }) {
+function CommonAuth({
+    isAuthenticated,
+    user,
+    children,
+    isLoading,
+    adminIsLoading,
+}) {
     const location = useLocation();
+    const [loading, setLoading] = useState(true);
 
-    if (location.pathname === "/") {
-        if (!isAuthenticated) {
-            if (user?.role === "admin") {
-                return <Navigate to="/admin/dashboard" />;
-            } else if (user?.role === "user") {
-                return <Navigate to="/user" />;
-            }
-            return <Navigate to="/user" />;
+    // Prevent redirection until user data is fully loaded
+    useEffect(() => {
+        if (!isLoading && !adminIsLoading) {
+            setLoading(false);
         }
-        else{
-            return <Navigate to="/user" />;
-        }
+    }, [isLoading, adminIsLoading]);
+
+    if (loading) {
+        return (
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100vw",
+                    height: "100vh",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
+                <CircularProgress className="w-12 h-12 md:w-48 md:h-48" />
+            </Box>
+        );
     }
 
-    if (
-        !isAuthenticated &&
-        (location.pathname.startsWith("/user/") ||
-            location.pathname.includes("/admin/dashboard"))
-    ) {
-        return <Navigate to="/api/user/login" />;
+    if (location.pathname === "/") {
+        return <Navigate to={"/user"} />
+    }
+
+    if (!isAuthenticated) {
+        if (
+            location.pathname.startsWith("/user") ||
+            location.pathname.startsWith("/admin/dashboard")
+        ) {
+            return <Navigate to="/api/user/login" />;
+        }
     }
 
     if (isAuthenticated) {
-        if (
-            user?.role === "admin" &&
-            location.pathname.includes("/api/admin")
-        ) {
-            return <Navigate to="admin/dashboard" />;
-        } else if (
-            user?.role === "user" &&
-            location.pathname.startsWith("/api/user")
-        ) {
+        if (user?.role === "user" && location.pathname.startsWith("/api")) {
             return <Navigate to="/user" />;
+           
+        }
+        if (user?.role === "admin" && location.pathname.startsWith("/api")) {
+            return <Navigate to="/admin/dashboard" />;
+        }
+        if (user?.role === "admin" && location.pathname.startsWith("/user")) {
+            return <Navigate to="/admin/dashboard" />;
+        }
+        if (user?.role === "user" && location.pathname.startsWith("/admin/dashboard")) {
+            return <Navigate to="/user"/>
         }
     }
 
-    if (
-        isAuthenticated &&
-        user?.role === "user" &&
-        location.pathname.includes("admin")
-    ) {
-        return <Navigate to="/unauth-page" />;
-    }
-
-    if (
-        isAuthenticated &&
-        user?.role === "admin" &&
-        location.pathname.includes("user")
-    ) {
-        return <Navigate to="/admin/dashboard" />;
+    if (isAuthenticated) {
+        if (user?.role === "admin" && location.pathname.startsWith("/user")) {
+            return <Navigate to="/admin/dashboard" />;
+        } else if (
+            user?.role === "user" &&
+            location.pathname.startsWith("/admin")
+        ) {
+            return <Navigate to="/user" />;
+        }
     }
 
     return <>{children}</>;

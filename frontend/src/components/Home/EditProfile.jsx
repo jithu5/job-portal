@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const initialState = {
     name: "Monkey D luffy",
@@ -70,7 +70,7 @@ function EditUserProfile() {
                                     name="email"
                                     value={input.email}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your email address"
                                 />
                             </div>
@@ -84,7 +84,7 @@ function EditUserProfile() {
                                     name="name"
                                     value={input.name}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your name"
                                 />
                             </div>
@@ -98,7 +98,7 @@ function EditUserProfile() {
                                     name="number"
                                     value={input.number}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your phone number"
                                 />
                             </div>
@@ -112,7 +112,7 @@ function EditUserProfile() {
                                     name="address"
                                     value={input.address}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your address"
                                 />
                             </div>

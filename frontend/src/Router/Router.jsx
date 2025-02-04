@@ -87,7 +87,12 @@ function Router() {
     const router = createBrowserRouter([
         {
             path: "/",
-            element: wrapWithCommonAuth(<App />, { user, isAuthenticated }),
+            element: wrapWithCommonAuth(<App />, {
+                user,
+                isAuthenticated,
+                isLoading,
+                adminIsLoading,
+            }),
             children: [
                 {
                     path: "/user",
