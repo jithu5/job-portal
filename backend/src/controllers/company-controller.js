@@ -313,6 +313,38 @@ const PostJob = asyncHandler(async (req, res) => {
     }
 });
 
+//get all posted jobs
+const GetPostedJob = asyncHandler(async (req, res) =>{
+    const companyId = req.company;
+    try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
+        const jobs = await jobmodel.find({ company: companyId });
+        if (!jobs) {
+            throw new ApiError(404, "No posted jobs found");
+        }
+        const jobIds = jobs.map((job) => job._id);
+        console.log("jobId", jobIds);
+        const applicants = await applicantmodel
+        .find({ jobId: {$in :jobIds} })
+            .populate({
+                path: "jobId",
+            })
+            .populate({
+                path: "userId",
+            });
+        if(applicants.length === 0){
+            return res.json(new ApiResponse(200, [], "No applicants found"));
+        }
+        return res.json(new ApiResponse(200, applicants, "All posted jobs"));
+    }
+    catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
+
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
     let profilepicpath = null;
@@ -505,6 +537,7 @@ const checkCompanynameUnique = asyncHandler(async(req,res)=>{
 module.exports = {
     CRegister,
     GetCompany,
+    GetPostedJob,
     CLogin,
     Sendotp,
     Verifyemail,
