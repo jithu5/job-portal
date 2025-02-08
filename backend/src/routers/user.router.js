@@ -3,7 +3,7 @@ const UserRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,
-    updateProfileAndCover,Homepage,Logout,EditProfile,ApplyJob,Canceljob,GetJobs, 
+    updateProfileAndCover,Homepage,Logout,EditProfile,ApplyJob,Canceljob,GetJobs,sortJobs, 
     checkUsernameUnique,
     GetJobById} = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
@@ -14,6 +14,8 @@ UserRouter.get('/home',nonUserMiddleware,Homepage);
 UserRouter.get('/user',protectUserMiddleware,GetUser);
 
 UserRouter.get('/jobs',protectUserMiddleware,GetJobs);
+
+UserRouter.get('/sortedjobs',protectUserMiddleware,sortJobs);
 
 UserRouter.get('/job/:jobId',protectUserMiddleware,GetJobById);
 
@@ -50,7 +52,7 @@ UserRouter.post('/edit-profile',protectUserMiddleware,EditProfile);
 
 UserRouter.post("/applyjob/:jobId", protectUserMiddleware, ApplyJob);
 
-UserRouter.post('/cancel-job',protectUserMiddleware,Canceljob);
+UserRouter.post('/cancel-job/:jobId',protectUserMiddleware,Canceljob);
 
 
 

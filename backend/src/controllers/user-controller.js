@@ -199,6 +199,20 @@ const GetJobs = asyncHandler(async (req, res) => {
     }
 });
 
+//get first 6 jobs
+const sortJobs = asyncHandler(async (req, res) => {
+    try {
+        const jobs = await jobmodel.find({}).limit(6).sort({ createdAt: -1 });
+        if (!jobs) {
+            throw new ApiError(404, "Jobs not found");
+        }
+        res.json(new ApiResponse(200, jobs, "First 6 jobs fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//get job id
 const GetJobById = asyncHandler(async (req, res) => {
     try {
         const {jobId} = req.params;
@@ -377,55 +391,6 @@ const UpdatePassword = asyncHandler(async (req, res) => {
     }
 });
 
-//upload profile and cover image
-
-// this is not needed 
-
-// const uploadProfileAndCover = asyncHandler(async (req, res) => {
-//     let profilepicpath = null;
-//     let coverpicpath = null;
-//     const userId = req.user;
-//     console.log("user", userId);
-//     if (!req.files) {
-//         throw new ApiError(400, "No file uploaded");
-//     }
-//     try {
-//         profilepicpath = req.files?.profileImage?.[0]?.path;
-//         coverpicpath = req.files?.coverImage?.[0]?.path;
-
-//         //user
-//         const user = await usermodel.findById(userId);
-//         if (!user) {
-//             throw new ApiError(404, "User not found");
-//         }
-
-//         // Validate file existence and upload profile and cover images
-//         if (profilepicpath) {
-//             const profileresponse =
-//                 await cloudinary.uploadImageToCloudinary(profilepicpath);
-//             user.profileImage = profileresponse.secure_url;
-//         }
-//         if (coverpicpath) {
-//             const coverresponse =
-//                 await cloudinary.uploadImageToCloudinary(coverpicpath);
-//             user.coverImage = coverresponse.secure_url;
-//         }
-//         await user.save({ validateBeforeSave: false });
-
-//         return res.json(
-//             new ApiResponse(200, user, "profile pic uploaded successfully")
-//         );
-//     } catch (error) {
-//         if (profilepicpath && fs.existsSync(profilepicpath)) {
-//             fs.unlinkSync(profilepicpath); // delete the file after upload
-//         }
-//         if (coverImage && fs.existsSync(coverImage)) {
-//             fs.unlinkSync(coverImage); // delete the file after upload
-//         }
-//         throw new ApiError(error.statusCode, error.message);
-//     }
-// });
-
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
     let profilepicpath = null;
@@ -511,7 +476,6 @@ const Logout = asyncHandler(async (req, res) => {
     }
 });
 
-
 //edit profile
 const EditProfile = asyncHandler(async (req, res) => {
     const userId = req.user;
@@ -575,22 +539,21 @@ const ApplyJob = asyncHandler(async (req, res) => {
         if (applicant) {
             throw new ApiError(400, "You have already applied for this job");
         }
-        // there is error in here the commente codes
 
-        // const workersNeeded = await job.workersNeeded;
-        // if (job.status === "Closed") {
+        const workersNeeded = await job.workersNeeded;
+        if (job.status === "Closed") {
 
-        //     throw new ApiError(
-        //         400,
-        //         "This job is full. Please try another job or check back later."
-        //     );
-        // }   else if (workersNeeded > 0) {
-        //     await job.workersNeeded--;
-        //     if (job.workersNeeded === 0) {
-        //         job.status = "Closed";
-        //     }
-        //     await job.save();
-        // }
+            throw new ApiError(
+                400,
+                "This job is full. Please try another job or check back later."
+            );
+        }   else if (workersNeeded > 0) {
+            await job.workersNeeded--;
+            if (job.workersNeeded === 0) {
+                job.status = "Closed";
+            }
+            await job.save();
+        }
 
 
         const newApplicant = new applicantmodel({
@@ -611,7 +574,7 @@ const ApplyJob = asyncHandler(async (req, res) => {
 //cancel job
 const Canceljob = asyncHandler(async (req, res) => {
     const userId = req.user;
-    const jobId = req.query.id;
+    const {jobId} = req.params;
     try {
         const user = await usermodel.findById(userId);
         if (!user) {
@@ -643,6 +606,7 @@ const Canceljob = asyncHandler(async (req, res) => {
     }
 });
 
+//check username unique
 const checkUsernameUnique = asyncHandler(async(req,res)=>{
     const username = req.query.username; // Accessing query parameter
 
@@ -666,6 +630,7 @@ module.exports = {
     UserRegister,
     GetUser,
     GetJobs,
+    sortJobs,
     GetJobById,
     UserLogin,
     Sendotp,

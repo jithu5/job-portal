@@ -3,12 +3,14 @@ const CompanyRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
 const { CRegister, GetCompany,CLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,PostJob,
-    uploadProfileAndCover,updateProfileAndCover,Logout,EditProfile,EditJob,Deletejob } = require('../controllers/company-controller.js');
+    updateProfileAndCover,Logout,EditProfile,EditJob,Deletejob,checkCompanynameUnique } = require('../controllers/company-controller.js');
 const protectCompanyMiddleware = require('../middlewares/companyAuth.middleware.js');
 
 
 
 CompanyRouter.get('/company',protectCompanyMiddleware,GetCompany);
+
+CompanyRouter.get('/checkcompanynameunique',checkCompanynameUnique);
 
 CompanyRouter.post('/register',CRegister);
 
@@ -27,16 +29,6 @@ CompanyRouter.post('/updatepassword',UpdatePassword);
 CompanyRouter.post('/postjob',protectCompanyMiddleware,PostJob);
 
 CompanyRouter.post(
-    "/upload-profile-cover",
-    upload.fields([
-        { name: "profileImage", maxCount: 1 },
-        { name: "coverImage", maxCount: 1 },
-    ]),
-    protectCompanyMiddleware,
-    uploadProfileAndCover
-);
-
-CompanyRouter.post(
     "/update-profile-cover",
     upload.fields([
         { name: "profileImage", maxCount: 1 },
@@ -50,8 +42,8 @@ CompanyRouter.post('/logout',protectCompanyMiddleware,Logout);
 
 CompanyRouter.post('/edit-profile',protectCompanyMiddleware,EditProfile);
 
-CompanyRouter.post('/editjob',protectCompanyMiddleware,EditJob);
+CompanyRouter.post('/editjob/:jobId',protectCompanyMiddleware,EditJob);
 
-CompanyRouter.post('/deletejob',protectCompanyMiddleware,Deletejob);
+CompanyRouter.post('/deletejob/:jobId',protectCompanyMiddleware,Deletejob);
 
 module.exports = CompanyRouter;

@@ -313,52 +313,6 @@ const PostJob = asyncHandler(async (req, res) => {
     }
 });
 
-//upload profile and cover image
-const uploadProfileAndCover = asyncHandler(async (req, res) => {
-    let profilepicpath = null;
-    let coverpicpath = null;
-    const companyId = req.company;
-    console.log("company", companyId);
-    if (!req.files) {
-        throw new ApiError(400, "No file uploaded");
-    }
-    try {
-        profilepicpath = req.files?.profileImage?.[0]?.path;
-        coverpicpath = req.files?.coverImage?.[0]?.path;
-
-        //company
-        const company = await companymodel.findById(companyId);
-        if (!company) {
-            throw new ApiError(404, "Company not found");
-        }
-
-        // Validate file existence and upload profile and cover images
-        if (profilepicpath) {
-            const profileresponse =
-                await cloudinary.uploadImageToCloudinary(profilepicpath);
-            company.profileImage = profileresponse.secure_url;
-        }
-        if (coverpicpath) {
-            const coverresponse =
-                await cloudinary.uploadImageToCloudinary(coverpicpath);
-            company.coverImage = coverresponse.secure_url;
-        }
-        await company.save({ validateBeforeSave: false });
-
-        return res.json(
-            new ApiResponse(200, company, "profile pic uploaded successfully")
-        );
-    } catch (error) {
-        if (profilepicpath && fs.existsSync(profilepicpath)) {
-            fs.unlinkSync(profilepicpath); // delete the file after upload
-        }
-        if (coverpicpath && fs.existsSync(coverpicpath)) {
-            fs.unlinkSync(coverpicpath); // delete the file after upload
-        }
-        throw new ApiError(error.statusCode, error.message);
-    }
-});
-
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
     let profilepicpath = null;
@@ -470,9 +424,9 @@ const EditProfile = asyncHandler(async (req, res) => {
     }
 });
 
-//edit job  (getting id as query parameter)
-const EditJob = asyncHandler(async (req, res) => {
-    const jobId = req.query.id;
+//edit job  (getting id as params)
+const EditJob = asyncHandler(async (req, res) => {    
+    const {jobId} = req.params;
     console.log("req", jobId);
     const { title, description, location,district, salary, date, workersCount } =
         req.body;
@@ -508,9 +462,9 @@ const EditJob = asyncHandler(async (req, res) => {
     }
 });
 
-//delete job (getting id as query parameter)
+//delete job (getting id as params)
 const Deletejob = asyncHandler(async (req, res) => {
-    const jobId = req.query.id;
+    const {jobId} = req.params;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
     }
@@ -529,6 +483,25 @@ const Deletejob = asyncHandler(async (req, res) => {
     }
 });
 
+//check company name unique
+const checkCompanynameUnique = asyncHandler(async(req,res)=>{
+    const companyname = req.query.companyname; // Accessing query parameter
+
+    console.log(companyname)
+
+    try {
+        const company = await usermodel.findOne({
+            companyName: companyname,isAccountVerified:true
+        })
+        if(company){
+            return res.json(new ApiResponse(200, true, "companyname already taken"));
+        }
+        return res.json(new ApiResponse(200, true, "companyname available"));
+    } catch (error) {
+        throw new ApiError(500,error?.message)
+    }
+})
+
 module.exports = {
     CRegister,
     GetCompany,
@@ -539,10 +512,10 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     PostJob,
-    uploadProfileAndCover,
     updateProfileAndCover,
     Logout,
     EditProfile,
     EditJob,
     Deletejob,
+    checkCompanynameUnique,
 };
