@@ -1,5 +1,6 @@
 const ApiResponse = require("../utils/ApiResponse.js");
 const ApiError = require("../utils/ApiError.js");
+const mongoose = require("mongoose");
 const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
 const applicantmodel = require("../models/applicants.js");
@@ -226,6 +227,48 @@ const GetJobById = asyncHandler(async (req, res) => {
         throw new ApiError(error.statusCode,error.message)
     }
 });
+
+//get applied jobs
+const AppliedJobs = asyncHandler(async (req, res) => {
+   try{ 
+    const userId = req.user;
+    const application = await applicantmodel.findOne({userId: userId});
+    console.log("Application", application);
+    
+    if (!application) {
+        throw new ApiError(404, "No application found");
+    };
+
+    const jobdetails = await applicantmodel.aggregate([
+        {
+            $match: {
+                userId: new mongoose.Types.ObjectId(userId)
+            }
+        },
+        {
+            $lookup: {
+                from : "jobs",
+                localField : "jobId",
+                foreignField : "_id",
+                as : "jobdetails"
+            }
+        },
+            {
+                $unwind : "$jobdetails"
+            }
+        
+    ]);
+    console.log("jobdetails", jobdetails);
+    if(!jobdetails){
+        throw new ApiError(404,"No applied jobs found")
+    }
+    
+    return res.json(new ApiResponse(200, jobdetails, "applied jobs"))
+} catch(error){
+        throw new ApiError(error.statusCode,error.message);
+    }
+});
+
 
 //send otp
 const Sendotp = asyncHandler(async (req, res) => {
@@ -645,4 +688,5 @@ module.exports = {
     ApplyJob,
     Canceljob,
     checkUsernameUnique,
+    AppliedJobs,
 };

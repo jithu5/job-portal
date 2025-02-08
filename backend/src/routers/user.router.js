@@ -4,7 +4,7 @@ const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,
     updateProfileAndCover,Homepage,Logout,EditProfile,ApplyJob,Canceljob,GetJobs,sortJobs, 
-    checkUsernameUnique,
+    checkUsernameUnique,AppliedJobs,
     GetJobById} = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
@@ -20,6 +20,8 @@ UserRouter.get('/sortedjobs',protectUserMiddleware,sortJobs);
 UserRouter.get('/job/:jobId',protectUserMiddleware,GetJobById);
 
 UserRouter.post('/register',upload.single('idProof'),UserRegister);
+
+UserRouter.get('/appliedjobs',protectUserMiddleware,AppliedJobs);
 
 UserRouter.get('/checkusernameunique',checkUsernameUnique)
 
