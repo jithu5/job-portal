@@ -4,7 +4,7 @@ const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,
     updateProfileAndCover,Homepage,Logout,EditProfile,ApplyJob,Canceljob,GetJobs,sortJobs, 
-    checkUsernameUnique,AppliedJobs,
+    checkUsernameUnique,AppliedJobs,AddToWishlist,GetWishlistJobs,RemoveWishlist,
     GetJobById} = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
@@ -23,7 +23,9 @@ UserRouter.post('/register',upload.single('idProof'),UserRegister);
 
 UserRouter.get('/appliedjobs',protectUserMiddleware,AppliedJobs);
 
-UserRouter.get('/checkusernameunique',checkUsernameUnique)
+UserRouter.get('/checkusernameunique',checkUsernameUnique);
+
+UserRouter.get('/getwishlist',protectUserMiddleware,GetWishlistJobs);
 
 UserRouter.post("/login",UserLogin);
 
@@ -36,6 +38,10 @@ UserRouter.post('/sendresetpassword',SendResetOtp);
 UserRouter.post('/verifyresetotp',VerifyResetOtp);
 
 UserRouter.post('/updatepassword',UpdatePassword);
+
+UserRouter.post('/addtoWishlist/:jobId',protectUserMiddleware,AddToWishlist);
+
+UserRouter.post('/removefromwishlist/:jobId',protectUserMiddleware,RemoveWishlist);
 
 
 UserRouter.post(

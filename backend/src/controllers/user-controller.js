@@ -5,6 +5,7 @@ const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
 const applicantmodel = require("../models/applicants.js");
 const jobmodel = require("../models/jobs.js");
+const wishlistmodel = require("../models/wishlist.js");
 const crypto = require("crypto");
 const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
@@ -668,6 +669,84 @@ const checkUsernameUnique = asyncHandler(async(req,res)=>{
     }
 })
 
+//add job to wish list
+const AddToWishlist = asyncHandler(async(req,res)=>{
+    const userId = req.user;
+    const {jobId} = req.params;
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
+        const wishlist = await wishlistmodel.findOne({
+            userId: userId,
+            jobId: jobId,
+        });
+        if (wishlist) {
+            throw new ApiError(400, "You have already added this job to your wishlist");
+        }
+        const newWishlist = new wishlistmodel({
+            userId: userId,
+            jobId: jobId,
+        });
+        await newWishlist.save();
+        return res.json(
+            new ApiResponse(200, newWishlist, "Job added to wishlist successfully")
+        );
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//view jobs in wishlist
+const GetWishlistJobs = asyncHandler(async(req,res)=>{
+    const userId = req.user;
+    try {
+        const wishlist = await wishlistmodel.find({ userId: {$in : userId}})
+        .populate({
+            path: 'jobId',
+        });
+        if (!wishlist) {
+            throw new ApiError(404, "No wishlist found");
+        }
+        return res.json(
+            new ApiResponse(200, wishlist, "Wishlist fetched successfully")
+        );
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//remove jobs from wishlist
+const RemoveWishlist = asyncHandler(async(req,res)=>{
+    const userId = req.user;
+    const {jobId} = req.params;
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+        const wishlist = await wishlistmodel.findOneAndDelete({
+            userId: userId,
+            jobId: jobId,
+        });
+        if (!wishlist) {
+            throw new ApiError(404, "Wishlist not found or job not in wishlist");
+        }
+        return res.json(
+            new ApiResponse(200, null, "Job removed from wishlist successfully")
+        );
+        
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 
 module.exports = {
     UserRegister,
@@ -689,4 +768,7 @@ module.exports = {
     Canceljob,
     checkUsernameUnique,
     AppliedJobs,
+    AddToWishlist,
+    GetWishlistJobs,
+    RemoveWishlist,
 };
