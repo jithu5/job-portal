@@ -314,7 +314,7 @@ const PostJob = asyncHandler(async (req, res) => {
 });
 
 //get all posted jobs
-const GetPostedJob = asyncHandler(async (req, res) =>{
+const GetAllPostedJob = asyncHandler(async (req, res) => {
     const companyId = req.company;
     try {
         const company = await companymodel.findById(companyId);
@@ -325,20 +325,44 @@ const GetPostedJob = asyncHandler(async (req, res) =>{
         if (!jobs) {
             throw new ApiError(404, "No posted jobs found");
         }
-        const jobIds = jobs.map((job) => job._id);
-        console.log("jobId", jobIds);
+        const NoOfjobs = await jobs.length;
+        const NoOfactivejobs = await jobs.filter(job => job.status === "Active").length;
+        console.log("NoOfActive", NoOfactivejobs);
+        console.log(NoOfjobs);
+        
+        
+        return res.json(new ApiResponse(200,{NoOfactivejobs,NoOfjobs, jobs},"All posted jobs"))
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
+//get applicants
+const GetApplicants = asyncHandler(async (req, res) =>{
+    const companyId = req.company;
+    const {jobId} = req.params;
+    try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
         const applicants = await applicantmodel
-        .find({ jobId: {$in :jobIds} })
+        .find({ jobId: {$in :jobId} })
             .populate({
                 path: "jobId",
             })
             .populate({
                 path: "userId",
+                select: "name email phone address profileImage",
             });
         if(applicants.length === 0){
             return res.json(new ApiResponse(200, [], "No applicants found"));
         }
-        return res.json(new ApiResponse(200, applicants, "All posted jobs"));
+        return res.json(new ApiResponse(200, applicants, "Job Applicants"));
     }
     catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -537,7 +561,8 @@ const checkCompanynameUnique = asyncHandler(async(req,res)=>{
 module.exports = {
     CRegister,
     GetCompany,
-    GetPostedJob,
+    GetAllPostedJob,
+    GetApplicants,
     CLogin,
     Sendotp,
     Verifyemail,
