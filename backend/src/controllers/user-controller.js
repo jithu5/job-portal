@@ -256,6 +256,16 @@ const AppliedJobs = asyncHandler(async (req, res) => {
         },
             {
                 $unwind : "$jobdetails"
+            },
+            {
+                $project : {
+                    _id : "$jobdetails._id",
+                    title : "$jobdetails.title",
+                    company : "$jobdetails.company",
+                    location : "$jobdetails.location",
+                    description : "$jobdetails.description",
+                    createdAt : "$jobdetails.createdAt",
+                }
             }
         
     ]);

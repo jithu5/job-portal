@@ -8,6 +8,7 @@ const AuthSlice = createSlice({
         error: null,
         loading: true,
         appliedJobs: [],
+        wishlist: [],
     },
     reducers: {
         setUser: (state, action) => {
@@ -36,10 +37,38 @@ const AuthSlice = createSlice({
                 state.appliedJobs.push(action.payload);
             }
         },
+        removeAppliedJobs: (state, action) => {
+            const index = state.appliedJobs.findIndex(
+                (job) => job._id === action.payload
+            );
+            if (index > -1) {
+                state.appliedJobs.splice(index, 1);
+            }
+        },
+        setWishlist: (state, action) => {
+            state.wishlist = action.payload;
+        },
+        addWishlist: (state, action) => {
+            // check if it exists in wishlist
+            const wishlistedJob = state.wishlist.find(
+                (job) => job._id === action.payload._id
+            );
+            if (!wishlistedJob) {
+                state.wishlist.push(action.payload);
+            }
+        },
+        removeWishlist: (state, action) => {
+            const index = state.wishlist.findIndex(
+                (job) => job._id === action.payload
+            );
+            if (index > -1) {
+                state.wishlist.splice(index, 1);
+            }
+        }
     },
 });
 
-export const { setUser, clearUserData, setAppliedJobs, addAppliedJobs } =
+export const { setUser, clearUserData, setAppliedJobs, addAppliedJobs,removeAppliedJobs,setWishlist,addWishlist,removeWishlist } =
     AuthSlice.actions;
 
 export default AuthSlice.reducer;

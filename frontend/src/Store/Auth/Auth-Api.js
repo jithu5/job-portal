@@ -129,6 +129,21 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job"],
         }),
+        getAppliedJob: builder.query({
+            query: () => ({
+                url: "appliedjobs",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        }),
+        cancelAppliedJob: builder.mutation({
+            query: (jobId) => ({
+                url: `cancel-job/${jobId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job"],
+        }),
     }),
 });
 
@@ -147,6 +162,8 @@ export const {
     useGetJobByIdQuery,
     useApplyForJobMutation,
     useUploadIagesMutation,
+    useGetAppliedJobQuery,
+    useCancelAppliedJobMutation
 } = UserApi;
 
 export default UserApi;
