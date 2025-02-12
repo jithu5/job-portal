@@ -10,18 +10,35 @@ import {
     Button,
 } from "@mui/material";
 import { Bookmark } from "lucide-react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { addAppliedJobs } from "../../Store/Auth";
 
 function JobDetails() {
     const { jobId } = useParams();
     const { data: job, isLoading, isError } = useGetJobByIdQuery(jobId);
+    const [ applyForJob ] = useApplyForJobMutation()
+    const dispatch = useDispatch()
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
 
-    const handleApply = async (job) => {
-        console.log(job)
-    }
+      const handleApply = async (job) => {
+          try {
+              const response = await applyForJob(job._id).unwrap();
+              console.log(response);
+              if (!response.success) {
+                  toast.error(response.message);
+                  return;
+              }
+              dispatch(addAppliedJobs(job));
+              toast.success(response.message);
+          } catch (error) {
+              console.log(error);
+              toast.error("Failed to apply");
+          }
+      };
 
     if (isLoading) {
         return (
@@ -92,7 +109,7 @@ function JobDetails() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleApply(job.data)}
+                            onClick={() => handleApply(job.data._id)}
                         >
                             APPLY
                         </Button>

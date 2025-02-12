@@ -2,11 +2,11 @@ import  { useState, useEffect, useCallback, useMemo } from "react";
 import { JobHeader, JobSideBar } from "../../components/index";
 import { Box, Button } from "@mui/material";
 import _ from "lodash"; // For debounce/throttle functions
-import { useApplyForJobMutation, useGetJobsQuery } from "../../Store/Auth/Auth-Api";
+import { useAddToWishlistMutation, useApplyForJobMutation, useGetJobsQuery } from "../../Store/Auth/Auth-Api";
 import { Bookmark, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addAppliedJobs } from "../../Store/Auth";
+import { addAppliedJobs,addWishlist } from "../../Store/Auth";
 import { toast } from "react-toastify";
 
 
@@ -32,6 +32,8 @@ const SearchJobs = () => {
 
     const { data: datas, isLoading, isError } = useGetJobsQuery();
     const [ applyForJob ] = useApplyForJobMutation()
+        const [addToWishlist] = useAddToWishlistMutation();
+    
 
     useEffect(() => {
         if (datas?.data && !isLoading) {
@@ -114,6 +116,23 @@ const SearchJobs = () => {
             console.log(error)
             toast.error('Failed to apply');
         }
+    }
+
+    async function addWishlistFn(job) {
+        try {
+            const response = await addToWishlist(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
+            }
+            dispatch(addWishlist(job));
+            toast.success(response.message);
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to add to wishlist");
+        }
+        
     }
 
     if (isLoading) {

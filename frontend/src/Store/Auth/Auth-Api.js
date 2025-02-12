@@ -144,6 +144,14 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job"],
         }),
+        addToWishlist: builder.mutation({
+            query: (jobId) => ({
+                url: `addtoWishlist/${jobId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job"],
+        }),
     }),
 });
 
@@ -163,7 +171,8 @@ export const {
     useApplyForJobMutation,
     useUploadIagesMutation,
     useGetAppliedJobQuery,
-    useCancelAppliedJobMutation
+    useCancelAppliedJobMutation,
+    useAddToWishlistMutation,
 } = UserApi;
 
 export default UserApi;
