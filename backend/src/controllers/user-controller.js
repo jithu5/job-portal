@@ -265,6 +265,7 @@ const AppliedJobs = asyncHandler(async (req, res) => {
                     location : "$jobdetails.location",
                     description : "$jobdetails.description",
                     createdAt : "$jobdetails.createdAt",
+                    status : "$jobdetails.status",
                 }
             }
         
@@ -717,10 +718,35 @@ const AddToWishlist = asyncHandler(async(req,res)=>{
 const GetWishlistJobs = asyncHandler(async(req,res)=>{
     const userId = req.user;
     try {
-        const wishlist = await wishlistmodel.find({ userId: {$in : userId}})
-        .populate({
-            path: 'jobId',
-        });
+        const wishlist = await wishlistmodel.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "jobId",
+                    foreignField: "_id",
+                    as: "wishlist",
+                },
+            },
+            {
+                $unwind: "$wishlist",
+            },
+            {
+                $project: {
+                    _id: "$wishlist._id",
+                    title : "$wishlist.title",
+                    company : "$wishlist.company",
+                    location : "$wishlist.location",
+                    description : "$wishlist.description",
+                    createdAt : "$wishlist.createdAt",
+                    status : "$wishlist.status",
+                },
+            },
+        ])
         if (!wishlist) {
             throw new ApiError(404, "No wishlist found");
         }
