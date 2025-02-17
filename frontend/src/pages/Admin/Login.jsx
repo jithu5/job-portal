@@ -24,7 +24,9 @@ function AdminLogin() {
         console.log(data);
         try {
             const response = await loginAdmin(data).unwrap();
+            console.log(response);
             if (!response.success) {
+                console.log(response.error.data);
                 toast.error(response.message);
             }
             toast.success(response.message);
@@ -36,6 +38,7 @@ function AdminLogin() {
 
             reset();
         } catch (error) {
+            console.log(error);
             toast.error(error);
         }
     };

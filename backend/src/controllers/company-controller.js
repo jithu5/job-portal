@@ -25,10 +25,20 @@ const CRegister = asyncHandler(async (req, res) => {
             $or: [{ companyName: companyName }, { email: email }],
         });
 
-        if (ExistingC) {
+        if (ExistingC && ExistingC.isAccountVerified) {
             throw new ApiError(400, "User already exists");
         }
-
+        //check company verified or not verified
+        if (ExistingC && !ExistingC.isAccountVerified){
+            const Company = await ExistingC.updateOne({
+                companyName: companyName,
+                email: email,
+                address: address,
+                phone: phone,
+                password: password,
+            })
+            await Company.save();
+        }
         // create user
         const newcompany = new companymodel({
             companyName: companyName,
@@ -70,6 +80,9 @@ const CLogin = asyncHandler(async (req, res) => {
         const isMatch = await company.comparePassword(password);
         if (!isMatch) {
             throw new ApiError(401, "Invalid email or password");
+        }
+        if (!company.isAccountVerified){
+            throw new ApiError(401, "Account is not verified");
         }
         const token = await company.generateToken();
         const cookieOptions = {

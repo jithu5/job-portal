@@ -237,7 +237,7 @@ const AppliedJobs = asyncHandler(async (req, res) => {
     console.log("Application", application);
     
     if (!application) {
-        throw new ApiError(404, "No application found");
+        return res.json(new ApiResponse(200,null,"No Applied Jobs found"));
     };
 
     const jobdetails = await applicantmodel.aggregate([

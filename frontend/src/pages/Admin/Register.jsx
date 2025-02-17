@@ -19,18 +19,21 @@ function AdminRegister() {
     const onSubmit = async (data) => {
         console.log("Submitting Data:", data);
         try {
-            const response = await registerAdmin(data);
+            const response = await registerAdmin(data)
             console.log(response);
             if (!response.data.success) {
-                toast.error(response.data.message);
-               
+                toast.error(response.error.data.message);
+                console.log(response.error.data.message);
+        
             }
-            console.log(response.data.data);
+            console.log(response);
             dispatch(setUser(response.data.data));
             toast.success(response.data.message);
             navigate("/api/admin/verify",{state:{email:response.data.data.email}});
         } catch (error) {
-            toast.error("Error during registration:", error);
+            // toast.error("Error during registration:", error);
+            console.log('hello!', error);
+            console.log(error);
         }
     };
 
