@@ -146,12 +146,12 @@ const UserLogin = asyncHandler(async (req, res) => {
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
-        if (!user && !user.isAccountVerified) {
+        if (!user || !user.isAccountVerified) {
             throw new ApiError(401, "user not found or not verified");
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            throw new ApiError(401, "Invalid credentials s");
+            throw new ApiError(401, "Invalid credentials");
         }
         const token = await user.generateToken();
 
@@ -168,8 +168,14 @@ const UserLogin = asyncHandler(async (req, res) => {
         );
         console.log("after successful login");
     } catch (error) {
-        console.log(error);
-        throw new ApiError(error.statusCode, error.message);
+          console.error("Login error:", {
+              statusCode: error.statusCode || 500,
+              errors: error.errors || [],
+              data: error.data || null,
+              success: false,
+              message: error.message || "Error in login",
+          });
+         throw new ApiError(error.statusCode,error.message);
     }
 });
 

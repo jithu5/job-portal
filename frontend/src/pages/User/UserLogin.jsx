@@ -23,21 +23,27 @@ function UserLogin() {
         console.log("Login Data:", data);
         try {
             const response = await loginUser(data).unwrap();
-            console.log(response);
+            console.log("API Response:", response);
+
             if (!response.success) {
                 toast.error(response.message);
                 return;
             }
+
             reset();
             toast.success(response.message);
+
             setTimeout(() => {
                 dispatch(setUser(response.data));
                 navigate("/user");
             }, 1200);
         } catch (error) {
-            toast.error(error);
+            console.error("Login Error Response:", error);
+            const errorMessage = error?.data?.message || "Something went wrong";
+            toast.error(errorMessage);
         }
     };
+
 
     return (
         <div className="min-h-screen flex items-center justify-center">
