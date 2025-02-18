@@ -197,7 +197,38 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
-        const Alljobs = await jobmodel.find({});
+        const Alljobs = await jobmodel.aggregate([         
+            {   
+                $lookup : {
+                    from : "companies",
+                    localField : "company",
+                    foreignField : "_id",
+                    as : "companydetails"
+                }, 
+            },
+            {
+                $unwind : "$companydetails",
+                
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    salary: 1,
+                    workersCount: 1,
+                    workersNeeded: 1,
+                    status: 1,
+                    company: "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage"
+                },
+            }
+        ]);
         if (!Alljobs) {
             throw new ApiError(404, "Job not found");
         }
@@ -264,14 +295,26 @@ const AppliedJobs = asyncHandler(async (req, res) => {
                 $unwind : "$jobdetails"
             },
             {
+                $lookup : {
+                    from : "companies",
+                    localField : "jobdetails.company",
+                    foreignField : "_id",
+                    as : "companydetails"
+                }
+            },
+            {
+                $unwind : "$companydetails"
+            },
+            {
                 $project : {
                     _id : "$jobdetails._id",
                     title : "$jobdetails.title",
-                    company : "$jobdetails.company",
                     location : "$jobdetails.location",
                     description : "$jobdetails.description",
                     createdAt : "$jobdetails.createdAt",
                     status : "$jobdetails.status",
+                    company : "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage",
                 }
             }
         
@@ -742,14 +785,26 @@ const GetWishlistJobs = asyncHandler(async(req,res)=>{
                 $unwind: "$wishlist",
             },
             {
+                $lookup : {
+                    from : "companies",
+                    localField : "wishlist.company",
+                    foreignField : "_id",
+                    as : "companydetails"
+                }
+            },
+            {
+                $unwind : "$companydetails"
+            },
+            {
                 $project: {
                     _id: "$wishlist._id",
                     title : "$wishlist.title",
-                    company : "$wishlist.company",
                     location : "$wishlist.location",
                     description : "$wishlist.description",
                     createdAt : "$wishlist.createdAt",
                     status : "$wishlist.status",
+                    company : "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage",
                 },
             },
         ])
