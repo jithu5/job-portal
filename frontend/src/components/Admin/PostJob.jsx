@@ -24,6 +24,23 @@ function AdminPostJob() {
           "Night (7 PM - 12 AM)": ["19:00", "23:59"],
       };
 
+         const keralaDistricts = [
+             "Thiruvananthapuram",
+             "Kollam",
+             "Pathanamthitta",
+             "Alappuzha",
+             "Kottayam",
+             "Idukki",
+             "Ernakulam",
+             "Thrissur",
+             "Palakkad",
+             "Malappuram",
+             "Kozhikode",
+             "Wayanad",
+             "Kannur",
+             "Kasaragod",
+         ];
+
 
     const onSubmit = async (data) => {
         console.log(data);
@@ -103,6 +120,19 @@ function AdminPostJob() {
                             Location is required
                         </p>
                     )}
+
+                    { /* district */}
+                    <select
+                        className="border-2 border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-primary"
+                        {...register("district", { required: true })}
+                    >
+                        <option value="">Select District</option>
+                        {keralaDistricts.map((district) => (
+                            <option key={district} value={district}>
+                                {district}
+                            </option>
+                        ))}
+                    </select>
 
                     {/* Date */}
                     <input

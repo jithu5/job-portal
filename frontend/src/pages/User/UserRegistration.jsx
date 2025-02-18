@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,7 +15,7 @@ const UserRegistration = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [checkUsernameMessage, setCheckUsernameMessage] = useState("");
-    const [isChecking, setisChecking] = useState(false)
+    const [isChecking, setisChecking] = useState(false);
 
     const dispatch = useDispatch();
     const [registerUser] = useRegisterUserMutation();
@@ -31,13 +31,12 @@ const UserRegistration = () => {
         formState: { errors, isSubmitting },
     } = useForm();
 
-    
     useEffect(() => {
-        setCheckUsernameMessage('')
-        setisChecking(false)
+        setCheckUsernameMessage("");
+        setisChecking(false);
         async function checkusernameunique() {
             if (username.length >= 5) {
-                setisChecking(true)
+                setisChecking(true);
                 try {
                     const response = await checkUsernameUnique(username);
                     console.log(response.data.message);
@@ -48,9 +47,8 @@ const UserRegistration = () => {
                     }
                 } catch (error) {
                     console.error(error);
-                }
-                finally{
-                    setisChecking(false)
+                } finally {
+                    setisChecking(false);
                 }
             }
         }
@@ -86,19 +84,16 @@ const UserRegistration = () => {
         try {
             const response = await registerUser(userData).unwrap();
             console.log(response);
-            if (!response.success) {
-                toast.error(response.message);
-                return;
-            }
             toast.success(response.message);
-            setTimeout(() => {
-                dispatch(setUser(response.data));
-                navigate("/api/user/verify", {
-                    state: { email: response.data.data.email },
-                });
-            }, 1000);
+
+            console.log("verification");
+            dispatch(setUser(response.data));
+            navigate("/api/user/verify", {
+                state: { email: response.data.email },
+            });
         } catch (error) {
-            toast.error("Error during registration:", error);
+            const errMessage = error.data.message;
+            toast.error(errMessage || "Error while registering");
         }
     };
 
@@ -152,18 +147,14 @@ const UserRegistration = () => {
                                 placeholder="Enter your username"
                                 onChange={handleUsernameChange}
                             />
-                            {
-                                isChecking && (
-                                    <Loader2 className="inline-block ml-2 w-4 h-4 animate-spin" />
-                                )
-                            }
-                            {
-                                checkUsernameMessage && (
-                                    <p className="text-blue-600 text-sm mt-1">
-                                        {checkUsernameMessage}
-                                    </p>
-                                )
-                            }
+                            {isChecking && (
+                                <Loader2 className="inline-block ml-2 w-4 h-4 animate-spin" />
+                            )}
+                            {checkUsernameMessage && (
+                                <p className="text-blue-600 text-sm mt-1">
+                                    {checkUsernameMessage}
+                                </p>
+                            )}
                             {errors.username && (
                                 <p className="text-red-600 text-sm mt-1">
                                     {errors.username.message}

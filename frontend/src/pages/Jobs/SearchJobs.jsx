@@ -13,10 +13,8 @@ import { toast } from "react-toastify";
 
 const SearchJobs = () => {
     const [filterInput, setFilterInput] = useState({
-        Title: "",
-        Salary: 0,
-        Place: "",
-        Type: "",
+        district: "",
+        shift: "",
     });
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [currentJobs, setCurrentJobs] = useState([]);
@@ -37,6 +35,7 @@ const SearchJobs = () => {
 
     useEffect(() => {
         if (datas?.data && !isLoading) {
+            console.log(datas.data)
             setAllJobs(datas?.data);
         }
     }, [datas, isLoading]);
@@ -47,61 +46,25 @@ const SearchJobs = () => {
         }
     }, [isError]);
 
-    const filterJobs = useMemo(() => {
-        return allJobs.filter((job) => {
-            // Check if job properties are defined before calling toLowerCase
-            const title = job.title ? job.title.toLowerCase() : "";
-            const place = job.place ? job.place.toLowerCase() : "";
-            const type = job.type ? job.type.toLowerCase() : "";
-
-            return (
-                title.includes(filterInput.Title.toLowerCase()) &&
-                job.salary >= filterInput.Salary &&
-                place.includes(filterInput.Place.toLowerCase()) &&
-                type.includes(filterInput.Type.toLowerCase())
-            );
-        });
-    }, [filterInput, allJobs]);
-
-
-    const loadMoreJobs = useCallback(() => {
-        if (loading || filteredJobs.length === currentJobs.length) return;
-
-        setLoading(true);
-        setTimeout(() => {
-            const newJobs = filteredJobs.slice(
-                currentJobs.length,
-                currentJobs.length + itemsPerPage
-            );
-            setCurrentJobs((prevJobs) => [...prevJobs, ...newJobs]);
-            setLoading(false);
-        }, 2000);
-    }, [loading, filteredJobs, currentJobs]);
-
-    const handleScroll = useCallback(
-        _.throttle(() => {
-            const { scrollHeight, scrollTop, clientHeight } =
-                document.documentElement;
-            if (scrollHeight - scrollTop <= clientHeight + 20) {
-                loadMoreJobs();
-            }
-        }, 300),
-        [loadMoreJobs]
-    );
-
-    useEffect(() => {
-        setFilteredJobs(filterJobs);
-    }, [filterJobs]);
+  useEffect(() => {
+      setFilteredJobs(
+          allJobs.filter(
+              (job) =>
+                  job.district
+                      ?.toLowerCase()
+                      .includes(filterInput.district.toLowerCase()) &&
+                  job.shift
+                      ?.toLowerCase()
+                      .includes(filterInput.shift.toLowerCase())
+          )
+      );
+  }, [filterInput, allJobs]);
 
     useEffect(() => {
         setCurrentJobs(filteredJobs.slice(0, itemsPerPage));
     }, [filteredJobs]);
 
-    useEffect(() => {
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, [handleScroll]);
-
+    
     const handleApply = async(job)=>{
         try {
             const response = await applyForJob(job._id).unwrap();
@@ -117,7 +80,7 @@ const SearchJobs = () => {
             toast.error('Failed to apply');
         }
     }
-
+    
     async function addWishlistFn(job) {
         try {
             const response = await addToWishlist(job._id).unwrap();
@@ -134,6 +97,36 @@ const SearchJobs = () => {
         }
         
     }
+    
+    const loadMoreJobs = useCallback(() => {
+        if (loading || filteredJobs.length === currentJobs.length) return;
+        
+        setLoading(true);
+        setTimeout(() => {
+            const newJobs = filteredJobs.slice(
+                currentJobs.length,
+                currentJobs.length + itemsPerPage
+            );
+            setCurrentJobs((prevJobs) => [...prevJobs, ...newJobs]);
+            setLoading(false);
+        }, 2000);
+    }, [loading, filteredJobs, currentJobs]);
+    
+    const handleScroll = useCallback(
+        _.throttle(() => {
+            const { scrollHeight, scrollTop, clientHeight } =
+            document.documentElement;
+            if (scrollHeight - scrollTop <= clientHeight + 20) {
+                loadMoreJobs();
+            }
+        }, 300),
+        [loadMoreJobs]
+    );
+    
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, [handleScroll]);
 
     if (isLoading) {
         return (
@@ -162,7 +155,7 @@ const SearchJobs = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
-                onFilterChange={filterJobs}
+                onFilterChange={allJobs}
             />
             <JobSideBar
                 openFilter={openFilter}
@@ -176,10 +169,8 @@ const SearchJobs = () => {
                 }
                 clearInput={() =>
                     setFilterInput({
-                        Title: "",
-                        Salary: 0,
-                        Place: "",
-                        Type: "",
+                        district: "",
+                        shift: "",
                     })
                 }
             />
@@ -192,7 +183,7 @@ const SearchJobs = () => {
                         <p className="text-md md:text-lg text-center text-red-600 my-10">
                             {error}
                         </p>
-                    ) : filteredJobs.length === 0 ? (
+                    ) : allJobs.length === 0 ? (
                         <p className="text-md md:text-lg text-center font-Oswald my-10">
                             No jobs found matching your search criteria.
                         </p>

@@ -4,8 +4,6 @@ import {
     Button,
     DialogTitle,
     Drawer,
-    Slider,
-    TextField,
     MenuItem,
     Select,
     InputLabel,
@@ -18,9 +16,33 @@ function JobSideBar({
     setOpenFilter,
     filterInput,
     handleChange,
-    handlFilterChange,
     clearInput,
 }) {
+    const shiftTimings = {
+        "Morning (6 AM - 12 PM)": ["06:00", "12:00"],
+        "Afternoon (12 PM - 4 PM)": ["12:00", "16:00"],
+        "Evening (4 PM - 7 PM)": ["16:00", "19:00"],
+        "Night (7 PM - 12 AM)": ["19:00", "23:59"],
+    };
+
+    const keralaDistricts = [
+        "Thiruvananthapuram",
+        "Kollam",
+        "Pathanamthitta",
+        "Alappuzha",
+        "Kottayam",
+        "Idukki",
+        "Ernakulam",
+        "Thrissur",
+        "Palakkad",
+        "Malappuram",
+        "Kozhikode",
+        "Wayanad",
+        "Kannur",
+        "Kasaragod",
+    ];
+
+
     return (
         <Drawer
             variant="temporary"
@@ -48,79 +70,51 @@ function JobSideBar({
                     />
                 </div>
 
-                <form>
-                    {/* Title Filter */}
-                    <TextField
-                        label="Job Title"
-                        variant="outlined"
-                        fullWidth
-                        value={filterInput.Title}
-                        onChange={handleChange}
-                        name="Title"
-                        sx={{ mb: 2 }}
-                    />
-
-                    {/* Salary Range Filter */}
-                    <div className="w-[60%] flex flex-col gap-3 mx-auto">
-                        <p>Salary Range</p>
-                        <Slider
-                            value={filterInput.Salary} // default to 0 if no min salary is selected
-                            onChange={handleChange}
-                            valueLabelDisplay="auto"
-                            valueLabelFormat={(value) => `$${value}`}
-                            name="Salary"
-                            min={0}
-                            max={2000}
-                            sx={{ mb: 2 }}
-                        />
-                    </div>
-
-                    {/* Place Filter */}
-                    <FormControl fullWidth sx={{ mb: 2 }}>
-                        <InputLabel>Place</InputLabel>
+                <form className="w-full flex flex-col items-center gap-10 text-secondary">
+                    <FormControl className="w-[90%]">
+                        <InputLabel id="shift-label">District</InputLabel>
                         <Select
-                            value={filterInput.Place}
+                            name="district"
+                            value={filterInput.district}
+                            label="District"
                             onChange={handleChange}
-                            name="Place"
                         >
-                            <MenuItem value="New York">New York</MenuItem>
-                            <MenuItem value="San Francisco">
-                                San Francisco
-                            </MenuItem>
-                            <MenuItem value="Los Angeles">Los Angeles</MenuItem>
-                            <MenuItem value="Chicago">Chicago</MenuItem>
-                            <MenuItem value="Austin">Austin</MenuItem>
+                            {keralaDistricts.map(district =>(
+                                <MenuItem key={district} value={district}>
+                                    {district}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
 
-                    {/* Job Type Filter */}
-                    <TextField
-                        label="Job Type"
-                        variant="outlined"
-                        fullWidth
-                        value={filterInput.Type}
-                        onChange={handleChange}
-                        name="Type"
-                        sx={{ mb: 2 }}
-                    />
+                    <FormControl className="w-[90%]">
+                        <InputLabel id="shift-label">Shift</InputLabel>
+                        <Select
+                            name="shift"
+                            label="Shift"
+                            value={filterInput.shift}
+                            onChange={handleChange}
+                        >
+                            {Object.keys(shiftTimings).map((shift) => (
+                                <MenuItem key={shift} value={shift}>
+                                    {shift}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
 
-                    <Button
+                    {/* <Button
                         variant="contained"
                         color="primary"
                         fullWidth
                         onClick={() => {
-                            setOpenFilter(false);
-                            handlFilterChange();
+                            setOpenFilter(false)
                         }}
                         sx={{ mt: 2 }}
                     >
                         Apply Filters
-                    </Button>
-                    <Button
-                        onClick={clearInput}
-                        sx={{ mt: 2 }}
-                        color="error"
-                    >
+                    </Button> */}
+                    <Button onClick={clearInput} sx={{ mt: 2 }} color="error">
                         clear
                     </Button>
                 </form>
