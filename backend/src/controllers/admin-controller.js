@@ -1,10 +1,33 @@
-const ApiError = require('../utils/ApiError');
-const ApiResponse = require('../utils/ApiResponse');
-const asyncHandler = require('../utils/Asynchandler');
-const usermodel = require('../models/usermodel');
-const companymodel = require('../models/companymodel');
-const adminmodel = require('../models/adminmodel');
+const ApiError = require('../utils/ApiError.js');
+const ApiResponse = require('../utils/ApiResponse.js');
+const asyncHandler = require('../utils/Asynchandler.js');
+const usermodel = require('../models/usermodel.js');
+const companymodel = require('../models/company.js');
+const adminmodel = require('../models/admin.js');
 
+
+//register
+const Register = asyncHandler(async(req,res) => {
+    try {
+        const {name, email, password} = req.body;
+        const existingAdmin = await adminmodel.findOne({email});
+        if(existingAdmin) {
+            throw new ApiError(400, 'Admin already exists');
+        }
+        const newAdmin = await adminmodel.create({name, email, password});
+        const token = newAdmin.generateToken();
+        const cookieOptions = {
+            expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+        }
+    return res.cookie("adminToken", token, cookieOptions).json(
+        new ApiResponse(201, newAdmin, "Admin registered successfully"));
+    }catch{
+        throw new ApiError(500, 'Server error');
+    }
+});
 
 //login
 const Login = asyncHandler(async(req,res)=>{
@@ -15,7 +38,7 @@ const Login = asyncHandler(async(req,res)=>{
     if(!admin ||!isMatch){
         throw new ApiError(401, 'Invalid email or password');
     }
-    const token = admin.generateToken();
+    const token = await admin.generateToken();
     const cookieOptions = {
         expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
         httpOnly: true,
@@ -23,7 +46,7 @@ const Login = asyncHandler(async(req,res)=>{
         sameSite: "lax",
     };
 
-    return res.cookie("userToken", token, cookieOptions).json(
+    return res.cookie("adminToken", token, cookieOptions).json(
         new ApiResponse(200, admin, "Admin logged in successfully")
     );
    } catch (error) {
@@ -72,6 +95,7 @@ const Logout = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
+    Register,
     Login,
     GetUsers,
     GetCompany,

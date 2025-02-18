@@ -1,15 +1,17 @@
 const express = require('express');
 const AdminRouter = express.Router();
-const { Login,GetUsers,GetCompany,Logout }= require('../controllers/admin-controller');
+const ProtectAdminMiddleware = require("../middlewares/adminAuth.middleware.js");
+const { Register,Login,GetUsers,GetCompany,Logout }= require("../controllers/admin-controller.js");
 
 
-// Route to handle admin login
+AdminRouter.post('/register', Register);
+
 AdminRouter.post('/login', Login);
 
-AdminRouter.get('/getusers', GetUsers);
+AdminRouter.get('/getusers',ProtectAdminMiddleware, GetUsers);
 
-AdminRouter.get('/getcompany', GetCompany);
+AdminRouter.get('/getcompany',ProtectAdminMiddleware, GetCompany);
 
-AdminRouter.post('/logout', Logout);
+AdminRouter.post('/logout',ProtectAdminMiddleware, Logout);
 
 module.exports = AdminRouter;

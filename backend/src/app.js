@@ -6,6 +6,7 @@ const cors = require('cors');
 const path = require('path');
 const UserRouter = require('./routers/user.router.js');
 const CompanyRouter = require('./routers/company.router.js');
+const AdminRouter = require('./routers/admin.router.js');
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // routes
 app.use("/api/auth/user", UserRouter);
 app.use("/api/auth/company", CompanyRouter);
+app.use("/api/auth/admin", AdminRouter);
 
 
 // error handlers
