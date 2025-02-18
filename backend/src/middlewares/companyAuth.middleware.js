@@ -15,7 +15,6 @@ const protectCompanyMiddleware = asyncHandler(async (req, res, next) => {
         token = req.headers.authorization.split(" ")[1]; // Get token from Authorization header
     }
 
-    console.log('company token' + token);
     if (!token) {
         return next(new ApiError(401, "Not authorized, no token"));
     }

@@ -4,6 +4,8 @@ const asyncHandler = require('../utils/Asynchandler.js');
 const usermodel = require('../models/usermodel.js');
 const companymodel = require('../models/company.js');
 const adminmodel = require('../models/admin.js');
+const jobsmodel = require('../models/jobs.js');
+const applicantmodel = require('../models/applicants.js');
 
 
 //register
@@ -78,6 +80,42 @@ const GetCompany = asyncHandler(async (req, res) => {
     }
 });
 
+//delete user
+const DeleteUser = asyncHandler(async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const user = await usermodel.findByIdAndDelete(userId);
+        if (!user) {
+            return res.json(new ApiResponse(404, "User not found"));
+        }
+        const applicant = await applicantmodel.findByIdAndDelete(userId);
+        if (!applicant) {
+            return res.json(new ApiResponse(404, "Applicant not found"));
+        }
+        return res.json(new ApiResponse(200, user, "User deleted successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
+    }
+});
+
+//delete company
+const DeleteCompany = asyncHandler(async(req,res) => {
+    const { companyId } = req.params;
+    try {
+        const company = await companymodel.findByIdAndDelete(companyId);
+        if (!company) {
+            return res.json(new ApiResponse(404, "Company not found"));
+        }
+        const jobs = await jobsmodel.findByIdAndDelete({company : companyId});
+        if (!jobs) {
+            return res.json(new ApiResponse(404, "Jobs not found"));
+        }
+        return res.json(new ApiResponse(200, company, "Company deleted successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
+    }
+})
+
 const Logout = asyncHandler(async (req, res) => {
     try {
         res.clearCookie("adminToken", {
@@ -99,5 +137,7 @@ module.exports = {
     Login,
     GetUsers,
     GetCompany,
+    DeleteUser,
+    DeleteCompany,
     Logout,
 }

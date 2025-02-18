@@ -35,7 +35,7 @@ const UserRegister = asyncHandler(async (req, res) => {
         }
     };
     const age = await calculateage(dob);
-
+    console.log("age",age);
     if (
         !username ||
         !name ||
@@ -599,7 +599,6 @@ const EditProfile = asyncHandler(async (req, res) => {
                 _id: userId,
             },
             {
-                username: username || user.username,
                 name: name || user.name,
                 address: address || user.address,
                 phone: phone || user.phone,
