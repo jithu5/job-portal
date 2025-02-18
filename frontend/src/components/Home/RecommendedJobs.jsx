@@ -8,6 +8,8 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Navigation, Pagination } from "swiper/modules";
+import { useGetNewJobsQuery } from "../../Store/Auth/Auth-Api";
+import { useEffect, useState } from "react";
 
 const jobListings = [
     {
@@ -120,12 +122,22 @@ const jobListings = [
 
 function RecommendedJobs() {
     const firstEightJobs = jobListings.slice(0, 8);
+    const { data,isFetching} = useGetNewJobsQuery()
+    const [newJobs, setNewJobs] = useState([])
+
+    useEffect(() => {
+        if (data?.data &&!isFetching) {
+            console.log(data.data)
+            setNewJobs(data.data);
+        }
+    }, [data])
+    
 
     return (
         <>
             <div className="w-full mt-10 md:mt-20 px-2 md:px-10 mb-10 md:mb-20">
                 <h1 className="text-4xl font-semibold font-Abel">
-                    JOBS OR YOU
+                    NEW JOBS
                 </h1>
                 <div className="w-full mt-10 md:mt-20">
                     <Swiper

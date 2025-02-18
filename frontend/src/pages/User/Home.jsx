@@ -57,7 +57,7 @@ const onboardingSteps = [
 
 function Home() {
     const { user: currentUser } = useSelector((state) => state.Auth);
- 
+
     const parentVariants = {
         hidden: {
             opacity: 1,
@@ -112,7 +112,7 @@ function Home() {
                         </motion.div>
                         {currentUser ? (
                             <AnimationButton
-                            destination={"/user/jobs"}
+                                destination={"/user/jobs"}
                                 bgColor={"third"}
                                 colorCode={"#9263f3"}
                             >
@@ -146,10 +146,17 @@ function Home() {
                         />
                     </div>
                 </div>
-                <ScrollLine />
-                <HowToUse onboardingSteps={onboardingSteps} />
-                <ScrollLine />
-                <RecommendedJobs />
+                {!currentUser ? (
+                    <>
+                        <ScrollLine />
+                        <HowToUse onboardingSteps={onboardingSteps} />
+                    </>
+                ) : (
+                    <>
+                        <ScrollLine />
+                        <RecommendedJobs />
+                    </>
+                )}
                 <ScrollLine />
                 <AboutUs />
             </main>

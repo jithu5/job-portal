@@ -152,6 +152,13 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job"],
         }),
+        getNewJobs: builder.query({
+            query: () => ({
+                url: "newjobs",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        })
     }),
 });
 
@@ -173,6 +180,7 @@ export const {
     useGetAppliedJobQuery,
     useCancelAppliedJobMutation,
     useAddToWishlistMutation,
+    useGetNewJobsQuery
 } = UserApi;
 
 export default UserApi;

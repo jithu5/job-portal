@@ -5,6 +5,8 @@ import {
 } from "../../Store/Auth/Auth-Api";
 import { useEffect } from "react";
 import { removeAppliedJobs, setAppliedJobs } from "../../Store/Auth";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 function UserJobHistory() {
     // Sample job history data
@@ -22,7 +24,7 @@ function UserJobHistory() {
                 dispatch(setAppliedJobs(data.data));
             }
         }
-    });
+    },[data]);
 
     async function cancelJob(id) {
         try {
@@ -32,19 +34,28 @@ function UserJobHistory() {
                 return;
             }
             dispatch(removeAppliedJobs(id))
+            toast.success(response.message)
         } catch (error) {
             console.log(error);
+            const errMessage = error?.data?.message || "Error in deleting applied job"
+            toast.error(errMessage)
         }
     }
+
 
     return (
         <div className="w-full p-4 min-h-screen">
             <h1 className="text-xl font-bold mb-4 text-center">Job History</h1>
             <div className="flex flex-col gap-4">
-                {appliedJobs.length === 0 && (
+                {appliedJobs.length === 0 && !isFetching && (
                     <p className="tet-md sm:text-lg md:text-xl font-semibold text-center my-10">
                         No Jobs you have applied
                     </p>
+                )}
+                {isFetching && (
+                    <div className="w-full flex justify-center mt-10">
+                        <Loader2 className="w-8 h-8 animate-spin mt-10"/>
+                    </div>
                 )}
                 {appliedJobs.map((job) => (
                     <div

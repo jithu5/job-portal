@@ -15,7 +15,7 @@ UserRouter.get('/user',protectUserMiddleware,GetUser);
 
 UserRouter.get('/jobs',protectUserMiddleware,GetJobs);
 
-UserRouter.get('/sortedjobs',protectUserMiddleware,sortJobs);
+UserRouter.get("/newjobs", protectUserMiddleware, sortJobs);
 
 UserRouter.get('/job/:jobId',protectUserMiddleware,GetJobById);
 
