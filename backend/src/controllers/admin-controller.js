@@ -6,6 +6,7 @@ const companymodel = require('../models/company.js');
 const adminmodel = require('../models/admin.js');
 const jobsmodel = require('../models/jobs.js');
 const applicantmodel = require('../models/applicants.js');
+const wishlistmodel = require("../models/wishlist.js");
 
 
 //register
@@ -92,6 +93,11 @@ const DeleteUser = asyncHandler(async (req, res) => {
         if (!applicant) {
             return res.json(new ApiResponse(404, "Applicant not found"));
         }
+        const userWishlist = await wishlistmodel.findMany({userId : userId});
+        if (!userWishlist) {
+            return res.json(new ApiResponse(404, "User wishlist not found"));
+        }
+        await userWishlist.deleteMany();
         return res.json(new ApiResponse(200, user, "User deleted successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode || 500, error.message);

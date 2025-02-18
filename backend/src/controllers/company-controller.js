@@ -285,19 +285,22 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 
 //post job
 const PostJob = asyncHandler(async (req, res) => {
-    const { title, description, location, district, salary, date, workersCount } =
+    const { title, description, location, district, salary, date, shift, time, workersCount } =
         req.body;
     const companyId = req.company;
-    console.log(companyId);
+    console.log(req.body);
     if (
         !title ||
         !description ||
         !location ||
         !district ||
+        !shift ||
+        !time ||
         !salary ||
         !date ||
         !workersCount
     ) {
+
         throw new ApiError(400, "All fields are required");
     }
     try {
@@ -314,6 +317,8 @@ const PostJob = asyncHandler(async (req, res) => {
             district,
             salary,
             date,
+            shift,
+            time,
             workersCount,
             workersNeeded: workersCount,
         });

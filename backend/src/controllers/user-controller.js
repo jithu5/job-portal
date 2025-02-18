@@ -241,7 +241,38 @@ const GetJobs = asyncHandler(async (req, res) => {
 //get first 6 jobs
 const sortJobs = asyncHandler(async (req, res) => {
     try {
-        const jobs = await jobmodel.find({}).limit(6).sort({ createdAt: -1 });
+        const jobs = await jobmodel.find({}).limit(6).sort({ createdAt: -1 }).aggregate([         
+            {   
+                $lookup : {
+                    from : "companies",
+                    localField : "company",
+                    foreignField : "_id",
+                    as : "companydetails"
+                }, 
+            },
+            {
+                $unwind : "$companydetails",
+                
+            },
+            {
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    salary: 1,
+                    workersCount: 1,
+                    workersNeeded: 1,
+                    status: 1,
+                    company: "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage"
+                },
+            }
+        ]);
         if (!jobs) {
             throw new ApiError(404, "Jobs not found");
         }
