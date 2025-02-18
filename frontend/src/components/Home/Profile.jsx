@@ -3,18 +3,22 @@ import { FaEdit } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import ProfileImages from "../common/ProfileImages";
 import ImageEditDrawer from "../common/ImageEditdDawer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useUploadIagesMutation } from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
+import { setUser } from "../../Store/Auth";
 
 const Profile = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [images, setImages] = useState({ profile: null, cover: null });
+    const [isSubmiting, setIsSubmiting] = useState(false);
+    const dispatch = useDispatch();
 
     const { user } = useSelector((state) => state.Auth);
-    const [ uploadIages ] = useUploadIagesMutation()
-    
+    const [uploadIages] = useUploadIagesMutation();
+
     const handleSubmit = async (e) => {
+        setIsSubmiting(true);
         e.preventDefault();
         console.log("Images state:", images);
 
@@ -34,15 +38,31 @@ const Profile = () => {
                 return;
             }
             toast.success(response.message);
+            console.log(response.data);
+            // ✅ Batch updates in a single dispatch
+            dispatch(
+                setUser({
+                    ...user,
+                    profileImage:
+                        response.data.profileImage ?? user.profileImage,
+                    coverImage: response.data.coverImage ?? user.coverImage,
+                })
+            );
+
+            setOpenDrawer(false);
+            setImages({ profile: null, cover: null });
         } catch (error) {
-            toast.error("Failed to upload")
+            toast.error("Failed to upload");
             console.error(error);
+        }
+        finally{
+            setIsSubmiting(false);
         }
     };
 
     useEffect(() => {
-            window.scrollTo(0, 0);
-        }, []); // Empty dependency array to run only once when the component mounts
+        window.scrollTo(0, 0);
+    }, []); // Empty dependency array to run only once when the component mounts
     return (
         <div className="w-full min-h-screen font-BarlowSemiCondensed mb-32">
             <ImageEditDrawer
@@ -51,6 +71,7 @@ const Profile = () => {
                 images={images}
                 setImages={setImages}
                 handleSubmit={handleSubmit}
+                isSubmiting={isSubmiting}
             />
             <ProfileImages setOpenDrawer={setOpenDrawer} user={user} />
             <div className="w-[90%] mx-auto flex flex-col items-end mt-10">
@@ -70,9 +91,7 @@ const Profile = () => {
                 </p>
                 <p className="text-md md:texxt-lg font-medium">{user.email}</p>
                 <p className="text-md md:texxt-lg font-medium">{user.phone}</p>
-                <p className="text-md md:text-lg font-normal">
-                    {user.address}
-                </p>
+                <p className="text-md md:text-lg font-normal">{user.address}</p>
                 <div className="w-[90%] mx-auto flex items-center justify-start mt-10">
                     <Link
                         to={"/user/profile/edit"}
