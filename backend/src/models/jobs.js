@@ -26,6 +26,15 @@ const JobSchema = mongoose.Schema(
         date: {
             type: Date,
             required: true,
+            index: { expires : 0 },
+        },
+        shift: {
+            type: String,
+            required: true,
+        },
+        time:{
+            type: Date,
+            required: true,
         },
         salary: {
             type: Number,
