@@ -2,8 +2,9 @@ import { Box, DialogTitle, Drawer } from "@mui/material";
 import React, { useRef, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { Loader2 } from "lucide-react";
 
-function ImageEditDrawer({ openDrawer, setOpenDrawer,handleSubmit,images,setImages }) {
+function ImageEditDrawer({ openDrawer, setOpenDrawer,handleSubmit,images,setImages,isSubmiting }) {
     
     const refs = {
         profile: useRef(null),
@@ -111,7 +112,8 @@ function ImageEditDrawer({ openDrawer, setOpenDrawer,handleSubmit,images,setImag
                     <button
                         type="submit"
                         className="mt-10 w-full px-6 py-3 text-white bg-stone-800 rounded-md hover:bg-stone-950"
-                    >Edit</button>
+                    >{isSubmiting?("Editing..."
+                ):"Edit"}</button>
                 </form>
             </Box>
         </Drawer>
