@@ -105,7 +105,7 @@ const UserApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["User"], // Forces re-fetch of "User" queries
+            invalidatesTags: ["User","Job"], // Forces re-fetch of "User" queries
         }),
         getJobs: builder.query({
             query: () => ({

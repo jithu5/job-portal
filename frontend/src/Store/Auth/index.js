@@ -64,11 +64,17 @@ const AuthSlice = createSlice({
             if (index > -1) {
                 state.wishlist.splice(index, 1);
             }
+        },
+        clearAppliedJobs: (state) => {
+            state.appliedJobs = [];
+        },
+        clearWishlist: (state) => {
+            state.wishlist = [];
         }
     },
 });
 
-export const { setUser, clearUserData, setAppliedJobs, addAppliedJobs,removeAppliedJobs,setWishlist,addWishlist,removeWishlist } =
+export const { setUser, clearUserData, setAppliedJobs, addAppliedJobs,removeAppliedJobs,setWishlist,addWishlist,removeWishlist,clearAppliedJobs,clearWishlist } =
     AuthSlice.actions;
 
 export default AuthSlice.reducer;

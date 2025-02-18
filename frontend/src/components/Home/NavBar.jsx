@@ -15,7 +15,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import Divider from "@mui/material/Divider";
 import Logout from "@mui/icons-material/Logout";
 import { useLogoutUserMutation } from "../../Store/Auth/Auth-Api";
-import { clearUserData } from "../../Store/Auth/index";
+import { clearAppliedJobs, clearUserData, clearWishlist } from "../../Store/Auth/index";
 import UserApi from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
 
@@ -61,6 +61,8 @@ function NavBar() {
                 toast.error(response.message);
             }
             toast.success(response.message);
+            dispatch(clearAppliedJobs())
+            dispatch(clearWishlist())
             setTimeout(() => {
                 dispatch(clearUserData());
                 dispatch(UserApi.util.resetApiState());

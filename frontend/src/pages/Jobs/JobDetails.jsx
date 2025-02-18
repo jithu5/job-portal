@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { useGetJobByIdQuery } from "../../Store/Auth/Auth-Api";
+import { useApplyForJobMutation, useGetJobByIdQuery } from "../../Store/Auth/Auth-Api";
 import {
     Box,
     Typography,

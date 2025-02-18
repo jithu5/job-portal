@@ -54,33 +54,39 @@ function UserJobHistory() {
                 )}
                 {isFetching && (
                     <div className="w-full flex justify-center mt-10">
-                        <Loader2 className="w-8 h-8 animate-spin mt-10"/>
+                        <Loader2 className="w-8 h-8 animate-spin mt-10" />
                     </div>
                 )}
-                {appliedJobs.map((job) => (
-                    <div
-                        key={job._id}
-                        className="flex justify-between items-center border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300"
-                    >
-                        <div>
-                            <h2 className="text-lg font-semibold">
-                                {job.title}
-                            </h2>
-                            <p className="text-sm text-gray-600">
-                                {job.company}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                {job.location}
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => cancelJob(job._id)}
-                            className="text-sm md:text-lg font-medium text-red-500 hover:text-red-700 transition-colors duration-300"
+                {appliedJobs.length > 0 ? (
+                    appliedJobs.map((job) => (
+                        <div
+                            key={job._id}
+                            className="flex justify-between items-center border rounded-xl p-5 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 w-full"
                         >
-                            Cancel
-                        </button>
-                    </div>
-                ))}
+                            <div>
+                                <h2 className="text-lg font-semibold text-gray-800">
+                                    {job.title}
+                                </h2>
+                                <p className="text-sm text-gray-600">
+                                    {job.company}
+                                </p>
+                                <p className="text-sm text-gray-500">
+                                    {job.location}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => cancelJob(job._id)}
+                                className="bg-red-100 text-red-600 px-4 py-2 rounded-lg font-medium hover:bg-red-200 transition duration-300"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-gray-600">
+                        You haven’t applied to any jobs yet.
+                    </p>
+                )}
             </div>
         </div>
     );

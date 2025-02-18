@@ -111,6 +111,15 @@ const AdminApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job"],
         }),
+        updateImages: builder.mutation({
+            query: (images) => ({
+                url: "update-profile-cover",
+                method: "POST",
+                body: images,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin"],
+        }),
     }),
 });
 
@@ -124,7 +133,8 @@ export const {
     useVerifyResetOtpMutation,
     useUpdatePasswordMutation,
     useLogoutAdminMutation,
-    usePostJobMutation
+    usePostJobMutation,
+    useUpdateImagesMutation
 } = AdminApi;
 
 export default AdminApi;
