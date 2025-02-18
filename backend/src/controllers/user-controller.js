@@ -282,7 +282,7 @@ const sortJobs = asyncHandler(async (req, res) => {
             }
         ]);
         console.log(jobs);
-        if (!jobs) {
+        if (jobs.length === 0) {
             throw new ApiError(404, "Jobs not found");
         }
         res.json(new ApiResponse(200, jobs, "First 6 jobs fetched successfully"));
