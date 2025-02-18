@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 
 const initialState = {
-    name: "Monkey D luffy",
-    number: "25413695321",
-    email: "luffy@sunny.com",
-    address: "123 Main St, Anytown, USA",
+    name: "",
+    phone: "",
+    address: "",
 };
 
 function EditUserProfile() {
@@ -27,8 +26,7 @@ function EditUserProfile() {
         console.log(input);
         const formData = new FormData();
         formData.append("name", input.name);
-        formData.append("number", input.number);
-        formData.append("email", input.email);
+        formData.append("phone", input.number);
         formData.append("address", input.address);
         // print data
         for (const pair of formData.entries()) {
@@ -60,20 +58,7 @@ function EditUserProfile() {
                 >
                     <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-between">
                         <div className="w-full md:w-[55%] flex flex-col items-center">
-                            <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
-                                <h2 className="text-md md:text-xl font-semibold">
-                                    Email
-                                </h2>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={input.email}
-                                    onChange={handleChange}
-                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
-                                    placeholder="Enter your email address"
-                                />
-                            </div>
+                              
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
                                     Name
@@ -96,7 +81,7 @@ function EditUserProfile() {
                                     type="number"
                                     id="number"
                                     name="number"
-                                    value={input.number}
+                                    value={input.phone}
                                     onChange={handleChange}
                                     className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your phone number"
