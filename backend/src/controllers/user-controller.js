@@ -212,6 +212,11 @@ const GetJobs = asyncHandler(async (req, res) => {
                 
             },
             {
+                $lookup : {
+
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     title: 1,
@@ -384,16 +389,22 @@ const AppliedJobs = asyncHandler(async (req, res) => {
                 $unwind : "$companydetails"
             },
             {
-                $project : {
-                    _id : "$jobdetails._id",
-                    title : "$jobdetails.title",
-                    location : "$jobdetails.location",
-                    description : "$jobdetails.description",
-                    createdAt : "$jobdetails.createdAt",
-                    status : "$jobdetails.status",
-                    company : "$companydetails.companyName",
-                    companyprofile : "$companydetails.profileImage",
-                }
+                $project: {
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    salary: 1,
+                    workersCount: 1,
+                    workersNeeded: 1,
+                    status: 1,
+                    company: "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage"
+                },
             }
         
     ]);
@@ -874,14 +885,20 @@ const GetWishlistJobs = asyncHandler(async(req,res)=>{
             },
             {
                 $project: {
-                    _id: "$wishlist._id",
-                    title : "$wishlist.title",
-                    location : "$wishlist.location",
-                    description : "$wishlist.description",
-                    createdAt : "$wishlist.createdAt",
-                    status : "$wishlist.status",
-                    company : "$companydetails.companyName",
-                    companyprofile : "$companydetails.profileImage",
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    salary: 1,
+                    workersCount: 1,
+                    workersNeeded: 1,
+                    status: 1,
+                    company: "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage"
                 },
             },
         ])
