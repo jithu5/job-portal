@@ -8,7 +8,7 @@ AdminRouter.post('/register', Register);
 
 AdminRouter.post('/login', Login);
 
-AdminRouter.get('/getadmin', ProtectAdminMiddleware, GetAdmin);
+AdminRouter.get('/admin', ProtectAdminMiddleware, GetAdmin);
 
 AdminRouter.get('/getusers',ProtectAdminMiddleware, GetUsers);
 

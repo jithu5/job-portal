@@ -1,9 +1,35 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { AdminDrawer, AdminNavBar, AdminSideBar } from "../../components/index";
+import companyApi, { useLogoutAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 function AdminLayout() {
     const [isOpen, setIsOpen] = useState(false);
+        const [logoutAdmin] = useLogoutAdminMutation();
+        const dispatch = useDispatch();
+        const navigate = useNavigate();
+
+     const handleLogout = async () => {
+            // Logout logic here
+            try {
+                const response = await logoutAdmin().unwrap();
+                console.log(response);
+                if (!response.success) {
+                    console.log(response.message);
+                }
+                  toast.success("Logged Out Successfully!");
+                  // Delay navigation to allow toast to show
+                  setTimeout(() => {
+                      dispatch(clearUserData());
+                      dispatch(companyApi.util.resetApiState());
+                      navigate("/api/company/login");
+                  }, 1000);
+            } catch (error) {
+                console.log(error);
+            }
+        };
     return (
         <>
             <div className="flex w-full justify-between">
@@ -12,7 +38,7 @@ function AdminLayout() {
                 </div>
                     <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} usedIn="company" />
                 <div className="w-full max-md:px-5 md:w-[80%] lg:w-[83%] min-h-screen md:ml-[20%] lg:ml-[17%]">
-                    <AdminNavBar setIsOpen={setIsOpen} />
+                    <AdminNavBar setIsOpen={setIsOpen} handleLogout={handleLogout} usedIn="company" />
                     <main className="w-full min-h-screen mt-3">
 
                     <Outlet />

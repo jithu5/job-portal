@@ -60,7 +60,7 @@ function AdminSideBar({usedIn}) {
         <>
             <aside className="w-full h-full bg-stone-900 text-white flex flex-col items-center py-7 lg:py-12 gap-10">
                 <h1 className="text-xl lg:text-4xl font-bold font-Oswald">
-                    Job Portal
+                    {usedIn.toLowerCase() === "company"?"Company Panel":"Admin Panel"}
                 </h1>
                 <div>
                     <ul className="flex flex-col gap-6">

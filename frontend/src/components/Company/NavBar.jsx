@@ -9,49 +9,24 @@ import Logout from "@mui/icons-material/Logout";
 
 import { TiThMenu } from "react-icons/ti";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import { useLogoutAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
-import { useDispatch } from "react-redux";
-import { clearUserData } from "../../Store/Auth";
-import AdminApi from "../../Store/AdminAuth/AdminAuth-Api";
-import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
-function AdminNavBar({ setIsOpen }) {
+function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const [logoutAdmin] = useLogoutAdminMutation();
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
 
-    const handleLogout = async () => {
-        // Logout logic here
-        try {
-            const response = await logoutAdmin().unwrap();
-            console.log(response);
-            if (!response.success) {
-                console.log(response.message);
-            }
-              toast.success("Logged Out Successfully!");
-              // Delay navigation to allow toast to show
-              setTimeout(() => {
-                  dispatch(clearUserData());
-                  dispatch(AdminApi.util.resetApiState());
-                  navigate("/api/company/login");
-              }, 1000);
-        } catch (error) {
-            console.log(error);
-        }
-    };
+   
     const handleClose = () => {
         setAnchorEl(null);
     };
     console.log(anchorEl);
     return (
         <>
-            <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between">
+            <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-stone-800">
                 <div className="md:hidden">
                     <TiThMenu
                         className="text-lg"
@@ -60,7 +35,7 @@ function AdminNavBar({ setIsOpen }) {
                 </div>
                 <div>
                     <h1 className="text-xl md:text-3xl font-bold">
-                        Company Portal
+                        {usedIn.toLowerCase() === "company" ? "Company" : "Admin"} Dashboard
                     </h1>
                 </div>
 
