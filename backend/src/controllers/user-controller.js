@@ -373,6 +373,7 @@ const sortJobs = asyncHandler(async (req, res) => {
 //get job id
 const GetJobById = asyncHandler(async (req, res) => {
     try {
+        const userId = req.user;
         const {jobId} = req.params;
         const job = await jobmodel.aggregate([
             {
@@ -393,6 +394,40 @@ const GetJobById = asyncHandler(async (req, res) => {
                     
                 },
                 {
+                    $lookup : {
+                        from : "applicants",
+                        let : {jobId : "$_id", userId :userId},
+                        pipeline : [{
+                            $match : { $expr :{
+                                $and : [
+                                { $eq : ["$jobId", "$$jobId"] },
+                                { $eq : ["$userId", "$$userId"]},
+                            ] },
+                            } 
+                        },
+                        {$limit : 1}
+                    ],
+                    as : "applied"
+                    }
+                },
+                {
+                    $lookup : {
+                        from : "wishlists",
+                        let : {jobId : "$_id", userId : userId},
+                        pipeline : [{
+                            $match : { $expr : {
+                                $and: [
+                                { $eq : ["$jobId", "$$jobId"] },
+                                { $eq : ["$userId", "$$userId"]},
+                            ] },
+                            }
+                        },
+                        {$limit : 1}
+                    ],
+                    as : "wishlisted"
+                    }
+                },
+                {
                     $project: {
                         _id: 1,
                         title: 1,
@@ -408,7 +443,9 @@ const GetJobById = asyncHandler(async (req, res) => {
                         status: 1,
                         companyId: "$companydetails._id",
                         company: "$companydetails.companyName",
-                        companyprofile : "$companydetails.profileImage"
+                        companyprofile : "$companydetails.profileImage",
+                        isApplied: {$gt: [{ $size: "$applied"},0]},
+                        isWishlisted: {$gt: [{ $size: "$wishlisted"},0]},
                     },
                 }
             
@@ -960,18 +997,18 @@ const GetWishlistJobs = asyncHandler(async(req,res)=>{
             },
             {
                 $project: {
-                    _id: 1,
-                    title: 1,
-                    description: 1,
-                    location: 1,
-                    district: 1,
-                    date: 1,
-                    shift: 1,
-                    time: 1,
-                    salary: 1,
-                    workersCount: 1,
-                    workersNeeded: 1,
-                    status: 1,
+                    _id: "$wishlist._id",
+                    title: "$wishlist.title",
+                    description: "$wishlist.description",
+                    location: "$wishlist.location",
+                    district: "$wishlist.district",
+                    date: "$wishlist.date",
+                    shift: "$wishlist.shift",
+                    time: "$wishlist.time",
+                    salary: "$wishlist.salary",
+                    workersCount: "$wishlist.workersCount",
+                    workersNeeded: "$wishlist.workersNeeded",
+                    status: "$wishlist.status",
                     companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
                     companyprofile : "$companydetails.profileImage"
