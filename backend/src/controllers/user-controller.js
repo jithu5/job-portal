@@ -544,11 +544,11 @@ const AppliedJobs = asyncHandler(async (req, res) => {
             $addFields: {
                 isjobPending:{
                     $or: [
-                        {$gt: ["$date" , today]},
+                        {$gt: ["$jobdetails.date" , today]},
                         {
                             $and:[
-                                {$eq: ["$date" , today]},
-                                {$eq: ["$time" , currentTime]},
+                                {$eq: ["$jobdetails.date" , today]},
+                                {$eq: ["$jobdetails.time" , currentTime]},
                             ]
                         }
                     ]
@@ -559,17 +559,17 @@ const AppliedJobs = asyncHandler(async (req, res) => {
         {
             $project: {
                 _id: "$jobdetails._id",
-                title: 1,
-                description: 1,
-                location: 1,
-                district: 1,
-                date: 1,
-                shift: 1,
-                time: 1,
-                salary: 1,
-                workersCount: 1,
-                workersNeeded: 1,
-                status: 1,
+                title: "$jobdetails.title",
+                description: "$jobdetails.description",
+                location: "$jobdetails.location",
+                district: "$jobdetails.district",
+                date: "$jobdetails.date",
+                shift: "$jobdetails.shift",
+                time: "$jobdetails.time",
+                salary: "$jobdetails.salary",
+                workersCount: "$jobdetails.workersCount",
+                workersNeeded: "$jobdetails.workersNeeded",
+                status: "$jobdetails.status",
                 companyId: "$companydetails._id",
                 company: "$companydetails.companyName",
                 companyprofile: "$companydetails.profileImage",
