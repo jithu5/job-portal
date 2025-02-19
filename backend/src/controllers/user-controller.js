@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const asyncHandler = require("../utils/Asynchandler.js");
 const usermodel = require("../models/usermodel.js");
 const applicantmodel = require("../models/applicants.js");
+const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
 const wishlistmodel = require("../models/wishlist.js");
 const crypto = require("crypto");
@@ -883,6 +884,31 @@ const RemoveWishlist = asyncHandler(async(req,res)=>{
     }
 });
 
+//view company
+const ViewCompany = asyncHandler(async(req,res)=>{
+    const {companyName} = req.params;
+    try {
+        const company = await companymodel.findOne({companyName: companyName});
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
+        const jobs = await jobmodel.find({ company: company._id });
+        if (!jobs) {
+            throw new ApiError(404, "No posted jobs found");
+        }
+        const NoOfjobs = await jobs.length;
+        const NoOfactivejobs = await jobs.filter(job => job.status === "Active").length;
+        console.log("NoOfActive", NoOfactivejobs);
+        console.log(NoOfjobs);
+        
+        
+        return res.json(new ApiResponse(200,{company,NoOfactivejobs,NoOfjobs, jobs},"Company Profile"));
+       
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
+
 
 module.exports = {
     UserRegister,
@@ -907,4 +933,5 @@ module.exports = {
     AddToWishlist,
     GetWishlistJobs,
     RemoveWishlist,
+    ViewCompany,
 };

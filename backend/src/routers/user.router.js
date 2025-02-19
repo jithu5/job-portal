@@ -4,7 +4,7 @@ const {upload} = require('../middlewares/multer.middleware.js');
 const { UserRegister, GetUser,UserLogin,Sendotp,Verifyemail,
     SendResetOtp,VerifyResetOtp,UpdatePassword,
     updateProfileAndCover,Homepage,Logout,EditProfile,ApplyJob,Canceljob,GetJobs,sortJobs, 
-    checkUsernameUnique,AppliedJobs,AddToWishlist,GetWishlistJobs,RemoveWishlist,
+    checkUsernameUnique,AppliedJobs,AddToWishlist,GetWishlistJobs,RemoveWishlist,ViewCompany,
     GetJobById} = require('../controllers/user-controller.js');
 const protectUserMiddleware = require('../middlewares/userAuth.middleware.js');
 const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
@@ -61,6 +61,8 @@ UserRouter.post('/edit-profile',protectUserMiddleware,EditProfile);
 UserRouter.post("/applyjob/:jobId", protectUserMiddleware, ApplyJob);
 
 UserRouter.post('/cancel-job/:jobId',protectUserMiddleware,Canceljob);
+
+UserRouter.post('/view-company/:companyName',protectUserMiddleware,ViewCompany);
 
 
 

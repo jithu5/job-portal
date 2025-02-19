@@ -81,6 +81,45 @@ const GetCompany = asyncHandler(async (req, res) => {
     }
 });
 
+//view user profile
+const ViewUser = asyncHandler(async (req, res) => {
+  const { userId } = req.params;
+    try {
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            return res.json(new ApiResponse(404, "User not found"));
+        }
+        return res.json(new ApiResponse(200, user, "User fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
+    }
+});
+
+
+//view company profile
+const ViewCompany = asyncHandler(async (req, res) => {
+  const { companyId } = req.params;
+    try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            return res.json(new ApiResponse(404, "Company not found"));
+        }
+        const jobs = await jobmodel.find({ company: companyId});
+        if (!jobs) {
+            throw new ApiError(404, "No posted jobs found");
+        }
+        const NoOfjobs = await jobs.length;
+        const NoOfactivejobs = await jobs.filter(job => job.status === "Active").length;
+        console.log("NoOfActive", NoOfactivejobs);
+        console.log(NoOfjobs);
+        
+        
+        return res.json(new ApiResponse(200,{company,NoOfactivejobs,NoOfjobs, jobs},"Company fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
+    }
+});
+
 //delete user
 const DeleteUser = asyncHandler(async (req, res) => {
     const { userId } = req.params;
@@ -154,6 +193,8 @@ module.exports = {
     Login,
     GetUsers,
     GetCompany,
+    ViewUser,
+    ViewCompany,
     DeleteUser,
     DeleteCompany,
     Logout,
