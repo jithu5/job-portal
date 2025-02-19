@@ -63,16 +63,38 @@ function UserJobHistory() {
                             key={job._id}
                             className="flex justify-between items-center border rounded-xl p-5 bg-white shadow-md hover:shadow-lg transition-shadow duration-300 w-full"
                         >
-                            <div>
-                                <h2 className="text-lg font-semibold text-gray-800">
-                                    {job.title}
-                                </h2>
-                                <p className="text-sm text-gray-600">
-                                    {job.company}
-                                </p>
-                                <p className="text-sm text-gray-500">
-                                    {job.location}
-                                </p>
+                            <div className="flex items-center gap-10">
+                                <div className="flex flex-col gap-2">
+                                    {job?.companyprofile ? (
+                                        <img
+                                            src={job.companyprofile}
+                                            alt="company profile"
+                                            className="w-12 h-12 rounded-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-lg text-white font-semibold">
+                                            {job.company[0].toUpperCase()}
+                                        </div>
+                                    )}
+                                    <h2 className="font-semibold text-stone-700 text-md md:text-lg">
+                                        {job.company}
+                                    </h2>
+                                </div>
+                                <div className="flex flex-col gap-1">
+                                    <h2 className="text-lg md:text-2xl text-secondary font-semibold uppercase">
+                                        {job.title}
+                                    </h2>
+                                    <p>
+                                        {new Date(job.date).toLocaleDateString(
+                                            "en-US",
+                                            {
+                                                day: "2-digit",
+                                                month: "long",
+                                                year: "numeric",
+                                            }
+                                        )}
+                                    </p>
+                                </div>
                             </div>
                             <button
                                 onClick={() => cancelJob(job._id)}

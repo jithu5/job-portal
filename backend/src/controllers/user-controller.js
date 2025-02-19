@@ -896,13 +896,10 @@ const ViewCompany = asyncHandler(async(req,res)=>{
         if (!jobs) {
             throw new ApiError(404, "No posted jobs found");
         }
-        const NoOfjobs = await jobs.length;
-        const NoOfactivejobs = await jobs.filter(job => job.status === "Active").length;
-        console.log("NoOfActive", NoOfactivejobs);
-        console.log(NoOfjobs);
+        const noOfJobs = await jobs.length;
+        const noOfActiveJobs = await jobs.filter(job => job.status === "Active").length;
         
-        
-        return res.json(new ApiResponse(200,{company,NoOfactivejobs,NoOfjobs, jobs},"Company Profile"));
+        return res.json(new ApiResponse(200,{company,noOfActiveJobs,noOfJobs, jobs},"Company Profile"));
        
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);

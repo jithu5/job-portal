@@ -4,6 +4,7 @@ import Register from "./User/UserRegistration";
 import UserLogin from "./User/UserLogin";
 import UserPasswordReset from "./User/PasswordReset";
 import UserAccountVerify from "./User/AccountVerify";
+import CompanyProfile from "./User/CompanyProfile";
 
 import SearchJobs from "./Jobs/SearchJobs";
 import JobDetails from "./Jobs/JobDetails";
@@ -20,6 +21,7 @@ export {
     Register,
     UserLogin,
     SearchJobs,
+    CompanyProfile,
     JobDetails,
     AdminLayout,
     AdminLogin,

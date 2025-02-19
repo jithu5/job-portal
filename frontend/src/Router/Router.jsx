@@ -30,6 +30,7 @@ import {
     AdminPasswordReset,
     UserPasswordReset,
     UserAccountVerify,
+    CompanyProfile,
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
@@ -126,6 +127,10 @@ function Router() {
                             path: "job/:jobId",
                             element: <JobDetails />,
                         },
+                        {
+                            path:"company-profile",
+                            element: <CompanyProfile/>
+                        }
                     ],
                 },
                 {
