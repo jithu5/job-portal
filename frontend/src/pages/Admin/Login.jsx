@@ -33,7 +33,7 @@ function AdminLogin() {
             setTimeout(() => {
                 dispatch(setUser(response.data));
 
-                navigate("/admin/dashboard");
+                navigate("/company/dashboard");
             }, 1000);
 
             reset();
@@ -113,7 +113,7 @@ function AdminLogin() {
                         <p className="text-sm text-center text-gray-600">
                             Forgot your password?{" "}
                             <Link
-                                to={"/api/admin/reset-password"}
+                                to={"/api/company/reset-password"}
                                 className="text-blue-500 hover:underline"
                             >
                                 Reset here
@@ -122,7 +122,7 @@ function AdminLogin() {
                         <p className="text-sm text-center text-gray-600">
                             Doesn't have an Account?{" "}
                             <Link
-                                to={"/api/admin/register"}
+                                to={"/api/company/register"}
                                 className="text-blue-500 hover:underline"
                             >
                                 Register

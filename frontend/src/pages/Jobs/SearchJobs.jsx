@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { JobHeader, JobSideBar } from "../../components/index";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import _ from "lodash"; // For debounce/throttle functions
 import {
     useAddToWishlistMutation,
@@ -54,10 +54,12 @@ const SearchJobs = () => {
                 (job) =>
                     job.district
                         ?.toLowerCase()
-                        .includes(filterInput.district.toLowerCase()) &&
+                        .includes(filterInput?.district.toLowerCase()) &&
                     job.shift
                         ?.toLowerCase()
-                        .includes(filterInput.shift.toLowerCase())
+                        .includes(filterInput?.shift.toLowerCase())
+                        &&
+                        job.title?.toLowerCase().includes(filterInput.title?.toLowerCase())
                         
             )
         );
@@ -140,7 +142,7 @@ const SearchJobs = () => {
                     alignItems: "center",
                 }}
             >
-                <Loader2 className="w-12 h-12 md:w-48 md:h-48 animate-spin" />
+                <Loader2 className="w-12 h-12 md:w-28 md:h-28 animate-spin" />
             </Box>
         );
     }
@@ -156,7 +158,6 @@ const SearchJobs = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
-                onFilterChange={allJobs}
             />
             <JobSideBar
                 openFilter={openFilter}
@@ -167,12 +168,6 @@ const SearchJobs = () => {
                         ...prev,
                         [e.target.name]: e.target.value,
                     }))
-                }
-                clearInput={() =>
-                    setFilterInput({
-                        district: "",
-                        shift: "",
-                    })
                 }
             />
             <main className="w-full flex flex-col">
@@ -203,10 +198,10 @@ const SearchJobs = () => {
                                                     <img
                                                         src={job.companyprofile}
                                                         alt={job.title}
-                                                        className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover"
+                                                        className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover cursor-pointer"
                                                     />
                                                 ) : (
-                                                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold">
+                                                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer">
                                                         {job.company[0].toUpperCase()}
                                                     </div>
                                                 )}
@@ -297,7 +292,7 @@ const SearchJobs = () => {
 
                             {loading && (
                                 <div className="w-full flex justify-center mt-10">
-                                    <Loader2 />
+                                    <Loader2 className="w-4 h-4 animate-spin md:w-16 md:h-16" />
                                 </div>
                             )}
                         </div>

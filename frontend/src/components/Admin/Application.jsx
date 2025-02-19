@@ -62,7 +62,7 @@ function AdminApplication() {
                   Job Application
               </h1>
               <p className="text-sm md:text-xl text-center font-medium">
-                  Welcome to the admin application.
+                  Welcome to the company application.
               </p>
               {/* Admin application components */}
               <div className='w-[300px] sm:w-[400px] md:w-[500px] mx-auto my-10'>

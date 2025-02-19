@@ -29,7 +29,7 @@ function AdminRegister() {
             console.log(response);
             dispatch(setUser(response.data.data));
             toast.success(response.data.message);
-            navigate("/api/admin/verify",{state:{email:response.data.data.email}});
+            navigate("/api/company/verify",{state:{email:response.data.data.email}});
         } catch (error) {
             // toast.error("Error during registration:", error);
             console.log('hello!', error);

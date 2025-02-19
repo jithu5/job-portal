@@ -35,6 +35,8 @@ function CommonAuth({
         );
     }
 
+    console.log(user)
+
     if (location.pathname === "/") {
         return <Navigate to={"/user"} />
     }
@@ -42,7 +44,7 @@ function CommonAuth({
     if (!isAuthenticated) {
         if (
             location.pathname.startsWith("/user") ||
-            location.pathname.startsWith("/admin/dashboard")
+            location.pathname.startsWith("/company/dashboard")
         ) {
             return <Navigate to="/api/user/login" />;
         }
@@ -53,23 +55,23 @@ function CommonAuth({
             return <Navigate to="/user" />;
            
         }
-        if (user?.role === "admin" && location.pathname.startsWith("/api")) {
-            return <Navigate to="/admin/dashboard" />;
+        if (user?.role === "company" && location.pathname.startsWith("/api")) {
+            return <Navigate to="/company/dashboard" />;
         }
-        if (user?.role === "admin" && location.pathname.startsWith("/user")) {
-            return <Navigate to="/admin/dashboard" />;
+        if (user?.role === "company" && location.pathname.startsWith("/user")) {
+            return <Navigate to="/company/dashboard" />;
         }
-        if (user?.role === "user" && location.pathname.startsWith("/admin/dashboard")) {
+        if (user?.role === "user" && location.pathname.startsWith("/company/dashboard")) {
             return <Navigate to="/user"/>
         }
     }
 
     if (isAuthenticated) {
-        if (user?.role === "admin" && location.pathname.startsWith("/user")) {
-            return <Navigate to="/admin/dashboard" />;
+        if (user?.role === "company" && location.pathname.startsWith("/user")) {
+            return <Navigate to="/company/dashboard" />;
         } else if (
             user?.role === "user" &&
-            location.pathname.startsWith("/admin")
+            location.pathname.startsWith("/company")
         ) {
             return <Navigate to="/user" />;
         }

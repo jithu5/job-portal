@@ -1,4 +1,3 @@
-
 import { Swiper, SwiperSlide } from "swiper/react";
 
 // Import Swiper styles
@@ -8,137 +7,52 @@ import "swiper/css/navigation";
 
 // import required modules
 import { Navigation, Pagination } from "swiper/modules";
-import { useGetNewJobsQuery } from "../../Store/Auth/Auth-Api";
+import {
+    useAddToWishlistMutation,
+    useApplyForJobMutation,
+    useGetNewJobsQuery,
+} from "../../Store/Auth/Auth-Api";
 import { useEffect, useState } from "react";
-
-const jobListings = [
-    {
-        id: 1,
-        title: "Frontend Developer",
-        icon: "💻",
-        description:
-            "Build and maintain user-friendly interfaces for web applications.",
-        date: "2025-01-12",
-        type: "Full-Time",
-    },
-    {
-        id: 2,
-        title: "Backend Developer",
-        icon: "🖥️",
-        description:
-            "Develop and maintain server-side applications, databases, and APIs.",
-        date: "2025-01-10",
-        type: "Part-Time",
-    },
-    {
-        id: 3,
-        title: "Data Scientist",
-        icon: "📊",
-        description:
-            "Analyze and interpret complex data to drive decision-making.",
-        date: "2025-01-05",
-        type: "Contract",
-    },
-    {
-        id: 4,
-        title: "UI/UX Designer",
-        icon: "🎨",
-        description:
-            "Design intuitive and attractive user interfaces and experiences.",
-        date: "2025-01-07",
-        type: "Freelance",
-    },
-    {
-        id: 5,
-        title: "Project Manager",
-        icon: "📅",
-        description:
-            "Lead and manage cross-functional teams to deliver projects on time.",
-        date: "2025-01-15",
-        type: "Full-Time",
-    },
-    {
-        id: 6,
-        title: "DevOps Engineer",
-        icon: "⚙️",
-        description:
-            "Manage the infrastructure, deployments, and continuous integration systems.",
-        date: "2025-01-13",
-        type: "Full-Time",
-    },
-    {
-        id: 7,
-        title: "Marketing Specialist",
-        icon: "📈",
-        description:
-            "Develop marketing strategies and campaigns to drive growth and awareness.",
-        date: "2025-01-09",
-        type: "Part-Time",
-    },
-    {
-        id: 8,
-        title: "Software Engineer",
-        icon: "🔧",
-        description:
-            "Design, develop, and maintain software solutions to meet client needs.",
-        date: "2025-01-11",
-        type: "Full-Time",
-    },
-    {
-        id: 9,
-        title: "QA Engineer",
-        icon: "🔍",
-        description:
-            "Test and ensure the quality of software products before release.",
-        date: "2025-01-10",
-        type: "Freelance",
-    },
-    {
-        id: 10,
-        title: "SEO Specialist",
-        icon: "🔎",
-        description: "Optimize websites to improve search engine rankings.",
-        date: "2025-01-08",
-        type: "Part-Time",
-    },
-    {
-        id: 11,
-        title: "Cloud Architect",
-        icon: "☁️",
-        description:
-            "Design and manage cloud computing systems and infrastructure.",
-        date: "2025-01-12",
-        type: "Full-Time",
-    },
-    {
-        id: 12,
-        title: "Content Writer",
-        icon: "📝",
-        description: "Write content for websites, blogs, and other media.",
-        date: "2025-01-09",
-        type: "Freelance",
-    },
-];
+import { Bookmark } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function RecommendedJobs() {
-    const firstEightJobs = jobListings.slice(0, 8);
-    const { data,isFetching} = useGetNewJobsQuery()
-    const [newJobs, setNewJobs] = useState([])
+    const { data, isFetching } = useGetNewJobsQuery();
+    const [newJobs, setNewJobs] = useState([]);
+
+    const [applyForJob] = useApplyForJobMutation();
+    const [addToWishlist] = useAddToWishlistMutation();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
-        if (data?.data &&!isFetching) {
-            console.log(data.data)
+        if (data?.data && !isFetching) {
+            console.log(data.data);
             setNewJobs(data.data);
         }
-    }, [data])
-    
+    }, [data]);
+
+    const handleApply = async (job) => {
+        try {
+            const response = await applyForJob(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
+            }
+            dispatch(addAppliedJobs(job));
+            toast.success(response.message);
+        } catch (error) {
+            const errMessage = error?.data?.message || "Failed to apply";
+            toast.error(errMessage);
+        }
+    };
 
     return (
         <>
-            <div className="w-full mt-10 md:mt-20 px-2 md:px-10 mb-10 md:mb-20">
-                <h1 className="text-4xl font-semibold font-Abel">
-                    NEW JOBS
-                </h1>
+            <div className="w-full mt-10 md:mt-20 px-12 md:px-7 mb-10 md:mb-20">
+                <h1 className="text-4xl font-semibold font-Abel ml-6">NEW JOBS</h1>
                 <div className="w-full mt-10 md:mt-20">
                     <Swiper
                         slidesPerView={1}
@@ -150,7 +64,7 @@ function RecommendedJobs() {
                                 spaceBetween: 20,
                             },
                             768: {
-                                slidesPerView: 2,
+                                slidesPerView: 1,
                                 spaceBetween: 40,
                             },
                             1024: {
@@ -165,33 +79,96 @@ function RecommendedJobs() {
                         modules={[Pagination, Navigation]}
                         className="mySwiper"
                     >
-                        {firstEightJobs.map((job) => (
-                            <SwiperSlide key={job.id} className="rounded-2xl">
-                                <div className="flex flex-col w-full px-3 md:px-6 py-6 md:py-10 gap-6">
-                                    <div className="flex flex-col md:flex-row items-center font-BarlowSemiCondensed w-full gap-5">
-                                        <div className="flex items-center justify-center w-9 h-9  md:w-12 md:h-12 rounded-full bg-blue-500 text-white font-semibold text-xl">
-                                            {job.icon}
-                                        </div>
+                        {newJobs.map((job) => (
+                            <SwiperSlide
+                                key={job._id}
+                                className="rounded-2xl px-4 md:px-7 py-2 md:py-7"
+                            >
+                                <div className="w-full flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-4">
+                                        {job?.companyprofile ? (
+                                            <img
+                                                src={job.companyprofile}
+                                                alt={job.title}
+                                            />
+                                        ) : (
+                                            <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold">
+                                                {job.company[0].toUpperCase()}
+                                            </div>
+                                        )}
                                         <div>
-                                            <h2 className="text-sm sm:text-md md:text-lg font-semibold">
+                                            <h1 className="text-lg md:text-2xl font-semibold text-gray-800">
                                                 {job.title}
+                                            </h1>
+                                            <h2 className="text-md text-gray-600">
+                                                {job.company}
                                             </h2>
-                                            <p className="text-[10px] sm:text-xs md:text-sm mb-3">
-                                                {job.description}
-                                            </p>
-                                            <span className="text-gray-600 text-sm">
-                                                {job.date}
-                                            </span>
-                                            <span className="text-gray-600 text-sm">
-                                                {job.type}
-                                            </span>
                                         </div>
                                     </div>
-                                    <div className="flex items-center justify-between w-full">
-                                        <button className="bg-third px-3 py-1 rounded-md text-white font-medium font-Abel">
-                                            Apply Now
+                                    <span
+                                        className={`px-3 py-1 text-sm md:text-md font-semibold rounded-full ${
+                                            job.status === "Active"
+                                                ? "bg-green-100 text-green-700"
+                                                : "bg-red-100 text-red-700"
+                                        }`}
+                                    >
+                                        {job.status}
+                                    </span>
+                                </div>
+
+                                {/* Job Details */}
+                                <p className="text-gray-600 text-sm md:text-base">
+                                    {job.description.slice(0, 250)}...
+                                </p>
+
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div className="text-sm md:text-base font-medium text-gray-700">
+                                        <p>
+                                            📍 {job.district}, {job.location}
+                                        </p>
+                                    </div>
+                                    <div className="text-sm md:text-base font-medium text-blue-500">
+                                        <p>⏳ {job.time}</p>
+                                        <p>💼 {job.shift}</p>
+                                    </div>
+                                    <div className="text-sm md:text-base font-semibold text-gray-700">
+                                        <p>💰 ₹{job.salary}</p>
+                                        <p>
+                                            🏢 Openings:{" "}
+                                            <span
+                                                className={`font-bold ${
+                                                    job.workersNeeded > 3
+                                                        ? "text-green-600"
+                                                        : "text-red-600"
+                                                }`}
+                                            >
+                                                {job.workersNeeded}
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="w-full flex items-center justify-between pt-4">
+                                    <button
+                                        className="text-blue-600 font-semibold hover:underline"
+                                        onClick={() =>
+                                            navigate(`/user/job/${job._id}`)
+                                        }
+                                    >
+                                        View Details
+                                    </button>
+
+                                    <div className="flex items-center gap-4">
+                                        <button className="p-2 rounded-full hover:bg-gray-200">
+                                            <Bookmark />
                                         </button>
-                                        <button>save</button>
+                                        <button
+                                            className="bg-third text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition"
+                                            onClick={() => handleApply(job)}
+                                        >
+                                            Apply
+                                        </button>
                                     </div>
                                 </div>
                             </SwiperSlide>
