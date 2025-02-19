@@ -498,6 +498,13 @@ const GetJobById = asyncHandler(async (req, res) => {
 const AppliedJobs = asyncHandler(async (req, res) => {
    try{ 
     const userId = req.user;
+    const now = new Date();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const currentHours = now.getHours().toString().padEnd(2, '0');
+        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentTime = `${currentHours}:${currentMinutes}`;
     const application = await applicantmodel.findOne({userId: userId});
     console.log("Application", application);
     
@@ -534,6 +541,22 @@ const AppliedJobs = asyncHandler(async (req, res) => {
             $unwind: "$companydetails",
         },
         {
+            $addFields: {
+                isjobPending:{
+                    $or: [
+                        {$gt: ["$date" , today]},
+                        {
+                            $and:[
+                                {$eq: ["$date" , today]},
+                                {$eq: ["$time" , currentTime]},
+                            ]
+                        }
+                    ]
+
+                }
+            }
+        },
+        {
             $project: {
                 _id: "$jobdetails._id",
                 title: 1,
@@ -550,6 +573,7 @@ const AppliedJobs = asyncHandler(async (req, res) => {
                 companyId: "$companydetails._id",
                 company: "$companydetails.companyName",
                 companyprofile: "$companydetails.profileImage",
+                isjobPending: 1,
             },
         },
     ]);
