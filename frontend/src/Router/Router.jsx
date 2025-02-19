@@ -33,12 +33,13 @@ import {
     CompanyProfile,
     CompanyLogin,
     Dashboard,
+    Layout
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
 import { Box, CircularProgress } from "@mui/material";
-import { useGetAdminQuery } from "../Store/AdminAuth/AdminAuth-Api";
-import { Layout } from "lucide-react";
+import { useGetCompanyQuery } from "../Store/AdminAuth/AdminAuth-Api";
+import { useGetAdminQuery } from "../Store/adminapi/SuperAdmin-Api";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -52,8 +53,10 @@ function Router() {
     const { data, isLoading, isSuccess,isFetching } = useGetUserQuery(undefined, {
         refetchOnMountOrArgChange: true,
     });
-    const { data: adminData, isLoading: adminIsLoading } = useGetAdminQuery();
-    
+    const { data: companyData, isLoading: companyIsLoading } = useGetCompanyQuery();
+    const { data: adminData,isFetching:isAdminFetching} = useGetAdminQuery()
+
+    console.log(adminData);
     useEffect(() => {
         console.log(user);
         if (!user && data && isSuccess) {
@@ -61,34 +64,33 @@ function Router() {
             console.log("inside");
 
             dispatch(setUser(data.data));
-        } else if (!user && adminData) {
+        } else if (!user && companyData) {
             console.log("inside admin");
-            dispatch(setUser(adminData));
+            dispatch(setUser(companyData));
         }
-    }, [data, user, adminData, isSuccess]);
+        else if(!user && adminData && !isAdminFetching){
+            dispatch(setUser(adminData.data));
+        }
+    }, [data, user, companyData, isSuccess,adminData]);
 
-    useEffect(() => {
-        console.log("User Data:", data);
-        console.log("isLoading:", isLoading);
-        console.log("isFetching:", isFetching);
-    }, [data, isLoading, isFetching]);
-
-
-    if (isLoading || adminIsLoading)
+    
+    
+    if (isLoading || companyIsLoading || isAdminFetching)
         return (
-            <Box
-                sx={{
-                    display: "flex",
-                    width: "100vw",
-                    height: "100vh",
-                    justifyContent: "center",
-                    alignItems: "center",
-                }}
-            >
+    <Box
+    sx={{
+        display: "flex",
+        width: "100vw",
+        height: "100vh",
+        justifyContent: "center",
+        alignItems: "center",
+    }}
+    >
                 <CircularProgress className="w-12 h-12 md:w-48 md:h-48" />
             </Box>
         );
-
+        
+        console.log(user)
     const router = createBrowserRouter([
         {
             path: "/",
@@ -96,7 +98,7 @@ function Router() {
                 user,
                 isAuthenticated,
                 isLoading,
-                adminIsLoading,
+                companyIsLoading,
             }),
             children: [
                 // user pages

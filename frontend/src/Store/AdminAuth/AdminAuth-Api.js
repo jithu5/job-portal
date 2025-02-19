@@ -12,7 +12,7 @@ const companyApi = createApi({
     baseQuery,
     tagTypes: ["admin", "Job"],
     endpoints: (builder) => ({
-        getAdmin: builder.query({
+        getCompany: builder.query({
             query: () => ({
                 url: "company",
             }),
@@ -124,7 +124,7 @@ const companyApi = createApi({
 });
 
 export const {
-    useGetAdminQuery,
+    useGetCompanyQuery,
     useRegisterAdminMutation,
     useLoginAdminMutation,
     useSendOtpMutation,

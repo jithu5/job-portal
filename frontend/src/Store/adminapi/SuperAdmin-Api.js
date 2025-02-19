@@ -10,7 +10,7 @@ const baseQuery = fetchBaseQuery({
 const AdminApi = createApi({
     reducerPath: "admins",
     baseQuery,
-    tagTypes: ["admin", "Company","User"],
+    tagTypes: ["admin", "Company", "User"],
     endpoints: (builder) => ({
         getAdmin: builder.query({
             query: () => ({
@@ -26,13 +26,20 @@ const AdminApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
-        })
+            invalidatesTags: ["admin","Company","User"],
+        }),
+        logout: builder.mutation({
+            query: () => ({
+                url: "logout",
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["admin","Company","User"],
+        }),
     }),
     // Define other endpoints here...
- 
 });
 
-export const { useLoginMutation } = AdminApi;
+export const { useLoginMutation,useGetAdminQuery,useLogoutMutation } = AdminApi;
 
 export default AdminApi;
