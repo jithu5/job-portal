@@ -68,7 +68,7 @@ function AdminAccountVerify() {
             console.log(response.data.message);
             dispatch(setUser(response.data.data));
             alert(response.data.message);
-            navigate("/admin/dashboard", { replace: true }); // Redirect to dashboard after successful verification
+            navigate("/company/dashboard", { replace: true }); // Redirect to dashboard after successful verification
         } catch (error) {
             console.log(error.message);
         }

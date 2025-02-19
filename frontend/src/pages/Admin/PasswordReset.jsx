@@ -101,7 +101,7 @@ function AdminPasswordReset() {
             console.log(response.data.message);
             alert(response.data.message);
             dispatch(setUser(response.data.data))
-            navigate("/admin/dashboard");
+            navigate("/company/dashboard");
             resetField("password");
         } catch (error) {
             console.log(error.message);

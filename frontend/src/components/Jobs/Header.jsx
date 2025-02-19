@@ -1,18 +1,14 @@
 import { Button, Input } from '@mui/material'
 import React, { useEffect } from 'react'
 
-function JobHeader({ setOpenFilter,title,handleChange,onFilterChange }) {
-    // console.log(onFilterChange)
-    // useEffect(() => {
-    //   onFilterChange()
-    // }, [title])
+function JobHeader({ setOpenFilter,title,handleChange }) {
     
     return (
         <>
             <header className="flex items-center py-7 justify-between w-[90%] sm:w-[80%] md:w-[70%] mx-auto">
                 <Input
                     type="text"
-                    name="Title"
+                    name="title"
                     value={title}
                     onChange={handleChange}
                     placeholder="Search your job here"
@@ -20,7 +16,9 @@ function JobHeader({ setOpenFilter,title,handleChange,onFilterChange }) {
                 />
                 <Button
                     variant="contained"
-                    color="primary"
+                    sx={{
+                        backgroundColor: "#9263f3",
+                    }}
                     onClick={() => {
                         setOpenFilter(true);
                     }}

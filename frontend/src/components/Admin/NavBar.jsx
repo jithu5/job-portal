@@ -35,13 +35,11 @@ function AdminNavBar({ setIsOpen }) {
                 console.log(response.message);
             }
               toast.success("Logged Out Successfully!");
-
-              
               // Delay navigation to allow toast to show
               setTimeout(() => {
                   dispatch(clearUserData());
                   dispatch(AdminApi.util.resetApiState());
-                  navigate("/api/admin/login");
+                  navigate("/api/company/login");
               }, 1000);
         } catch (error) {
             console.log(error);
@@ -62,7 +60,7 @@ function AdminNavBar({ setIsOpen }) {
                 </div>
                 <div>
                     <h1 className="text-xl md:text-3xl font-bold">
-                        Job Portal Admin
+                        Company Portal
                     </h1>
                 </div>
 

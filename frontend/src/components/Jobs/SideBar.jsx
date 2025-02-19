@@ -16,7 +16,6 @@ function JobSideBar({
     setOpenFilter,
     filterInput,
     handleChange,
-    clearInput,
 }) {
     const shiftTimings = {
         "Morning (6 AM - 12 PM)": ["06:00", "12:00"],
@@ -103,20 +102,6 @@ function JobSideBar({
                         </Select>
                     </FormControl>
 
-                    {/* <Button
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        onClick={() => {
-                            setOpenFilter(false)
-                        }}
-                        sx={{ mt: 2 }}
-                    >
-                        Apply Filters
-                    </Button> */}
-                    <Button onClick={clearInput} sx={{ mt: 2 }} color="error">
-                        clear
-                    </Button>
                 </form>
             </Box>
         </Drawer>

@@ -145,7 +145,7 @@ function Router() {
                     element: <UserPasswordReset />,
                 },
                 {
-                    path: "/admin/dashboard",
+                    path: "/company/dashboard",
                     element: <AdminLayout />,
                     children: [
                         {
@@ -179,7 +179,7 @@ function Router() {
                     ],
                 },
                 {
-                    path: "api/admin",
+                    path: "api/company",
                     children: [
                         {
                             path: "login",
