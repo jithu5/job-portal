@@ -4,7 +4,7 @@ const asyncHandler = require('../utils/Asynchandler.js');
 const usermodel = require('../models/usermodel.js');
 const companymodel = require('../models/company.js');
 const adminmodel = require('../models/admin.js');
-const jobsmodel = require('../models/jobs.js');
+const jobmodel = require('../models/jobs.js');
 const applicantmodel = require('../models/applicants.js');
 const wishlistmodel = require("../models/wishlist.js");
 
@@ -132,7 +132,7 @@ const DeleteUser = asyncHandler(async (req, res) => {
         if (applicant.length > 0) {
             const jobIds = applicant.map(app => app.jobId);
             console.log("jobs",jobIds);
-            await jobsmodel.updateMany(
+            await jobmodel.updateMany(
                 {_id: {$in: jobIds}},
                 {
                     $inc : { workersNeeded : 1},
@@ -158,10 +158,10 @@ const DeleteCompany = asyncHandler(async(req,res) => {
         if (!company) {
             throw new ApiError(error.statusCode || 500,error.message);
         }
-        const jobs = await jobsmodel.find({company : companyId});
+        const jobs = await jobmodel.find({company : companyId});
         if (jobs.length > 0) {
             const jobIds = jobs.map(job => job._id);
-            await jobsmodel.deleteMany({company : companyId});
+            await jobmodel.deleteMany({company : companyId});
             await applicantmodel.deleteMany({jobId : {$in: jobIds}});
             await wishlistmodel.deleteMany({jobId : {$in: jobIds}});
         }

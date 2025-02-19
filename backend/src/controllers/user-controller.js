@@ -296,7 +296,44 @@ const sortJobs = asyncHandler(async (req, res) => {
 const GetJobById = asyncHandler(async (req, res) => {
     try {
         const {jobId} = req.params;
-        const job = await jobmodel.findById(jobId);
+        const job = await jobmodel.aggregate([
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(jobId)
+                },
+            },
+            { 
+                    $lookup : {
+                        from : "companies",
+                        localField : "company",
+                        foreignField : "_id",
+                        as : "companydetails"
+                    }, 
+                },
+                {
+                    $unwind : "$companydetails",
+                    
+                },
+                {
+                    $project: {
+                        _id: 1,
+                        title: 1,
+                        description: 1,
+                        location: 1,
+                        district: 1,
+                        date: 1,
+                        shift: 1,
+                        time: 1,
+                        salary: 1,
+                        workersCount: 1,
+                        workersNeeded: 1,
+                        status: 1,
+                        company: "$companydetails.companyName",
+                        companyprofile : "$companydetails.profileImage"
+                    },
+                }
+            
+        ]);
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
