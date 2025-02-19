@@ -1087,15 +1087,110 @@ const RemoveWishlist = asyncHandler(async(req,res)=>{
 //view company
 const ViewCompany = asyncHandler(async(req,res)=>{
     const {companyId} = req.params;
-    console.log(companyId);
+    const {userId} = new mongoose.Types.ObjectId(req.user);
     try {
-        const company = await companymodel.findOne({_id: companyId});
-        console.log("company",company);
+        const now = new Date();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const currentHours = now.getHours().toString().padEnd(2, '0');
+        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentTime = `${currentHours}:${currentMinutes}`;
+
+        const company = await companymodel.findById(companyId);
         if (!company) {
             throw new ApiError(404, "Company not found");
         }
-        const jobs = await jobmodel.find({ company: company._id });
-        if (!jobs) {
+        const jobs = await jobmodel.aggregate([
+            {
+                $match:{company : new mongoose.Types.ObjectId(companyId)},
+            },
+            {   
+                $lookup : {
+                    from : "companies",
+                    localField : "company",
+                    foreignField : "_id",
+                    as : "companydetails"
+                }, 
+            },
+            {
+                $unwind : "$companydetails",
+                
+            },
+            {
+                $lookup : {
+                    from : "applicants",
+                    let : {jobId : "$_id", userId : userId},
+                    pipeline : [{
+                        $match : { $expr :{
+                            $and : [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        } 
+                    },
+                    {$limit : 1}
+                ],
+                as : "applied"
+                }
+            },
+            {
+                $lookup : {
+                    from : "wishlists",
+                    let : {jobId : "$_id", userId : userId},
+                    pipeline : [{
+                        $match : { $expr : {
+                            $and: [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        }
+                    },
+                    {$limit : 1}
+                ],
+                as : "wishlisted"
+                }
+            },
+            {
+                $addFields: {
+                    isAvailable:{
+                        $or: [
+                            {$gt: ["$date" , today]},
+                            {
+                                $and:[
+                                    {$eq: ["$date" , today]},
+                                    {$eq: ["$time" , currentTime]},
+                                ]
+                            }
+                        ]
+
+                    }
+                }
+            },
+            {
+                $project:{
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    salary: 1,
+                    workersCount: 1,
+                    workersNeeded: 1,
+                    status: 1,
+                    companyId: "$companydetails._id",
+                    company: "$companydetails.companyName",
+                    companyprofile : "$companydetails.profileImage",
+                    isApplied: {$gt: [{ $size: "$applied"},0]},
+                    isWishlisted: {$gt: [{ $size: "$wishlisted"},0]},
+                    isAvailable: 1,
+                }
+            }
+        ]);
+        if (!jobs || jobs.length === 0) {
             throw new ApiError(404, "No posted jobs found");
         }
         const noOfJobs = await jobs.length;
