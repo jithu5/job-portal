@@ -20,9 +20,11 @@ import UserApi from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
 
 function NavBar() {
-    const { user: currentUser, appliedJobs } = useSelector(
-        (state) => state.Auth
-    );
+    const {
+        user: currentUser,
+        appliedJobs,
+        wishlist,
+    } = useSelector((state) => state.Auth);
 
     const [isActive, setIsActive] = useState(false);
 
@@ -164,16 +166,25 @@ function NavBar() {
                         )}
                         {currentUser && (
                             <>
-                                <Link to={"wishlist"}>
+                                <Link to={"wishlist"} className="relative">
                                     <FaRegHeart className="text-md sm:text-xl md:text-2xl" />
+                                    {wishlist.length > 0 && (
+                                        <p className="absolute -top-4 -right-4 bg-third w-6 h-6 rounded-full flex justify-center items-center">
+                                            {wishlist.length}
+                                        </p>
+                                    )}
                                 </Link>
                                 <Link to={"job-history"} className="relative">
                                     <MdOutlineWorkHistory className="text-md sm:text-xl md:text-2xl" />
-                                   {appliedJobs.length > 0 && <p className="absolute -top-4 -right-4 bg-yellow-300 w-7 h-7 rounded-full flex justify-center items-center">{appliedJobs.length}</p>}
+                                    {appliedJobs.length > 0 && (
+                                        <p className="absolute -top-4 -right-4 bg-yellow-300 w-7 h-7 rounded-full flex justify-center items-center">
+                                            {appliedJobs.length}
+                                        </p>
+                                    )}
                                 </Link>
                                 <Tooltip title="Account settings">
                                     <IconButton
-                                        onClick={handleClick} 
+                                        onClick={handleClick}
                                         size="small"
                                         sx={{ ml: 2 }}
                                         aria-controls={
@@ -186,7 +197,10 @@ function NavBar() {
                                     >
                                         <Avatar sx={{ width: 40, height: 40 }}>
                                             <img
-                                                src={currentUser?.profileImage || avatar}
+                                                src={
+                                                    currentUser?.profileImage ||
+                                                    avatar
+                                                }
                                                 alt=""
                                                 className="w-full h-full object-cover"
                                             />

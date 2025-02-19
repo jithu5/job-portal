@@ -96,8 +96,8 @@ const SearchJobs = () => {
             dispatch(addWishlist(job));
             toast.success(response.message);
         } catch (error) {
-            console.log(error);
-            toast.error("Failed to add to wishlist");
+            const errMessage = error?.data?.message || "Failed to add to wishlist";
+            toast.error(errMessage);
         }
     }
 
@@ -273,7 +273,12 @@ const SearchJobs = () => {
                                             </button>
 
                                             <div className="flex items-center gap-4">
-                                                <button className="p-2 rounded-full hover:bg-gray-200">
+                                                <button
+                                                    onClick={() =>
+                                                        addWishlistFn
+                                                    (job)}
+                                                    className="p-2 rounded-full hover:bg-gray-200"
+                                                >
                                                     <Bookmark />
                                                 </button>
                                                 <button
