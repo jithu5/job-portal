@@ -31,11 +31,14 @@ import {
     UserPasswordReset,
     UserAccountVerify,
     CompanyProfile,
+    CompanyLogin,
+    Dashboard,
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
 import { Box, CircularProgress } from "@mui/material";
 import { useGetAdminQuery } from "../Store/AdminAuth/AdminAuth-Api";
+import { Layout } from "lucide-react";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -50,6 +53,7 @@ function Router() {
         refetchOnMountOrArgChange: true,
     });
     const { data: adminData, isLoading: adminIsLoading } = useGetAdminQuery();
+    
     useEffect(() => {
         console.log(user);
         if (!user && data && isSuccess) {
@@ -95,6 +99,7 @@ function Router() {
                 adminIsLoading,
             }),
             children: [
+                // user pages
                 {
                     path: "/user",
                     element: <UserHome />,
@@ -128,11 +133,12 @@ function Router() {
                             element: <JobDetails />,
                         },
                         {
-                            path:"company-profile",
+                            path:"company-profile/:companyId",
                             element: <CompanyProfile/>
                         }
                     ],
                 },
+                // user verifying pages
                 {
                     path: "api/user/register",
                     element: <Register />,
@@ -149,6 +155,7 @@ function Router() {
                     path: "api/user/reset-password",
                     element: <UserPasswordReset />,
                 },
+                // company pages
                 {
                     path: "/company/dashboard",
                     element: <AdminLayout />,
@@ -183,12 +190,13 @@ function Router() {
                         },
                     ],
                 },
+                // companies verification
                 {
                     path: "api/company",
                     children: [
                         {
                             path: "login",
-                            element: <AdminLogin />,
+                            element: <CompanyLogin />,
                         },
                         {
                             path: "register",
@@ -204,6 +212,21 @@ function Router() {
                         },
                     ],
                 },
+                // admin pages
+                {
+                    path:'api/admin/login',
+                    element: <AdminLogin />
+                },
+                {
+                    path:'admin/dashboard',
+                    element:<Layout />,
+                    children:[
+                        {
+                            index:true,
+                            element:<Dashboard/>
+                        }
+                    ]
+                }
             ],
         },
         {

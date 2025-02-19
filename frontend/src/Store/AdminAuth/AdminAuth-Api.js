@@ -7,8 +7,8 @@ const baseQuery = fetchBaseQuery({
     credentials: "include",
 });
 
-const AdminApi = createApi({
-    reducerPath: "admins",
+const companyApi = createApi({
+    reducerPath: "company",
     baseQuery,
     tagTypes: ["admin", "Job"],
     endpoints: (builder) => ({
@@ -135,6 +135,6 @@ export const {
     useLogoutAdminMutation,
     usePostJobMutation,
     useUpdateImagesMutation
-} = AdminApi;
+} = companyApi;
 
-export default AdminApi;
+export default companyApi;

@@ -17,16 +17,16 @@ import JobSideBar from "./Jobs/SideBar";
 
 import CommonAuth from "./Auth/Common";
 
-import AdminNavBar from "./Admin/NavBar";
-import AdminDashboard from "./Admin/Dashboard";
-import AdminSideBar from "./Admin/SideBar";
-import AdminApplication from "./Admin/Application";
-import AdminDrawer from "./Admin/Drawer";
-import AdminPostJob from "./Admin/PostJob";
-import AdminProfile from "./Admin/Profile";
-import EditAdminProfile from "./Admin/EditProfile";
-import AdminJobDetails from "./Admin/JobDetails";
-import AdminEditJob from "./Admin/EditJob";
+import AdminNavBar from "./Company/NavBar";
+import AdminDashboard from "./Company/Dashboard";
+import AdminSideBar from "./Company/SideBar";
+import AdminApplication from "./Company/Application";
+import AdminDrawer from "./Company/Drawer";
+import AdminPostJob from "./Company/PostJob";
+import AdminProfile from "./Company/Profile";
+import EditAdminProfile from "./Company/EditProfile";
+import AdminJobDetails from "./Company/JobDetails";
+import AdminEditJob from "./Company/EditJob";
 
 import PasswordReset from "./common/PasswordReset";
 import AccountVerify from "./common/AccountVerify";

@@ -196,6 +196,11 @@ const SearchJobs = () => {
                                             <div className="flex items-center gap-4">
                                                 {job?.companyprofile ? (
                                                     <img
+                                                        onClick={() =>
+                                                            navigate(
+                                                                `/user/company-profile/${job.companyId}`
+                                                            )
+                                                        }
                                                         src={job.companyprofile}
                                                         alt={job.title}
                                                         className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover cursor-pointer"
@@ -275,8 +280,8 @@ const SearchJobs = () => {
                                             <div className="flex items-center gap-4">
                                                 <button
                                                     onClick={() =>
-                                                        addWishlistFn
-                                                    (job)}
+                                                        addWishlistFn(job)
+                                                    }
                                                     className="p-2 rounded-full hover:bg-gray-200"
                                                 >
                                                     <Bookmark />

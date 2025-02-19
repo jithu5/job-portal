@@ -8,9 +8,9 @@ function AdminLayout() {
         <>
             <div className="flex w-full justify-between">
                 <div className="hidden md:fixed md:flex w-[20%] lg:w-[17%] bg-stone-900 text-white min-h-screen rounded-tr-2xl rounded-br-2xl">
-                    <AdminSideBar/>
+                    <AdminSideBar usedIn="company"/>
                 </div>
-                    <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} />
+                    <AdminDrawer isOpen={isOpen} setIsOpen={setIsOpen} usedIn="company" />
                 <div className="w-full max-md:px-5 md:w-[80%] lg:w-[83%] min-h-screen md:ml-[20%] lg:ml-[17%]">
                     <AdminNavBar setIsOpen={setIsOpen} />
                     <main className="w-full min-h-screen mt-3">

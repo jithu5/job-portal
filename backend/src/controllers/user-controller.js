@@ -486,7 +486,8 @@ const GetJobById = asyncHandler(async (req, res) => {
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
-        return res.json(new ApiResponse(200, job, "Job fetched successfully"));
+        console.log("job detail with params ",job[0])
+        return res.json(new ApiResponse(200, job[0], "Job fetched successfully"));
 
     } catch (error) {
         throw new ApiError(error.statusCode,error.message)
@@ -507,51 +508,50 @@ const AppliedJobs = asyncHandler(async (req, res) => {
     const jobdetails = await applicantmodel.aggregate([
         {
             $match: {
-                userId: new mongoose.Types.ObjectId(userId)
-            }
+                userId: new mongoose.Types.ObjectId(userId),
+            },
         },
         {
             $lookup: {
-                from : "jobs",
-                localField : "jobId",
-                foreignField : "_id",
-                as : "jobdetails"
-            }
+                from: "jobs",
+                localField: "jobId",
+                foreignField: "_id",
+                as: "jobdetails",
+            },
         },
-            {
-                $unwind : "$jobdetails"
+        {
+            $unwind: "$jobdetails",
+        },
+        {
+            $lookup: {
+                from: "companies",
+                localField: "jobdetails.company",
+                foreignField: "_id",
+                as: "companydetails",
             },
-            {
-                $lookup : {
-                    from : "companies",
-                    localField : "jobdetails.company",
-                    foreignField : "_id",
-                    as : "companydetails"
-                }
+        },
+        {
+            $unwind: "$companydetails",
+        },
+        {
+            $project: {
+                _id: "$jobdetails._id",
+                title: 1,
+                description: 1,
+                location: 1,
+                district: 1,
+                date: 1,
+                shift: 1,
+                time: 1,
+                salary: 1,
+                workersCount: 1,
+                workersNeeded: 1,
+                status: 1,
+                companyId: "$companydetails._id",
+                company: "$companydetails.companyName",
+                companyprofile: "$companydetails.profileImage",
             },
-            {
-                $unwind : "$companydetails"
-            },
-            {
-                $project: {
-                    _id: 1,
-                    title: 1,
-                    description: 1,
-                    location: 1,
-                    district: 1,
-                    date: 1,
-                    shift: 1,
-                    time: 1,
-                    salary: 1,
-                    workersCount: 1,
-                    workersNeeded: 1,
-                    status: 1,
-                    companyId: "$companydetails._id",
-                    company: "$companydetails.companyName",
-                    companyprofile : "$companydetails.profileImage"
-                },
-            }
-        
+        },
     ]);
     console.log("jobdetails", jobdetails);
     if(!jobdetails){
@@ -1087,8 +1087,10 @@ const RemoveWishlist = asyncHandler(async(req,res)=>{
 //view company
 const ViewCompany = asyncHandler(async(req,res)=>{
     const {companyId} = req.params;
+    console.log(companyId);
     try {
-        const company = await companymodel.findOne({companyName: companyId});
+        const company = await companymodel.findOne({_id: companyId});
+        console.log("company",company);
         if (!company) {
             throw new ApiError(404, "Company not found");
         }

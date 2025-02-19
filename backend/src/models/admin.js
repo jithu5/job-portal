@@ -9,7 +9,7 @@ const AdminSchema = mongoose.Schema(
             required: true,
         },
         email: {
-            type:String,
+            type: String,
             required: true,
         },
         password: {
@@ -19,7 +19,11 @@ const AdminSchema = mongoose.Schema(
         },
         role: {
             type: String,
-            default: 'superadmin',
+            default: "admin",
+        },
+        isAccountVerified: {
+            type: Boolean,
+            default: true,
         },
     },
     {
