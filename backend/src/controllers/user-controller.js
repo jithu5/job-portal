@@ -199,7 +199,7 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
-        const userId = req.user;
+        const userId =  new mongoose.Types.ObjectId(req.user);
         console.log(userId);
         const Alljobs = await jobmodel.aggregate([         
             {   
@@ -282,7 +282,7 @@ const GetJobs = asyncHandler(async (req, res) => {
 //get first 6 jobs
 const sortJobs = asyncHandler(async (req, res) => {
     try {
-        const userId = req.user;
+        const userId =  new mongoose.Types.ObjectId(req.user);
         const jobs = await jobmodel.aggregate([         
             {   
                 $lookup : {
@@ -373,7 +373,7 @@ const sortJobs = asyncHandler(async (req, res) => {
 //get job id
 const GetJobById = asyncHandler(async (req, res) => {
     try {
-        const userId = req.user;
+        const userId =  new mongoose.Types.ObjectId(req.user);
         const {jobId} = req.params;
         const job = await jobmodel.aggregate([
             {
