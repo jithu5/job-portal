@@ -14,7 +14,7 @@ AdminRouter.get('/getcompany',ProtectAdminMiddleware, GetCompany);
 
 AdminRouter.post('/deleteuser/:userId',ProtectAdminMiddleware, DeleteUser);
 
-AdminRouter.post('/deletecompany/:userId',ProtectAdminMiddleware, DeleteCompany);
+AdminRouter.post('/deletecompany/:companyId',ProtectAdminMiddleware, DeleteCompany);
 
 AdminRouter.post('/logout',ProtectAdminMiddleware, Logout);
 
