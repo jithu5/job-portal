@@ -1,12 +1,14 @@
 const express = require('express');
 const AdminRouter = express.Router();
 const ProtectAdminMiddleware = require("../middlewares/adminAuth.middleware.js");
-const { Register,Login,GetUsers,GetCompany,ViewUser,ViewCompany,DeleteUser,DeleteCompany,Logout }= require("../controllers/admin-controller.js");
+const { Register,Login,GetAdmin,GetUsers,GetCompany,ViewUser,ViewCompany,DeleteUser,DeleteCompany,Logout }= require("../controllers/admin-controller.js");
 
 
 AdminRouter.post('/register', Register);
 
 AdminRouter.post('/login', Login);
+
+AdminRouter.get('/getadmin', ProtectAdminMiddleware, GetAdmin);
 
 AdminRouter.get('/getusers',ProtectAdminMiddleware, GetUsers);
 

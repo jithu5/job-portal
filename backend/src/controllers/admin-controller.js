@@ -57,6 +57,19 @@ const Login = asyncHandler(async(req,res)=>{
    }
 });
 
+const GetAdmin = asyncHandler(async (req, res) => {
+    const adminId = req.admin;
+    try {
+        const admin = await adminmodel.findById(adminId);
+        if (!admin) {
+            throw new ApiError(404, "Admin not found");
+        }
+        return res.json(new ApiResponse(200, admin, "Admin fetched successfully"));
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
+    }
+});
+
 const GetUsers = asyncHandler(async (req, res) => {
     try {
         const users = await usermodel.find({});
@@ -94,7 +107,6 @@ const ViewUser = asyncHandler(async (req, res) => {
         throw new ApiError(error.statusCode || 500, error.message);
     }
 });
-
 
 //view company profile
 const ViewCompany = asyncHandler(async (req, res) => {
@@ -191,6 +203,7 @@ const Logout = asyncHandler(async (req, res) => {
 module.exports = {
     Register,
     Login,
+    GetAdmin,
     GetUsers,
     GetCompany,
     ViewUser,
