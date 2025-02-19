@@ -105,7 +105,7 @@ const UserApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["User","Job"], // Forces re-fetch of "User" queries
+            invalidatesTags: ["User", "Job"], // Forces re-fetch of "User" queries
         }),
         getJobs: builder.query({
             query: () => ({
@@ -152,13 +152,27 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Job"],
         }),
+        getWishlist: builder.query({
+            query: () => ({
+                url: "getwishlist",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        }),
         getNewJobs: builder.query({
             query: () => ({
                 url: "newjobs",
             }),
             transformResponse: (response) => response,
             providesTags: ["Job"],
-        })
+        }),
+        viewCompany: builder.query({
+            query: (id) => ({
+                url: `view-company/${id}`,
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        }),
     }),
 });
 
@@ -180,7 +194,9 @@ export const {
     useGetAppliedJobQuery,
     useCancelAppliedJobMutation,
     useAddToWishlistMutation,
-    useGetNewJobsQuery
+    useGetNewJobsQuery,
+    useGetWishlistQuery,
+    useViewCompanyQuery
 } = UserApi;
 
 export default UserApi;
