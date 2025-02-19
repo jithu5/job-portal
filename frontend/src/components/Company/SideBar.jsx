@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 
 import { MdSpaceDashboard, MdWorkHistory, MdAddBox } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 
-const NavigationLink = [
+const CompanyNavigationLink = [
     {
         name: "Dashboard",
         path: "",
@@ -27,7 +27,35 @@ const NavigationLink = [
         icon: <RiUserSettingsFill className="text-white text-lg lg:text-xl" />,
     },
 ];
-function AdminSideBar() {
+
+const AdminNavigation = [
+    {
+        name: "Dashboard",
+        path: "",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+    {
+        name: "User",
+        path: "user",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+    {
+        name: "Company",
+        path: "company",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+]
+function AdminSideBar({usedIn}) {
+    console.log(usedIn);
+    const [NavigationLink, setNavigationLink] = useState([])
+    useEffect(() => {
+      if (usedIn.toLowerCase() === "company") {
+        setNavigationLink(CompanyNavigationLink)
+        
+      }else if (usedIn.toLowerCase() === "admin") {
+        setNavigationLink(AdminNavigation)}
+    }, [])
+    
     return (
         <>
             <aside className="w-full h-full bg-stone-900 text-white flex flex-col items-center py-7 lg:py-12 gap-10">

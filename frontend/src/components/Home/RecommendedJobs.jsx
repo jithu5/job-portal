@@ -52,7 +52,9 @@ function RecommendedJobs() {
     return (
         <>
             <div className="w-full mt-10 md:mt-20 px-12 md:px-7 mb-10 md:mb-20">
-                <h1 className="text-4xl font-semibold font-Abel ml-6">NEW JOBS</h1>
+                <h1 className="text-4xl font-semibold font-Abel ml-6">
+                    NEW JOBS
+                </h1>
                 <div className="w-full mt-10 md:mt-20">
                     <Swiper
                         slidesPerView={1}
@@ -88,11 +90,24 @@ function RecommendedJobs() {
                                     <div className="flex items-center gap-4">
                                         {job?.companyprofile ? (
                                             <img
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/user/company-profile/${job.companyId}`
+                                                    )
+                                                }
+                                                className="w-6 h-6 object-cover rounded-full cursor-pointer"
                                                 src={job.companyprofile}
                                                 alt={job.title}
                                             />
                                         ) : (
-                                            <div className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold">
+                                            <div
+                                                onClick={() =>
+                                                    navigate(
+                                                        `/user/company-profile/${job.companyId}`
+                                                    )
+                                                }
+                                                className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer"
+                                            >
                                                 {job.company[0].toUpperCase()}
                                             </div>
                                         )}

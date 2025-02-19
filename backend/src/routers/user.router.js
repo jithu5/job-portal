@@ -62,7 +62,7 @@ UserRouter.post("/applyjob/:jobId", protectUserMiddleware, ApplyJob);
 
 UserRouter.post('/cancel-job/:jobId',protectUserMiddleware,Canceljob);
 
-UserRouter.post('/view-company/:companyId',protectUserMiddleware,ViewCompany);
+UserRouter.get('/view-company/:companyId',protectUserMiddleware,ViewCompany);
 
 
 

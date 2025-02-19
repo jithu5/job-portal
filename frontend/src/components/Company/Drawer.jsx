@@ -1,12 +1,12 @@
 import { Box, DialogTitle, Drawer } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 import { MdSpaceDashboard, MdWorkHistory, MdAddBox } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
 
-const NavigationLink = [
+const CompanyNavigationLink = [
     {
         name: "Dashboard",
         path: "",
@@ -29,8 +29,35 @@ const NavigationLink = [
         icon: <RiUserSettingsFill className="text-white text-lg lg:text-xl" />,
     },
 ];
+const AdminNavigation = [
+    {
+        name: "Dashboard",
+        path: "",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+    {
+        name: "User",
+        path: "user",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+    {
+        name: "Company",
+        path: "company",
+        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+    },
+]
 
-function AdminDrawer({ isOpen, setIsOpen }) {
+function AdminDrawer({ isOpen, setIsOpen ,usedIn}) {
+    const [NavigationLink, setNavigationLink] = useState([])
+
+    useEffect(() => {
+        if (usedIn.toLowerCase() === "company") {
+            setNavigationLink(CompanyNavigationLink)
+        }else if(usedIn.toLowerCase() === "admin"){
+            setNavigationLink(AdminNavigation)
+        }
+    }, [])
+    
     return (
         <>
             <Drawer open={isOpen} onClose={() => setIsOpen(false)}>

@@ -1,56 +1,52 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useApplyForJobMutation, useGetJobByIdQuery } from "../../Store/Auth/Auth-Api";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-    Box,
-    Typography,
-    Card,
-    CardContent,
-    CircularProgress,
-    Button,
-} from "@mui/material";
-import { Bookmark } from "lucide-react";
+    useApplyForJobMutation,
+    useGetJobByIdQuery,
+} from "../../Store/Auth/Auth-Api";
+import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { addAppliedJobs } from "../../Store/Auth";
 
+import { FaHeart } from "react-icons/fa";
+import { MapPin } from "lucide-react";
+
 function JobDetails() {
     const { jobId } = useParams();
-    const { data, isLoading, isError } = useGetJobByIdQuery(jobId);
-    const [ applyForJob ] = useApplyForJobMutation()
-    const dispatch = useDispatch()
-    const [job, setJob] = useState({})
-    console.log(data)
+    const { data, isFetching, isError } = useGetJobByIdQuery(jobId);
+    const [applyForJob] = useApplyForJobMutation();
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const [job, setJob] = useState("");
 
     useEffect(() => {
-        if (data?.data && ! isLoading) {
-            setJob(data?.data)
-            
+        if (data?.data && !isFetching) {
+            setJob(data.data);
         }
-    }, [data?.data])
+    }, [data?.data]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
-    console.log(job)
 
-      const handleApply = async (job) => {
-          try {
-              const response = await applyForJob(job._id).unwrap();
-              console.log(response);
-              if (!response.success) {
-                  toast.error(response.message);
-                  return;
-              }
-              dispatch(addAppliedJobs(job));
-              toast.success(response.message);
-          } catch (error) {
-              console.log(error);
-              toast.error("Failed to apply");
-          }
-      };
+    const handleApply = async (job) => {
+        try {
+            const response = await applyForJob(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
+            }
+            dispatch(addAppliedJobs(job));
+            toast.success(response.message);
+        } catch (error) {
+            console.log(error);
+            toast.error("Failed to apply");
+        }
+    };
 
-    if (isLoading) {
+    if (isFetching) {
         return (
             <Box className="min-h-screen flex justify-center items-center">
                 <CircularProgress size={60} />
@@ -67,106 +63,111 @@ function JobDetails() {
             </Box>
         );
     }
+    console.log(data.data);
+    console.log(job);
 
     return (
-        <Box className="min-h-screen w-[90%] sm:w-[80%] md:w-[70%] mx-auto py-16">
-            <Card className="p-6 shadow-lg rounded-xl bg-white">
-                <CardContent className="flex flex-col gap-4">
-                    {/* Header Section */}
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            {job?.companyprofile ? (
-                                <img
-                                    src={job.companyprofile}
-                                    alt={job.title}
-                                    className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover"
-                                />
-                            ) : (
-                                <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold">
-                                    {job.company[0].toUpperCase()}
-                                </div>
-                            )}
-                            <div>
-                                <Typography
-                                    variant="h5"
-                                    className="font-semibold text-gray-800"
-                                >
-                                    {job.title}
-                                </Typography>
-                                <Typography
-                                    variant="subtitle2"
-                                    className="text-gray-600"
-                                >
-                                    {job.company}
-                                </Typography>
-                            </div>
-                        </div>
-                        <span
-                            className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                                job.status === "Active"
-                                    ? "bg-green-100 text-green-700"
-                                    : "bg-red-100 text-red-700"
-                            }`}
+        <main className="w-full min-h-screen p-5 sm:px-12 md:px-52 py-8 text-secondary">
+            <div className="flex items-center justify-between">
+                <h1 className="font-bold text-lg md:text-4xl uppercase mb-10 font-Oswald">
+                    {job.title}
+                </h1>
+                <div className="flex items-center gap-4">
+                    {job.isApplied ? (
+                        <Button variant="contained" color="primary">
+                            Applied
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => handleApply(job)}
                         >
-                            {job.status}
-                        </span>
+                            Apply
+                        </Button>
+                    )}
+                    {job?.isWishlisted ? (
+                        <FaHeart className="text-red-600 size-8" />
+                    ) : (
+                        <FaHeart className="size-8" />
+                    )}
+                </div>
+            </div>
+            <div className="flex items-center justify-start gap-5">
+                {job?.companyprofile ? (
+                    <img
+                        className="w-16 h-16 rounded-full object-cover"
+                        src={job.companyprofile}
+                        alt=""
+                        onClick={() =>
+                            navigate(`/user/company-profile/${job.companyId}`)
+                        }
+                    />
+                ) : (
+                    <div
+                        onClick={() =>
+                            navigate(`/user/company-profile/${job.companyId}`)
+                        }
+                        className="bg-third flex justify-center items-center font-semibold text-2xl text-white h-16 w-16 rounded-full"
+                    >
+                        {job.company[0].toUpperCase()}
                     </div>
-
-                    {/* Job Description */}
-                    <Typography className="text-gray-600 text-sm md:text-base">
-                        {job.description.length > 150
-                            ? `${job.description.slice(0, 150)}...`
-                            : job.description}
-                    </Typography>
-
-                    {/* Job Details Grid */}
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div className="text-sm md:text-base font-medium text-gray-700">
-                            📍 {job.district}, {job.location}
-                        </div>
-                        <div className="text-sm md:text-base font-medium text-blue-500">
-                            ⏳ {job.time} | 💼 {job.shift}
-                        </div>
-                        <div className="text-sm md:text-base font-semibold text-gray-700">
-                            💰 ₹{job.salary}
-                        </div>
-                        <div className="text-sm md:text-base font-semibold">
-                            🏢 Openings:{" "}
-                            <span
-                                className={`font-bold ${
-                                    job.workersNeeded > 3
-                                        ? "text-green-600"
-                                        : "text-red-600"
-                                }`}
-                            >
-                                {job.workersNeeded}
-                            </span>
-                        </div>
-                        <div className="text-sm md:text-base">
-                            📅 {new Date(job.date).toLocaleDateString("en-GB")}
-                        </div>
+                )}
+                <div className="flex flex-col font-semibold font-Abel">
+                    <div className="flex items-center gap-4">
+                        <h2 className="font-bold text-2xl text-third">
+                            {job.company}
+                        </h2>
+                        <p className="text-sm md:text-lg flex gap-0.5 items-center">
+                            <MapPin className="text-secondary size-4" />
+                            {job.location}
+                        </p>
                     </div>
-
-                    {/* Action Buttons */}
-                    <Box className="w-full flex items-center justify-between pt-4">
-                       
-                        <div className="flex items-center gap-4">
-                            <button className="p-2 rounded-full hover:bg-gray-200">
-                                <Bookmark className="text-blue-600" />
-                            </button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                className="bg-blue-600 hover:bg-blue-700 transition px-4 py-2 rounded-lg font-medium"
-                                onClick={() => handleApply(job)}
-                            >
-                                Apply
-                            </Button>
-                        </div>
-                    </Box>
-                </CardContent>
-            </Card>
-        </Box>
+                    <div className="flex items-center gap-5">
+                        <p className="text-sm md:text-lg">{job.time}</p>
+                        <p className="text-sm md:text-lg">
+                            {new Date(job.date).toLocaleDateString("en-us", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                            })}
+                        </p>
+                        <p className="text-sm md:text-lg">₹{job.salary}</p>
+                    </div>
+                </div>
+            </div>
+            <div className="w-full py-10">
+                <h2 className="font-bold text-2xl text-third">Description</h2>
+                <p className="text-lg">{job.description}</p>
+            </div>
+            <div className="w-full py-10">
+                <h2 className="font-bold text-2xl text-third">Details</h2>
+                <p className={` text-lg font-semibold`}>
+                    Available position :{" "}
+                    <span
+                        className={`${
+                            job.workersNeeded > 3
+                                ? "text-green-600"
+                                : "text-red-600"
+                        }`}
+                    >
+                        {job.workersNeeded}
+                    </span>
+                </p>
+                <p className="text-lg font-semibold">
+                    StatusSkills required :{" "}
+                    <span
+                        className={`${
+                            job.status.toLowerCase() === "active"
+                                ? "text-green-600"
+                                : "text-red-600"
+                        }`}
+                    >
+                        {job.status}
+                    </span>
+                </p>
+            </div>
+        </main>
     );
 }
 

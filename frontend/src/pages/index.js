@@ -9,11 +9,15 @@ import CompanyProfile from "./User/CompanyProfile";
 import SearchJobs from "./Jobs/SearchJobs";
 import JobDetails from "./Jobs/JobDetails";
 
-import AdminLayout from "./Admin/AdminLayout";
+import AdminLayout from "./Company/AdminLayout";
+import CompanyLogin from "./Company/Login";
+import AdminRegister from "./Company/Register";
+import AdminAccountVerify from "./Company/AccountVerify";
+import AdminPasswordReset from "./Company/PasswordReset";
+
 import AdminLogin from "./Admin/Login";
-import AdminRegister from "./Admin/Register";
-import AdminAccountVerify from "./Admin/AccountVerify";
-import AdminPasswordReset from "./Admin/PasswordReset";
+import Layout from "./Admin/Layout";
+import Dashboard from "./Admin/Dashboard";
 
 export {
     Home,
@@ -24,10 +28,13 @@ export {
     CompanyProfile,
     JobDetails,
     AdminLayout,
-    AdminLogin,
+    CompanyLogin,
     AdminRegister,
     AdminAccountVerify,
     AdminPasswordReset,
     UserAccountVerify,
-    UserPasswordReset
+    UserPasswordReset,
+    AdminLogin,
+    Layout,
+    Dashboard
 };

@@ -36,7 +36,13 @@ const Register = asyncHandler(async(req,res) => {
 const Login = asyncHandler(async(req,res)=>{
    try {
     const {email, password} = req.body;
+    if(!email || !password){
+        throw new ApiError(400, "All fields are required");
+    }
     const admin = await adminmodel.findOne({email});
+    if(!admin){
+        throw new ApiError(404, 'Admin not found');
+    }
     const isMatch = await admin.comparePassword(password);
     if(!admin ||!isMatch){
         throw new ApiError(401, 'Invalid email or password');
