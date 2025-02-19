@@ -15,6 +15,7 @@ const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const Tesseract = require("tesseract.js");
 const cloudinary = require("../utils/cloudinary.js");
 const extractPublicId = require("../utils/ExtractPublicId.js");
+const { pipeline } = require("stream");
 
 //homepage
 const Homepage = asyncHandler(async (req, res) => {});
@@ -198,6 +199,8 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
+        const userId = req.user;
+        console.log(userId);
         const Alljobs = await jobmodel.aggregate([         
             {   
                 $lookup : {
@@ -213,7 +216,36 @@ const GetJobs = asyncHandler(async (req, res) => {
             },
             {
                 $lookup : {
-
+                    from : "applicants",
+                    let : {jobId : "$_id", userId :userId},
+                    pipeline : [{
+                        $match : { $expr :{
+                            $and : [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        } 
+                    },
+                    {$limit : 1}
+                ],
+                as : "applied"
+                }
+            },
+            {
+                $lookup : {
+                    from : "wishlists",
+                    let : {jobId : "$_id", userId : userId},
+                    pipeline : [{
+                        $match : { $expr : {
+                            $and: [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        }
+                    },
+                    {$limit : 1}
+                ],
+                as : "wishlisted"
                 }
             },
             {
@@ -230,8 +262,11 @@ const GetJobs = asyncHandler(async (req, res) => {
                     workersCount: 1,
                     workersNeeded: 1,
                     status: 1,
+                    companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
-                    companyprofile : "$companydetails.profileImage"
+                    companyprofile : "$companydetails.profileImage",
+                    isApplied: {$gt: [{ $size: "applied"},0]},
+                    isWishlisted: {$gt: [{ $size: "wishlisted"},0]},
                 },
             }
         ]);
@@ -282,6 +317,7 @@ const sortJobs = asyncHandler(async (req, res) => {
                     workersCount: 1,
                     workersNeeded: 1,
                     status: 1,
+                    companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
                     companyprofile : "$companydetails.profileImage"
                 },
@@ -333,6 +369,7 @@ const GetJobById = asyncHandler(async (req, res) => {
                         workersCount: 1,
                         workersNeeded: 1,
                         status: 1,
+                        companyId: "$companydetails._id",
                         company: "$companydetails.companyName",
                         companyprofile : "$companydetails.profileImage"
                     },
@@ -402,6 +439,7 @@ const AppliedJobs = asyncHandler(async (req, res) => {
                     workersCount: 1,
                     workersNeeded: 1,
                     status: 1,
+                    companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
                     companyprofile : "$companydetails.profileImage"
                 },
@@ -897,6 +935,7 @@ const GetWishlistJobs = asyncHandler(async(req,res)=>{
                     workersCount: 1,
                     workersNeeded: 1,
                     status: 1,
+                    companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
                     companyprofile : "$companydetails.profileImage"
                 },
@@ -940,9 +979,9 @@ const RemoveWishlist = asyncHandler(async(req,res)=>{
 
 //view company
 const ViewCompany = asyncHandler(async(req,res)=>{
-    const {companyName} = req.params;
+    const {companyId} = req.params;
     try {
-        const company = await companymodel.findOne({companyName: companyName});
+        const company = await companymodel.findOne({companyName: companyId});
         if (!company) {
             throw new ApiError(404, "Company not found");
         }
