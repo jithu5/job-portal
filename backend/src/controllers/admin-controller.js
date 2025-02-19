@@ -89,15 +89,22 @@ const DeleteUser = asyncHandler(async (req, res) => {
         if (!user) {
             return res.json(new ApiResponse(404, "User not found"));
         }
-        const applicant = await applicantmodel.findByIdAndDelete(userId);
-        if (!applicant) {
-            return res.json(new ApiResponse(404, "Applicant not found"));
+        const applicant = await applicantmodel.find({userId:userId});
+        if (applicant.length > 0) {
+            const jobIds = applicant.map(app => app.jobId);
+            console.log("jobs",jobIds);
+            await jobsmodel.updateMany(
+                {_id: {$in: jobIds}},
+                {
+                    $inc : { workersNeeded : 1},
+                    $set : { status : 'Active' },
+                },
+            ) 
         }
-        const userWishlist = await wishlistmodel.findMany({userId : userId});
-        if (!userWishlist) {
-            return res.json(new ApiResponse(404, "User wishlist not found"));
-        }
-        await userWishlist.deleteMany();
+        await applicantmodel.deleteMany({userId:userId});
+        const userWishlist = await wishlistmodel.deleteMany({userId: userId});
+        
+        console.log(userWishlist);
         return res.json(new ApiResponse(200, user, "User deleted successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode || 500, error.message);
@@ -110,12 +117,16 @@ const DeleteCompany = asyncHandler(async(req,res) => {
     try {
         const company = await companymodel.findByIdAndDelete(companyId);
         if (!company) {
-            return res.json(new ApiResponse(404, "Company not found"));
+            throw new ApiError(error.statusCode || 500,error.message);
         }
-        const jobs = await jobsmodel.findByIdAndDelete({company : companyId});
-        if (!jobs) {
-            return res.json(new ApiResponse(404, "Jobs not found"));
+        const jobs = await jobsmodel.find({company : companyId});
+        if (jobs.length > 0) {
+            const jobIds = jobs.map(job => job._id);
+            await jobsmodel.deleteMany({company : companyId});
+            await applicantmodel.deleteMany({jobId : {$in: jobIds}});
+            await wishlistmodel.deleteMany({jobId : {$in: jobIds}});
         }
+        
         return res.json(new ApiResponse(200, company, "Company deleted successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode || 500, error.message);
