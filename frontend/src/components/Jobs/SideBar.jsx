@@ -14,8 +14,9 @@ import { formatTime } from "../../data";
 function JobSideBar({ openFilter, setOpenFilter, filterInput, handleChange }) {
     const shiftTimings = {
         morning: "08:00",
-        afternoon: "14:30",
-        evening: "18:45",
+        afternoon: "12:00",
+        evening: "16:00",
+        night: "20:00",
     };
 
     const keralaDistricts = [

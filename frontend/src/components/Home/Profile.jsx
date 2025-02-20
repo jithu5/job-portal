@@ -74,15 +74,8 @@ const Profile = () => {
                 isSubmiting={isSubmiting}
             />
             <ProfileImages setOpenDrawer={setOpenDrawer} user={user} />
-            <div className="w-[90%] mx-auto flex flex-col items-end mt-10">
-                <div className="flex flex-col items-center gap-3">
-                    <h1 className="text-xl font-medium ">Job Role</h1>
-                    <p className="bg-third rounded-lg px-3 py-2 text-white">
-                        Software Engineer
-                    </p>
-                </div>
-            </div>
-            <div className="w-[90%] mx-auto flex flex-col gap-4">
+         
+            <div className="w-[90%] mx-auto flex flex-col gap-4 mt-24">
                 <h1 className="text-xl md:text-3xl font-bold">
                     {user.name.toUpperCase()}
                 </h1>

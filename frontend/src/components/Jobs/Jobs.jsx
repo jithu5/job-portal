@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { startTransition, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FaHeart } from "react-icons/fa";
@@ -15,18 +15,25 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
             setIsApplied(job.isApplied);
             setIsWishlisted(job.isWishlisted);
         }
-    }, []);
+    }, [job]);
+    
     const handleApplyClick = async () => {
         await handleApply(job);
-        setIsApplied(true);
+        startTransition(() => {
+            setIsApplied(true);
+        });
     };
     const handleWishlistClick = async () => {
         await addWishlistFn(job);
-        setIsWishlisted(true);
+        startTransition(() => {
+            setIsWishlisted(true);
+        });
     };
     const handleRemoveWishlistClick = async () => {
         await removewishlistFn(job);
-        setIsWishlisted(false);
+        startTransition(() => {
+            setIsWishlisted(false);
+        });
     };
 
     return (
@@ -84,7 +91,6 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                     </div>
                     <div className="text-sm md:text-base font-medium text-blue-500">
                         <p>⏳ {formatTime(job.time)}</p>
-                        <p>💼 {job.shift}</p>
                     </div>
                     <div className="text-sm md:text-base font-semibold text-gray-700">
                         <p>💰 ₹{job.salary}</p>

@@ -86,7 +86,7 @@ function AdminDashboard() {
             <main className="relative w-full py-1">
                 <div className="absolute top-0 right-3 md:right-6">
                     <button
-                        onClick={() => navigate("/admin/dashboard/postajob")}
+                        onClick={() => navigate("/company/dashboard/postajob")}
                         className="bg-stone-800 text-white text-sm md:text-md px-2 md:px-6 py-1 md:py-2 rounded-lg hover:bg-stone-950 flex items-center justify-center gap-2"
                     >
                         <IoMdAdd className="text-sm md:text-lg lg:text-xl text-white" />

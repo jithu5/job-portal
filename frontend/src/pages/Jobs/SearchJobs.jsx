@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, startTransition } from "react";
 import { JobHeader, JobSideBar } from "../../components/index";
 import { Box } from "@mui/material";
 import _ from "lodash"; // For debounce/throttle functions
@@ -59,7 +59,7 @@ const SearchJobs = () => {
             console.log(datas.data);
             setAllJobs(datas?.data);
         }
-    }, [datas, isLoading]);
+    }, [datas]);
 
     useEffect(() => {
         if (isError) {
@@ -68,22 +68,24 @@ const SearchJobs = () => {
     }, [isError]);
 
   useEffect(() => {
-      setFilteredJobs(
-          allJobs.filter((job) => {
-              const jobTime = convertTo24HourFormat(formatTime(job.time));
-              const selectedTime = convertTo24HourFormat(filterInput.time);
+    startTransition(() => {
+        setFilteredJobs(
+            allJobs.filter((job) => {
+                const jobTime = convertTo24HourFormat(formatTime(job.time));
+                const selectedTime = convertTo24HourFormat(filterInput.time);
 
-              return (
-                  job.district
-                      ?.toLowerCase()
-                      .includes(filterInput?.district.toLowerCase()) &&
-                  (filterInput.time === "" || jobTime >= selectedTime) &&
-                  job.title
-                      ?.toLowerCase()
-                      .includes(filterInput.title?.toLowerCase())
-              );
-          })
-      );
+                return (
+                    job.district
+                        ?.toLowerCase()
+                        .includes(filterInput?.district.toLowerCase()) &&
+                    (filterInput.time === "" || jobTime >= selectedTime) &&
+                    job.title
+                        ?.toLowerCase()
+                        .includes(filterInput.title?.toLowerCase())
+                );
+            })
+        );
+    });
   }, [filterInput, allJobs]);
 
 

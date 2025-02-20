@@ -1,4 +1,4 @@
-import  { useEffect } from "react";
+import  { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import App from "../App";
@@ -21,7 +21,6 @@ import {
     UserHome,
     Register,
     UserLogin,
-    SearchJobs,
     JobDetails,
     AdminLayout,
     AdminLogin,
@@ -40,6 +39,7 @@ import { setUser } from "../Store/Auth";
 import { Box, CircularProgress } from "@mui/material";
 import { useGetCompanyQuery } from "../Store/AdminAuth/AdminAuth-Api";
 import { useGetAdminQuery } from "../Store/adminapi/SuperAdmin-Api";
+import { Loader2 } from "lucide-react";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -49,6 +49,8 @@ const wrapWithCommonAuth = (Component, props) => {
 function Router() {
     const { isAuthenticated, user } = useSelector((state) => state.Auth);
     const dispatch = useDispatch();
+
+    const SearchJobs = lazy(() => import("../pages/Jobs/SearchJobs"));
 
     const { data, isLoading, isSuccess,isFetching } = useGetUserQuery(undefined, {
         refetchOnMountOrArgChange: true,
@@ -128,16 +130,20 @@ function Router() {
                         },
                         {
                             path: "jobs",
-                            element: <SearchJobs />,
+                            element: (
+                                <Suspense fallback={<div className="w-full min-h-screen flex justify-center items-center"><Loader2 className="w-5 h-5 md:w-24 md:h-24 animate-spin"/></div>}>
+                                    <SearchJobs />
+                                </Suspense>
+                            ),
                         },
                         {
                             path: "job/:jobId",
                             element: <JobDetails />,
                         },
                         {
-                            path:"company-profile/:companyId",
-                            element: <CompanyProfile/>
-                        }
+                            path: "company-profile/:companyId",
+                            element: <CompanyProfile />,
+                        },
                     ],
                 },
                 // user verifying pages
@@ -216,19 +222,19 @@ function Router() {
                 },
                 // admin pages
                 {
-                    path:'api/admin/login',
-                    element: <AdminLogin />
+                    path: "api/admin/login",
+                    element: <AdminLogin />,
                 },
                 {
-                    path:'admin/dashboard',
-                    element:<Layout />,
-                    children:[
+                    path: "admin/dashboard",
+                    element: <Layout />,
+                    children: [
                         {
-                            index:true,
-                            element:<Dashboard/>
-                        }
-                    ]
-                }
+                            index: true,
+                            element: <Dashboard />,
+                        },
+                    ],
+                },
             ],
         },
         {

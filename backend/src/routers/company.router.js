@@ -22,6 +22,7 @@ const {
     GetApplicants,
     GetAllPostedJob,
     GetApplicationsJob,
+    getJobById,
 } = require("../controllers/company-controller.js");
 const protectCompanyMiddleware = require('../middlewares/companyAuth.middleware.js');
 
@@ -52,6 +53,8 @@ CompanyRouter.post('/verifyresetotp',VerifyResetOtp);
 CompanyRouter.post('/updatepassword',UpdatePassword);
 
 CompanyRouter.post('/postjob',protectCompanyMiddleware,PostJob);
+
+CompanyRouter.get("/job/:jobId", protectCompanyMiddleware, getJobById);
 
 CompanyRouter.post(
     "/update-profile-cover",

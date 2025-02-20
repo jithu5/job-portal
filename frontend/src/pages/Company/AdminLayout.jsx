@@ -4,12 +4,13 @@ import { AdminDrawer, AdminNavBar, AdminSideBar } from "../../components/index";
 import CompanyApi, {
     useLogoutAdminMutation,
 } from "../../Store/AdminAuth/AdminAuth-Api";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { clearUserData } from "../../Store/Auth/index";
 
 function AdminLayout() {
     const [isOpen, setIsOpen] = useState(false);
+    const { jobs } = useSelector((state) => state.Company);
     const [logoutAdmin] = useLogoutAdminMutation();
     const dispatch = useDispatch();
     const navigate = useNavigate();

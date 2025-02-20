@@ -338,6 +338,19 @@ const PostJob = asyncHandler(async (req, res) => {
     }
 });
 
+const getJobById = asyncHandler(async (req, res) => {
+    const { jobId } = req.params;
+    try {
+        const job = await jobmodel.findById(jobId);
+        if (!job) {
+            throw new ApiError(404, "Job not found");
+        }
+        return res.json(new ApiResponse(200, job, "Job details"));
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 //get all posted jobs
 const GetAllPostedJob = asyncHandler(async (req, res) => {
     const companyId = req.company;
@@ -356,7 +369,8 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
         ).length;
 
         //active jobs percentage
-        const activeJobsPercentage = noOfJobs >0 ? ((noOfActiveJobs/noOfJobs)*100).toFixed(2): 0;
+        const activeJobsPercentage =
+            noOfJobs > 0 ? ((noOfActiveJobs / noOfJobs) * 100).toFixed(2) : 0;
 
         return res.json(
             new ApiResponse(
@@ -392,10 +406,11 @@ const GetApplicationsJob = asyncHandler(async (req, res) => {
         //    ,
         // ])
 
-        const jobs = await jobmodel.find({ company
-            : companyId }).populate("company");
+        const jobs = await jobmodel
+            .find({ company: companyId })
+            .populate("company");
         if (!jobs) {
-            return res.json(new ApiResponse(200,null,"jobs not found"))
+            return res.json(new ApiResponse(200, null, "jobs not found"));
         }
         return res.json(new ApiResponse(200, jobs, "All posted jobs"));
     } catch (error) {
@@ -414,9 +429,9 @@ const GetApplicants = asyncHandler(async (req, res) => {
         }
         const jobs = await jobmodel.aggregate([
             {
-                $match:{
-                    _id:new mongoose.Types.ObjectId(jobId),
-                }
+                $match: {
+                    _id: new mongoose.Types.ObjectId(jobId),
+                },
             },
             {
                 $lookup: {
@@ -428,8 +443,10 @@ const GetApplicants = asyncHandler(async (req, res) => {
             },
             {
                 $addFields: {
-                    applicantsCount: {$size:{$ifNull: ["$applicants", []]}},
-                }
+                    applicantsCount: {
+                        $size: { $ifNull: ["$applicants", []] },
+                    },
+                },
             },
             {
                 $lookup: {
@@ -437,10 +454,10 @@ const GetApplicants = asyncHandler(async (req, res) => {
                     localField: "applicants.userId",
                     foreignField: "_id",
                     as: "user",
-                }
+                },
             },
             {
-                $project:{
+                $project: {
                     _id: 1,
                     title: 1,
                     description: 1,
@@ -453,28 +470,29 @@ const GetApplicants = asyncHandler(async (req, res) => {
                     workersCount: 1,
                     status: 1,
                     applicantsCount: 1,
-                    createdAt:1,
+                    createdAt: 1,
                     applicants: {
                         _id: 1,
-                        username: {$arrayElemAt:["$user.username",0]},
-                        name: {$arrayElemAt:["$user.name",0]},
-                        email: {$arrayElemAt:["$user.email",0]},
-                        phone: {$arrayElemAt:["$user.phone",0]},
-                        gender: {$arrayElemAt:["$user.gender",0]},
-                        address: {$arrayElemAt:["$user.address",0]},
-                        profileImage: {$arrayElemAt:["$user.profileImage",0]},
+                        username: { $arrayElemAt: ["$user.username", 0] },
+                        name: { $arrayElemAt: ["$user.name", 0] },
+                        email: { $arrayElemAt: ["$user.email", 0] },
+                        phone: { $arrayElemAt: ["$user.phone", 0] },
+                        gender: { $arrayElemAt: ["$user.gender", 0] },
+                        address: { $arrayElemAt: ["$user.address", 0] },
+                        profileImage: {
+                            $arrayElemAt: ["$user.profileImage", 0],
+                        },
                     },
-                }
+                },
             },
-            { $limit: 1 }
+            { $limit: 1 },
         ]);
         if (!jobs) {
             throw new ApiError(404, "Job not found");
         }
-        
+
         return res.json(new ApiResponse(200, jobs[0], "Job Applicants"));
-    }
-    catch (error) {
+    } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
 });
@@ -547,8 +565,8 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
 });
 
 //delete profile image
-const DeleteProfileImage = asyncHandler(async(req, res, next)=>{
-    try{
+const DeleteProfileImage = asyncHandler(async (req, res, next) => {
+    try {
         const companyId = req.company;
         const company = await companymodel.findById(companyId);
         if (!company) {
@@ -558,23 +576,21 @@ const DeleteProfileImage = asyncHandler(async(req, res, next)=>{
         if (profileImage) {
             const publicId = await extractPublicId(profileImage);
             const response = await cloudinary.deleteImageByPublicId(publicId);
-            if(!response){
-                throw new ApiError(error.statusCode,error.message)
+            if (!response) {
+                throw new ApiError(error.statusCode, error.message);
             }
         }
         company.profileImage = null;
         await company.save();
-        return res.json(
-            new ApiResponse(200, company, "Profile image deleted")
-        );
-    }catch (error) {
+        return res.json(new ApiResponse(200, company, "Profile image deleted"));
+    } catch (error) {
         throw new ApiError(error.statusCode, error.message);
-    }; 
-})
+    }
+});
 
 //delete cover image
-const DeleteCoverImage = asyncHandler(async(req, res, next)=>{
-    try{
+const DeleteCoverImage = asyncHandler(async (req, res, next) => {
+    try {
         const companyId = req.company;
         const company = await companymodel.findById(companyId);
         if (!company) {
@@ -584,19 +600,17 @@ const DeleteCoverImage = asyncHandler(async(req, res, next)=>{
         if (coverImage) {
             const publicId = await extractPublicId(coverImage);
             const response = await cloudinary.deleteImageByPublicId(publicId);
-            if(!response){
-                throw new ApiError(error.statusCode,error.message)
+            if (!response) {
+                throw new ApiError(error.statusCode, error.message);
             }
         }
         company.coverImage = null;
         await company.save();
-        return res.json(
-            new ApiResponse(200, company, "Cover image deleted")
-        );
-    }catch(error){
+        return res.json(new ApiResponse(200, company, "Cover image deleted"));
+    } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
-})
+});
 
 //logout
 const Logout = asyncHandler(async (req, res) => {
@@ -646,8 +660,16 @@ const EditProfile = asyncHandler(async (req, res) => {
 const EditJob = asyncHandler(async (req, res) => {
     const { jobId } = req.params;
     console.log("req", jobId);
-    const { title, description, location,district, salary, date,shift,time, workersCount } =
-        req.body;
+    const {
+        title,
+        description,
+        location,
+        district,
+        salary,
+        date,
+        time,
+        workersCount,
+    } = req.body;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
     }
@@ -659,15 +681,14 @@ const EditJob = asyncHandler(async (req, res) => {
         const updatedJob = await jobmodel.findOneAndUpdate(
             { _id: jobId },
             {
-                title: title || job.title,
-                description: description || job.description,
-                location: location || job.location,
-                district: district || job.district,
-                salary: salary || job.salary,
-                date: date || job.date,
-                time: time || job.time,
-                shift: shift || job.shift,
-                workersCount: workersCount || job.workersCount,
+                title: title,
+                description: description,
+                location: location,
+                district: district,
+                salary: salary,
+                date: date,
+                time: time,
+                workersCount: workersCount,
             },
             { new: true }
         );
@@ -675,7 +696,7 @@ const EditJob = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Job cannot be updated");
         }
         res.json(
-            new ApiResponse(200, updatedJob, "Job retrieved successfully")
+            new ApiResponse(200, updatedJob, "Job updated successfully")
         );
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -698,8 +719,8 @@ const Deletejob = asyncHandler(async (req, res) => {
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
-        await applicantmodel.deleteMany({jobId: jobId});
-        await wishlistmodel.deleteMany({jobId: jobId});
+        await applicantmodel.deleteMany({ jobId: jobId });
+        await wishlistmodel.deleteMany({ jobId: jobId });
         res.json(new ApiResponse(200, null, "Job deleted successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -749,4 +770,5 @@ module.exports = {
     EditJob,
     Deletejob,
     checkCompanynameUnique,
+    getJobById,
 };

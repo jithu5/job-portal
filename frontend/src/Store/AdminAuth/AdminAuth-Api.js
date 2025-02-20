@@ -10,14 +10,14 @@ const baseQuery = fetchBaseQuery({
 const CompanyApi = createApi({
     reducerPath: "company",
     baseQuery,
-    tagTypes: ["admin", "Job"],
+    tagTypes: ["Company", "Job"],
     endpoints: (builder) => ({
         getCompany: builder.query({
             query: () => ({
                 url: "company",
             }),
             transformResponse: (response) => response.data,
-            tagTypes: ["admin"],
+            tagTypes: ["Company"],
         }),
         registerAdmin: builder.mutation({
             query: (data) => ({
@@ -26,7 +26,7 @@ const CompanyApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin", "Job"],
+            invalidatesTags: ["Company", "Job"],
         }),
         loginAdmin: builder.mutation({
             query: (data) => ({
@@ -35,7 +35,7 @@ const CompanyApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin", "Job"],
+            invalidatesTags: ["Company", "Job"],
         }),
         sendOtp: builder.mutation({
             query: (data) => ({
@@ -47,7 +47,7 @@ const CompanyApi = createApi({
                 },
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["Company"],
         }),
         verifyEmail: builder.mutation({
             query: (data) => ({
@@ -56,7 +56,7 @@ const CompanyApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin", "Job"],
+            invalidatesTags: ["Company", "Job"],
         }),
         resetPasswordOtp: builder.mutation({
             query: (data) => ({
@@ -68,7 +68,7 @@ const CompanyApi = createApi({
                 },
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["Company"],
         }),
         verifyResetOtp: builder.mutation({
             query: (data) => ({
@@ -77,7 +77,7 @@ const CompanyApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["Company"],
         }),
         updatePassword: builder.mutation({
             query: (data) => ({
@@ -89,7 +89,7 @@ const CompanyApi = createApi({
                 },
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin", "Job"],
+            invalidatesTags: ["Company", "Job"],
         }),
         logoutAdmin: builder.mutation({
             query: () => ({
@@ -97,11 +97,30 @@ const CompanyApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin", "Job"],
+            invalidatesTags: ["Company", "Job"],
         }),
         postJob: builder.mutation({
             query: (data) => ({
                 url: "postjob",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job", "Company"],
+        }),
+        getJobById: builder.query({
+            query: (jobId) => ({
+                url: `job/${jobId}`,
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Job"],
+        }),
+        editJob: builder.mutation({
+            query: ({jobId,data}) => ({
+                url: `editjob/${jobId}`,
                 method: "POST",
                 body: JSON.stringify(data),
                 headers: {
@@ -118,21 +137,21 @@ const CompanyApi = createApi({
                 body: images,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin"],
+            invalidatesTags: ["Company"],
         }),
         getDashboardDetails: builder.query({
             query: () => ({
                 url: "get-dashboard-data",
             }),
             transformResponse: (response) => response,
-            tagTypes: ["admin"],
+            tagTypes: ["Company", "Job"],
         }),
         getJobs: builder.query({
             query: () => ({
                 url: "get-job",
             }),
             transformResponse: (response) => response,
-            tagTypes: ["Job"],
+            tagTypes: ["Job", "Company"],
         }),
         getJobDetails: builder.query({
             query: (jobId) => ({
@@ -140,6 +159,14 @@ const CompanyApi = createApi({
             }),
             transformResponse: (response) => response,
             tagTypes: ["Job"],
+        }),
+        deleteJob: builder.mutation({
+            query: (jobId) => ({
+                url: `deletejob/${jobId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Job"],
         }),
     }),
 });
@@ -158,7 +185,10 @@ export const {
     useUpdateImagesMutation,
     useGetDashboardDetailsQuery,
     useGetJobsQuery,
-    useGetJobDetailsQuery
+    useGetJobDetailsQuery,
+    useDeleteJobMutation,
+    useGetJobByIdQuery,
+    useEditJobMutation
 } = CompanyApi;
 
 export default CompanyApi;

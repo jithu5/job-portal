@@ -144,7 +144,6 @@ function RecommendedJobs() {
                                     </div>
                                     <div className="text-sm md:text-base font-medium text-blue-500">
                                         <p>⏳ {formatTime(job.time)}</p>
-                                        <p>💼 {job.shift}</p>
                                     </div>
                                     <div className="text-sm md:text-base font-semibold text-gray-700">
                                         <p>💰 ₹{job.salary}</p>

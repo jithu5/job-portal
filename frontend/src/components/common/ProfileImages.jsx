@@ -12,7 +12,7 @@ function ProfileImages({setOpenDrawer,user}) {
                   alt=""
                   className="w-full h-32 md:h-72 object-cover rounded-t-2xl lg:rounded-t-[60px] rounded-b-lg"
               />
-              <div className="h-14 w-14 md:w-32 md:h-32 object-cover absolute left-6 md:left-20 top-[100%] -translate-y-1/2 rounded-full bg-primary flex items-center justify-center m-2">
+              <div className="h-14 w-14 md:w-32 md:h-32 object-cover absolute left-6 md:left-20 top-[96%] -translate-y-1/2 rounded-full bg-primary flex items-center jusify-center m-2">
                   <img
                       src={user?.profileImage || ProfileImage}
                       alt="Profile"

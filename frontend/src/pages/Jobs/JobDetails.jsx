@@ -211,7 +211,7 @@ function JobDetails() {
                     </span>
                 </p>
                 <p className="text-lg font-semibold">
-                    StatusSkills required :{" "}
+                    Status :{" "}
                     <span
                         className={`${
                             job.status.toLowerCase() === "active"
