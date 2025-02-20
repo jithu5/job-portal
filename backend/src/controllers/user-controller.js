@@ -303,6 +303,13 @@ const GetJobs = asyncHandler(async (req, res) => {
 const sortJobs = asyncHandler(async (req, res) => {
     try {
         const userId =  new mongoose.Types.ObjectId(req.user);
+        const now = new Date();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const currentHours = now.getHours().toString().padEnd(2, '0');
+        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentTime = `${currentHours}:${currentMinutes}`;
         const jobs = await jobmodel.aggregate([
             {
                 $match: {
