@@ -4,6 +4,7 @@ const asyncHandler = require("../utils/Asynchandler.js");
 const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
 const applicantmodel = require("../models/applicants.js");
+const wishlistmodel = require("../models/wishlist.js");
 const crypto = require("crypto");
 const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
@@ -357,10 +358,13 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
             (job) => job.status === "Active"
         ).length;
 
+        //active jobs percentage
+        const activeJobsPercentage = noOfJobs >0 ? ((noOfActiveJobs/noOfJobs)*100).toFixed(2): 0;
+
         return res.json(
             new ApiResponse(
                 200,
-                { noOfActiveJobs, noOfJobs, jobs },
+                { noOfActiveJobs, noOfJobs, activeJobsPercentage, jobs },
                 "All posted jobs"
             )
         );
@@ -514,6 +518,58 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
     }
 });
 
+//delete profile image
+const DeleteProfileImage = asyncHandler(async(req, res, next)=>{
+    try{
+        const companyId = req.company;
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(error.statusCode, error.message);
+        }
+        const profileImage = company.profileImage;
+        if (profileImage) {
+            const publicId = await extractPublicId(profileImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if(!response){
+                throw new ApiError(error.statusCode,error.message)
+            }
+        }
+        company.profileImage = null;
+        await company.save();
+        return res.json(
+            new ApiResponse(200, company, "Profile image deleted")
+        );
+    }catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }; 
+})
+
+//delete cover image
+const DeleteCoverImage = asyncHandler(async(req, res, next)=>{
+    try{
+        const companyId = req.company;
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(error.statusCode, error.message);
+        }
+        const coverImage = company.coverImage;
+        if (coverImage) {
+            const publicId = await extractPublicId(coverImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if(!response){
+                throw new ApiError(error.statusCode,error.message)
+            }
+        }
+        company.coverImage = null;
+        await company.save();
+        return res.json(
+            new ApiResponse(200, company, "Cover image deleted")
+        );
+    }catch(error){
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
+
 //logout
 const Logout = asyncHandler(async (req, res) => {
     res.clearCookie("companyToken").json(
@@ -600,19 +656,22 @@ const EditJob = asyncHandler(async (req, res) => {
 
 //delete job (getting id as params)
 const Deletejob = asyncHandler(async (req, res) => {
+    const companyId = req.company;
     const { jobId } = req.params;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
     }
     try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
         const job = await jobmodel.findByIdAndDelete(jobId);
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
-        const applicants = await applicantmodel.findByIdAndDelete(jobId);
-        if (!applicants) {
-            throw new ApiError(404, "Applicants not found");
-        }
+        await applicantmodel.deleteMany({jobId: jobId});
+        await wishlistmodel.deleteMany({jobId: jobId});
         res.json(new ApiResponse(200, null, "Job deleted successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -654,6 +713,8 @@ module.exports = {
     UpdatePassword,
     PostJob,
     updateProfileAndCover,
+    DeleteCoverImage,
+    DeleteProfileImage,
     Logout,
     EditProfile,
     EditJob,

@@ -16,6 +16,7 @@ const Tesseract = require("tesseract.js");
 const cloudinary = require("../utils/cloudinary.js");
 const extractPublicId = require("../utils/ExtractPublicId.js");
 const { pipeline } = require("stream");
+const { error } = require("console");
 
 //homepage
 const Homepage = asyncHandler(async (req, res) => {});
@@ -765,6 +766,7 @@ const UpdatePassword = asyncHandler(async (req, res) => {
     }
 });
 
+
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
     let profilepicpath = null;
@@ -832,6 +834,58 @@ const updateProfileAndCover = asyncHandler(async (req, res) => {
         throw new ApiError(error.statusCode, error.message);
     }
 });
+
+//delete profile or cover Image
+const DeleteProfileImage = asyncHandler(async(req, res, next)=>{
+    try{
+        const userId = req.user;
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(error.statusCode, error.message);
+        }
+        const profileImage = user.profileImage;
+        if (profileImage) {
+            const publicId = await extractPublicId(profileImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if(!response){
+                throw new ApiError(error.statusCode,error.message)
+            }
+        }
+        user.profileImage = null;
+        await user.save();
+        return res.json(
+            new ApiResponse(200, user, "Profile image deleted")
+        );
+    }catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }; 
+})
+
+//delete cover Image
+const DeleteCoverImage = asyncHandler(async(req, res, next)=>{
+    try{
+        const userId = req.user;
+        const user = await usermodel.findById(userId);
+        if (!user) {
+            throw new ApiError(error.statusCode, error.message);
+        }
+        const coverImage = user.coverImage;
+        if (coverImage) {
+            const publicId = await extractPublicId(coverImage);
+            const response = await cloudinary.deleteImageByPublicId(publicId);
+            if(!response){
+                throw new ApiError(error.statusCode,error.message)
+            }
+        }
+        user.coverImage = null;
+        await user.save();
+        return res.json(
+            new ApiResponse(200, user, "Cover image deleted")
+        );
+    }catch(error){
+        throw new ApiError(error.statusCode, error.message);
+    }
+})
 
 // logout
 const Logout = asyncHandler(async (req, res) => {
@@ -1250,6 +1304,8 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     updateProfileAndCover,
+    DeleteProfileImage,
+    DeleteCoverImage,
     Homepage,
     Logout,
     EditProfile,
