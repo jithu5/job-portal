@@ -11,6 +11,7 @@ const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const cloudinary = require("../utils/cloudinary.js");
 const extractPublicId = require("../utils/ExtractPublicId.js");
+const { default: mongoose } = require("mongoose");
 
 //company register
 const CRegister = asyncHandler(async (req, res) => {
@@ -380,7 +381,7 @@ const GetApplicants = asyncHandler(async (req, res) => {
         const jobs = await jobmodel.aggregate([
             {
                 $match:{
-                    _id: jobId,
+                    _id:new mongoose.Types.ObjectId(jobId),
                 }
             },
             {
@@ -392,7 +393,9 @@ const GetApplicants = asyncHandler(async (req, res) => {
                 },
             },
             {
-                $unwind: "$applicants",
+                $addFields: {
+                    applicantsCount: {$size:{$ifNull: ["$applicants", []]}},
+                }
             },
             {
                 $lookup: {
@@ -418,6 +421,7 @@ const GetApplicants = asyncHandler(async (req, res) => {
                     time: 1,
                     workersCount: 1,
                     status: 1,
+                    applicantsCount: 1,
                     applicants: {
                         _id: 1,
                         username: "$user.username",
