@@ -205,8 +205,8 @@ const GetJobs = asyncHandler(async (req, res) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const currentHours = now.getHours().toString().padEnd(2, '0');
-        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentHours = now.getHours().toString().padStart(2, '0');
+        const currentMinutes = now.getMinutes().toString().padStart(2, '0');
         const currentTime = `${currentHours}:${currentMinutes}`;
         const Alljobs = await jobmodel.aggregate([ 
             {
@@ -307,8 +307,8 @@ const sortJobs = asyncHandler(async (req, res) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const currentHours = now.getHours().toString().padEnd(2, '0');
-        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentHours = now.getHours().toString().padStart(2, '0');
+        const currentMinutes = now.getMinutes().toString().padStart(2, '0');
         const currentTime = `${currentHours}:${currentMinutes}`;
         const jobs = await jobmodel.aggregate([
             {
@@ -370,6 +370,11 @@ const sortJobs = asyncHandler(async (req, res) => {
                     {$limit : 1}
                 ],
                 as : "wishlisted"
+                }
+            },
+            {
+                $match: {
+                    "applied" :{ $size:0 },
                 }
             },
             {
@@ -509,8 +514,8 @@ const AppliedJobs = asyncHandler(async (req, res) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const currentHours = now.getHours().toString().padEnd(2, '0');
-        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentHours = now.getHours().toString().padStart(2, '0');
+        const currentMinutes = now.getMinutes().toString().padStart(2, '0');
         const currentTime = `${currentHours}:${currentMinutes}`;
     const application = await applicantmodel.findOne({userId: userId});
     console.log("Application", application);
@@ -1121,8 +1126,8 @@ const ViewCompany = asyncHandler(async(req,res)=>{
         const today = new Date();
         today.setHours(0, 0, 0, 0);
 
-        const currentHours = now.getHours().toString().padEnd(2, '0');
-        const currentMinutes = now.getMinutes().toString().padEnd(2, '0');
+        const currentHours = now.getHours().toString().padStart(2, '0');
+        const currentMinutes = now.getMinutes().toString().padStart(2, '0');
         const currentTime = `${currentHours}:${currentMinutes}`;
 
         const company = await companymodel.findById(companyId);
