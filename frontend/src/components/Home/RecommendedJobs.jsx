@@ -13,16 +13,14 @@ import {
     useGetNewJobsQuery,
 } from "../../Store/Auth/Auth-Api";
 import { useEffect, useState } from "react";
-import { Bookmark } from "lucide-react";
+import { Bookmark, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { formatTime } from "../../data";
 
 function RecommendedJobs() {
     const { data, isFetching } = useGetNewJobsQuery();
     const [newJobs, setNewJobs] = useState([]);
-
-    const [applyForJob] = useApplyForJobMutation();
-    const [addToWishlist] = useAddToWishlistMutation();
 
     const navigate = useNavigate();
 
@@ -33,21 +31,23 @@ function RecommendedJobs() {
         }
     }, [data]);
 
-    const handleApply = async (job) => {
-        try {
-            const response = await applyForJob(job._id).unwrap();
-            console.log(response);
-            if (!response.success) {
-                toast.error(response.message);
-                return;
-            }
-            dispatch(addAppliedJobs(job));
-            toast.success(response.message);
-        } catch (error) {
-            const errMessage = error?.data?.message || "Failed to apply";
-            toast.error(errMessage);
-        }
-    };
+    if (isFetching) {
+        return (
+            <div className="flex justify-center items-center h-full">
+                <Loader2 size={50} />
+            </div>
+        );
+    }
+    if (newJobs.length === 0) {
+        return (
+            <div className="w-full h-80 text-center text-sm md:text-lg font-semibold flex justify-center items-center">
+                <h1 className="text-stone-800 font-semibold text-xl md:text-4xl">
+
+                No new jobs available at the moment.
+                </h1>
+            </div>
+        );
+    }
 
     return (
         <>
@@ -106,7 +106,7 @@ function RecommendedJobs() {
                                                         `/user/company-profile/${job.companyId}`
                                                     )
                                                 }
-                                                className="w-6 h-6 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer"
+                                                className="w-10 h-10 rounded-full bg-third flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer"
                                             >
                                                 {job.company[0].toUpperCase()}
                                             </div>
@@ -143,7 +143,7 @@ function RecommendedJobs() {
                                         </p>
                                     </div>
                                     <div className="text-sm md:text-base font-medium text-blue-500">
-                                        <p>⏳ {job.time}</p>
+                                        <p>⏳ {formatTime(job.time)}</p>
                                         <p>💼 {job.shift}</p>
                                     </div>
                                     <div className="text-sm md:text-base font-semibold text-gray-700">

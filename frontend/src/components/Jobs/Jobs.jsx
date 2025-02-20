@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import { FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
+import { formatTime } from "../../data";
 
 function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
     const [isApplied, setIsApplied] = useState(false);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const navigate = useNavigate();
-    console.log(job);
 
     useEffect(() => {
         if (job) {
@@ -47,7 +47,7 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                                 className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover cursor-pointer"
                             />
                         ) : (
-                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer">
+                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-third flex items-center justify-center text-xl md:text-4xl text-white font-semibold cursor-pointer">
                                 {job.company[0].toUpperCase()}
                             </div>
                         )}
@@ -83,7 +83,7 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                         </p>
                     </div>
                     <div className="text-sm md:text-base font-medium text-blue-500">
-                        <p>⏳ {job.time}</p>
+                        <p>⏳ {formatTime(job.time)}</p>
                         <p>💼 {job.shift}</p>
                     </div>
                     <div className="text-sm md:text-base font-semibold text-gray-700">

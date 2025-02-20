@@ -14,6 +14,7 @@ import { addAppliedJobs, addWishlist, removeWishlist } from "../../Store/Auth";
 import { FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { MapPin } from "lucide-react";
+import { formatTime } from "../../data";
 
 function JobDetails() {
     const { jobId } = useParams();
@@ -179,7 +180,7 @@ function JobDetails() {
                         </p>
                     </div>
                     <div className="flex items-center gap-5">
-                        <p className="text-sm md:text-lg">{job.time}</p>
+                        <p className="text-sm md:text-lg">{formatTime(job.time)}</p>
                         <p className="text-sm md:text-lg">
                             {new Date(job.date).toLocaleDateString("en-us", {
                                 year: "numeric",
