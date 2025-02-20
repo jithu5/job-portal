@@ -174,17 +174,7 @@ function RecommendedJobs() {
                                         View Details
                                     </button>
 
-                                    <div className="flex items-center gap-4">
-                                        <button className="p-2 rounded-full hover:bg-gray-200">
-                                            <Bookmark />
-                                        </button>
-                                        <button
-                                            className="bg-third text-white px-4 py-2 rounded-lg font-medium hover:bg-purple-700 transition"
-                                            onClick={() => handleApply(job)}
-                                        >
-                                            Apply
-                                        </button>
-                                    </div>
+                                   
                                 </div>
                             </SwiperSlide>
                         ))}

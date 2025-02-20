@@ -150,7 +150,6 @@ const UserApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["Job"],
         }),
         getWishlist: builder.query({
             query: () => ({
@@ -158,6 +157,13 @@ const UserApi = createApi({
             }),
             transformResponse: (response) => response,
             providesTags: ["Job"],
+        }),
+        removewishlist: builder.mutation({
+            query: (jobId) => ({
+                url: `removefromwishlist/${jobId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
         }),
         getNewJobs: builder.query({
             query: () => ({
@@ -196,7 +202,8 @@ export const {
     useAddToWishlistMutation,
     useGetNewJobsQuery,
     useGetWishlistQuery,
-    useViewCompanyQuery
+    useViewCompanyQuery,
+    useRemovewishlistMutation
 } = UserApi;
 
 export default UserApi;

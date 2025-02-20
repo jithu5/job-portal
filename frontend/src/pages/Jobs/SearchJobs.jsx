@@ -6,12 +6,13 @@ import {
     useAddToWishlistMutation,
     useApplyForJobMutation,
     useGetJobsQuery,
+    useRemovewishlistMutation,
 } from "../../Store/Auth/Auth-Api";
-import { Bookmark, Loader2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { addAppliedJobs, addWishlist } from "../../Store/Auth";
+import { addAppliedJobs, addWishlist, removeWishlist } from "../../Store/Auth/index";
 import { toast } from "react-toastify";
+import Jobs from "../../components/Jobs/Jobs";
 
 const SearchJobs = () => {
     const [filterInput, setFilterInput] = useState({
@@ -26,7 +27,6 @@ const SearchJobs = () => {
     const [allJobs, setAllJobs] = useState([]);
     const [error, setError] = useState(null);
 
-    const navigate = useNavigate();
     const dispatch = useDispatch();
 
     const itemsPerPage = 15;
@@ -34,6 +34,7 @@ const SearchJobs = () => {
     const { data: datas, isLoading, isError } = useGetJobsQuery();
     const [applyForJob] = useApplyForJobMutation();
     const [addToWishlist] = useAddToWishlistMutation();
+    const [removewishlist] = useRemovewishlistMutation();
 
     useEffect(() => {
         if (datas?.data && !isLoading) {
@@ -57,10 +58,10 @@ const SearchJobs = () => {
                         .includes(filterInput?.district.toLowerCase()) &&
                     job.shift
                         ?.toLowerCase()
-                        .includes(filterInput?.shift.toLowerCase())
-                        &&
-                        job.title?.toLowerCase().includes(filterInput.title?.toLowerCase())
-                        
+                        .includes(filterInput?.shift.toLowerCase()) &&
+                    job.title
+                        ?.toLowerCase()
+                        .includes(filterInput.title?.toLowerCase())
             )
         );
     }, [filterInput, allJobs]);
@@ -96,7 +97,24 @@ const SearchJobs = () => {
             dispatch(addWishlist(job));
             toast.success(response.message);
         } catch (error) {
-            const errMessage = error?.data?.message || "Failed to add to wishlist";
+            const errMessage =
+                error?.data?.message || "Failed to add to wishlist";
+            toast.error(errMessage);
+        }
+    }
+
+    async function removewishlistFn(job) {
+        try {
+            const response = await removewishlist(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                return;
+            }
+            dispatch(removeWishlist(job._id));
+            toast.success(response.message);
+        } catch (error) {
+            const errMessage =
+                error?.data?.message || "Failed to remove from wishlist";
             toast.error(errMessage);
         }
     }
@@ -187,116 +205,13 @@ const SearchJobs = () => {
                         <div className="w-[90%] sm:w-[80%] md:w-[70%] mx-auto my-20">
                             <div className="w-full flex flex-col items-center gap-8">
                                 {currentJobs.map((job) => (
-                                    <div
+                                    <Jobs
                                         key={job._id}
-                                        className="w-full px-5 md:px-10 py-6 bg-white shadow-lg rounded-xl flex flex-col gap-4"
-                                    >
-                                        {/* Header Section */}
-                                        <div className="w-full flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                {job?.companyprofile ? (
-                                                    <img
-                                                        onClick={() =>
-                                                            navigate(
-                                                                `/user/company-profile/${job.companyId}`
-                                                            )
-                                                        }
-                                                        src={job.companyprofile}
-                                                        alt={job.title}
-                                                        className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover cursor-pointer"
-                                                    />
-                                                ) : (
-                                                    <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-gray-300 flex items-center justify-center text-lg md:text-xl text-white font-semibold cursor-pointer">
-                                                        {job.company[0].toUpperCase()}
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <h1 className="text-lg md:text-2xl font-semibold text-gray-800">
-                                                        {job.title}
-                                                    </h1>
-                                                    <h2 className="text-md text-gray-600">
-                                                        {job.company}
-                                                    </h2>
-                                                </div>
-                                            </div>
-                                            <span
-                                                className={`px-3 py-1 text-sm md:text-md font-semibold rounded-full ${
-                                                    job.status === "Active"
-                                                        ? "bg-green-100 text-green-700"
-                                                        : "bg-red-100 text-red-700"
-                                                }`}
-                                            >
-                                                {job.status}
-                                            </span>
-                                        </div>
-
-                                        {/* Job Details */}
-                                        <p className="text-gray-600 text-sm md:text-base">
-                                            {job.description.slice(0, 250)}...
-                                        </p>
-
-                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                            <div className="text-sm md:text-base font-medium text-gray-700">
-                                                <p>
-                                                    📍 {job.district},{" "}
-                                                    {job.location}
-                                                </p>
-                                            </div>
-                                            <div className="text-sm md:text-base font-medium text-blue-500">
-                                                <p>⏳ {job.time}</p>
-                                                <p>💼 {job.shift}</p>
-                                            </div>
-                                            <div className="text-sm md:text-base font-semibold text-gray-700">
-                                                <p>💰 ₹{job.salary}</p>
-                                                <p>
-                                                    🏢 Openings:{" "}
-                                                    <span
-                                                        className={`font-bold ${
-                                                            job.workersNeeded >
-                                                            3
-                                                                ? "text-green-600"
-                                                                : "text-red-600"
-                                                        }`}
-                                                    >
-                                                        {job.workersNeeded}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        {/* Action Buttons */}
-                                        <div className="w-full flex items-center justify-between pt-4">
-                                            <button
-                                                className="text-blue-600 font-semibold hover:underline"
-                                                onClick={() =>
-                                                    navigate(
-                                                        `/user/job/${job._id}`
-                                                    )
-                                                }
-                                            >
-                                                View Details
-                                            </button>
-
-                                            <div className="flex items-center gap-4">
-                                                <button
-                                                    onClick={() =>
-                                                        addWishlistFn(job)
-                                                    }
-                                                    className="p-2 rounded-full hover:bg-gray-200"
-                                                >
-                                                    <Bookmark />
-                                                </button>
-                                                <button
-                                                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-                                                    onClick={() =>
-                                                        handleApply(job)
-                                                    }
-                                                >
-                                                    Apply
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        job={job}
+                                        handleApply={handleApply}
+                                        addWishlistFn={addWishlistFn}
+                                        removewishlistFn={removewishlistFn}
+                                    />
                                 ))}
                             </div>
 

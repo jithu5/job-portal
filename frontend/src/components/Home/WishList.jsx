@@ -1,13 +1,32 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useRemovewishlistMutation } from "../../Store/Auth/Auth-Api";
+import { removeWishlist } from "../../Store/Auth/index";
+import { toast } from "react-toastify";
 
 function WishList() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
     // Sample job data
     const { wishlist } = useSelector((state) => state.Auth);
     
+    const [ removewishlist ] = useRemovewishlistMutation()
 
+    async function handleRemove(jobId) {
+        try {
+            const response = await removewishlist(jobId).unwrap();
+            console.log(response);
+            if (!response.success) {
+                return 
+            }
+            dispatch(removeWishlist(jobId));
+            toast.success(response.message);
+        } catch (error) {
+            const errMessage = error?.data?.message || "Failed to remove from wishlist";
+            toast.error(errMessage);
+        }
+    }
 
     return (
         <>
@@ -61,7 +80,7 @@ function WishList() {
                                 >
                                     Go to Job
                                 </button>
-                                <button className="text-sm md:text-lg font-medium text-red-500 hover:text-red-700 transition-colors duration-300">
+                                <button onClick={()=>handleRemove(job._id)} className="text-sm md:text-lg font-medium text-red-500 hover:text-red-700 transition-colors duration-300">
                                     Cancel
                                 </button>
                             </div>

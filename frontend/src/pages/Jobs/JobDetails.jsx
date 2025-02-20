@@ -1,15 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+    useAddToWishlistMutation,
     useApplyForJobMutation,
     useGetJobByIdQuery,
+    useRemovewishlistMutation,
 } from "../../Store/Auth/Auth-Api";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
-import { addAppliedJobs } from "../../Store/Auth";
+import { addAppliedJobs, addWishlist, removeWishlist } from "../../Store/Auth";
 
 import { FaHeart } from "react-icons/fa";
+import { CiHeart } from "react-icons/ci";
 import { MapPin } from "lucide-react";
 
 function JobDetails() {
@@ -17,8 +20,47 @@ function JobDetails() {
     const { data, isFetching, isError } = useGetJobByIdQuery(jobId);
     const [applyForJob] = useApplyForJobMutation();
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [job, setJob] = useState("");
+    const [isWishListed, setIsWishListed] = useState(false);
+
+    const [removewishlist] = useRemovewishlistMutation();
+    const [ addToWishlist] = useAddToWishlistMutation()
+
+    async function addWishlistFn(job) {
+        try {
+            const response = await addToWishlist(job._id).unwrap();
+            console.log(response);
+            if (!response.success) {
+                toast.error(response.message);
+                return;
+            }
+            dispatch(addWishlist(job));
+            toast.success(response.message);
+            setIsWishListed(true);
+        } catch (error) {
+            const errMessage =
+                error?.data?.message || "Failed to add to wishlist";
+            toast.error(errMessage);
+        }
+    }
+
+    async function handleRemove(jobId) {
+        try {
+            const response = await removewishlist(jobId).unwrap();
+            console.log(response);
+            if (!response.success) {
+                return;
+            }
+            dispatch(removeWishlist(jobId));
+            toast.success(response.message);
+            setIsWishListed(false);
+        } catch (error) {
+            const errMessage =
+                error?.data?.message || "Failed to remove from wishlist";
+            toast.error(errMessage);
+        }
+    }
 
     useEffect(() => {
         if (data?.data && !isFetching) {
@@ -46,6 +88,14 @@ function JobDetails() {
         }
     };
 
+    useEffect(() => {
+        if (job) {
+            const isWishlisted = job?.isWishlisted;
+            setIsWishListed(isWishlisted);
+        }
+    }, [job])
+    
+
     if (isFetching) {
         return (
             <Box className="min-h-screen flex justify-center items-center">
@@ -63,12 +113,11 @@ function JobDetails() {
             </Box>
         );
     }
-    console.log(data.data);
     console.log(job);
 
     return (
-        <main className="w-full min-h-screen p-5 sm:px-12 md:px-52 py-8 text-secondary">
-            <div className="flex items-center justify-between">
+        <main className="w-full md:w-[80%] mx-auto mt-14 h-fit p-5 sm:px-12 md:px-24 py-16 text-secondary bg-white rounded-lg">
+            <div className="flex items-center justify-between py-1">
                 <h1 className="font-bold text-lg md:text-4xl uppercase mb-10 font-Oswald">
                     {job.title}
                 </h1>
@@ -86,10 +135,16 @@ function JobDetails() {
                             Apply
                         </Button>
                     )}
-                    {job?.isWishlisted ? (
-                        <FaHeart className="text-red-600 size-8" />
+                    {isWishListed ? (
+                        <FaHeart
+                            onClick={() => handleRemove(job._id)}
+                            className="text-red-600 size-8 cursor-pointer"
+                        />
                     ) : (
-                        <FaHeart className="size-8" />
+                        <CiHeart
+                            onClick={() => addWishlistFn(job)}
+                            className="size-8 cursor-pointer"
+                        />
                     )}
                 </div>
             </div>
