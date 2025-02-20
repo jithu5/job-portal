@@ -443,9 +443,6 @@ const GetApplicants = asyncHandler(async (req, res) => {
                 }
             },
             {
-                $unwind: "$user",
-            },
-            {
                 $project:{
                     _id: 1,
                     title: 1,
@@ -461,23 +458,23 @@ const GetApplicants = asyncHandler(async (req, res) => {
                     applicantsCount: 1,
                     applicants: {
                         _id: 1,
-                        username: "$user.username",
-                        name: "$user.name",
-                        email: "$user.email",
-                        phone: "$user.phone",
-                        gender: "$user.gender",
-                        address: "$user.address",
-                        profileImage: "$user.profileImage",
+                        username: {$arrayElemAt:["$user.username",0]},
+                        name: {$arrayElemAt:["$user.name",0]},
+                        email: {$arrayElemAt:["$user.email",0]},
+                        phone: {$arrayElemAt:["$user.phone",0]},
+                        gender: {$arrayElemAt:["$user.gender",0]},
+                        address: {$arrayElemAt:["$user.address",0]},
+                        profileImage: {$arrayElemAt:["$user.profileImage",0]},
                     },
                 }
-            }
-            
+            },
+            { $limit: 1 }
         ]);
         if (!jobs) {
             throw new ApiError(404, "Job not found");
         }
         
-        return res.json(new ApiResponse(200, jobs, "Job Applicants"));
+        return res.json(new ApiResponse(200, jobs[0], "Job Applicants"));
     }
     catch (error) {
         throw new ApiError(error.statusCode, error.message);
