@@ -122,10 +122,24 @@ const CompanyApi = createApi({
         }),
         getDashboardDetails: builder.query({
             query: () => ({
-                url: "getallpostedjobs",
+                url: "get-dashboard-data",
             }),
             transformResponse: (response) => response,
             tagTypes: ["admin"],
+        }),
+        getJobs: builder.query({
+            query: () => ({
+                url: "get-job",
+            }),
+            transformResponse: (response) => response,
+            tagTypes: ["Job"],
+        }),
+        getJobDetails: builder.query({
+            query: (jobId) => ({
+                url: `get-jobDetails/${jobId}`,
+            }),
+            transformResponse: (response) => response,
+            tagTypes: ["Job"],
         }),
     }),
 });
@@ -142,7 +156,9 @@ export const {
     useLogoutAdminMutation,
     usePostJobMutation,
     useUpdateImagesMutation,
-    useGetDashboardDetailsQuery
+    useGetDashboardDetailsQuery,
+    useGetJobsQuery,
+    useGetJobDetailsQuery
 } = CompanyApi;
 
 export default CompanyApi;

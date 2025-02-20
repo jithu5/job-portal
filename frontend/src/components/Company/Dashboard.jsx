@@ -59,6 +59,7 @@ const jobs = [
 function AdminDashboard() {
     const navigate = useNavigate();
     const [dashboardData, setDashboardData] = useState();
+    
 
     const { user } = useSelector((state) => state.Auth);
 
@@ -102,30 +103,52 @@ function AdminDashboard() {
                         <h2 className="text-xl font-semibold">
                             Total Jobs Posted
                         </h2>
-                        <p className="text-2xl font-bold text-blue-600">{dashboardData?.noOfJobs}</p>
+                        <p className="text-2xl font-bold text-blue-600">
+                            {dashboardData?.noOfJobs}
+                        </p>
                     </div>
                     <div className="bg-white shadow-lg rounded-lg p-6 w-[250px] text-center">
                         <h2 className="text-xl font-semibold">Active Jobs</h2>
-                        <p className="text-2xl font-bold text-green-600">{dashboardData?.noOfActiveJobs}</p>
+                        <p className="text-2xl font-bold text-green-600">
+                            {dashboardData?.noOfActiveJobs}
+                        </p>
                     </div>
                 </section>
                 {/* Jobs Overview Section */}
                 <section className="mt-10 px-6">
                     <h2 className="text-2xl font-bold mb-4">Your Jobs</h2>
-                    <div className="grid grid-col-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-4">
-                        {jobs.map((job) => (
+                    <div className="grid grid-col-1 md:grid-cols-2 gap-6 my-4">
+                        {dashboardData?.jobs.map((job) => (
                             <div
                                 key={job.id}
                                 className="bg-white shadow-lg rounded-lg p-6"
                             >
-                                <h3 className="text-xl font-semibold text-blue-600">
+                                <h3 className="text-xl font-semibold text-blue-600 uppercase">
                                     {job.title}
                                 </h3>
                                 <p className="text-gray-600">
-                                    Posted on: {job.postedDate}
+                                    Posted on:{" "}
+                                    {new Date(
+                                        job?.createdAt
+                                    ).toLocaleDateString("en-US", {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    })}
                                 </p>
                                 <p className="text-gray-600">
-                                    Applications: {job.applicantsCount}
+                                    Total Workers:{" "}
+                                    {job.workersCount}
+                                </p>
+                                <p className="text-gray-600">
+                                    Applications:{" "}
+                                    {job.workersCount - job.workersNeeded}
+                                </p>
+                                <p className="text-gray-600">
+                                    Location: {job.location}, {job.district}
+                                </p>
+                                <p className="text-gray-600">
+                                    Salary: ₹{job.salary}
                                 </p>
                                 <p
                                     className={`font-bold ${

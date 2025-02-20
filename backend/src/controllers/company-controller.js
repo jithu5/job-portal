@@ -369,6 +369,39 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
     }
 });
 
+// get applications (jobs)
+
+const GetApplications = asyncHandler(async (req, res) => {
+    const companyId = req.company;
+    try {
+        const company = await companymodel.findById(companyId);
+        if (!company) {
+            throw new ApiError(404, "Company not found");
+        }
+        // const jobs = await jobmodel.aggregate([
+        //     {$match: {company: mongoose.Types.ObjectId(companyId)}},
+        //     {
+        //         $lookup: {
+        //             from: "companies",
+        //             localField: "company",
+        //             foreignField: "_id",
+        //             as: "company",
+        //         },
+        //     },
+        //    ,
+        // ])
+
+        const jobs = await jobmodel.find({ company
+            : companyId }).populate("company");
+        if (!jobs) {
+            return res.json(new ApiResponse(200,null,"jobs not found"))
+        }
+        return res.json(new ApiResponse(200, jobs, "All posted jobs"));
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 //get applicants
 const GetApplicants = asyncHandler(async (req, res) => {
     const companyId = req.company;
@@ -645,6 +678,7 @@ module.exports = {
     CRegister,
     GetCompany,
     GetAllPostedJob,
+    GetApplications,
     GetApplicants,
     CLogin,
     Sendotp,

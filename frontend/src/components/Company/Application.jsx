@@ -1,56 +1,28 @@
 import { Input } from '@mui/material';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
-
-const jobs = [
-    {
-        id: 1,
-        title: "Frontend Developer",
-        image: "https://via.placeholder.com/150",
-        description: "Responsible for building user interfaces using React.",
-        status: "Active",
-        workers: 5,
-        date: "2025-01-15",
-        salary: 5000,
-        filled: 60,
-        address: "123 Tech Park, Silicon Valley, CA",
-    },
-    {
-        id: 2,
-        title: "Backend Developer",
-        image: "https://via.placeholder.com/150",
-        description: "Manage server-side logic and APIs for the platform.",
-        status: "Closed",
-        workers: 3,
-        date: "2025-01-12",
-        salary: 6000,
-        filled: 100,
-        address: "456 DevOps Street, Austin, TX",
-    },
-    {
-        id: 3,
-        title: "UI/UX Designer",
-        image: "https://via.placeholder.com/150",
-        description: "Create intuitive and visually appealing designs.",
-        status: "Active",
-        workers: 2,
-        date: "2025-01-10",
-        salary: 4000,
-        filled: 80,
-        address: "789 Design Blvd, New York, NY",
-    },
-];
-
-
+import { useGetJobsQuery } from '../../Store/AdminAuth/AdminAuth-Api';
+import { Loader2 } from 'lucide-react';
 
 function AdminApplication() {
-    const [filteredJobs, setFilteredJobs] = useState(jobs);
+    const [filteredJobs, setFilteredJobs] = useState([]);
     const [title, setTitle] = useState("");
+    const { data,isFetching,isLoading } = useGetJobsQuery();
 
+    useEffect(() => {
+        if (data && data.data && !isLoading) {
+            setFilteredJobs(data.data);
+        }
+    }, [data])
+    
+    if (isLoading || isFetching) {
+        return <div className='w-full min-h-screen flex justify-center items-center'><Loader2 className='w-6 h-6 md:h-24 md:w-24 animate-spin' /></div>;
+        
+    }
     const handleChange = (e) => {
         setTitle(e.target.value);
         setFilteredJobs(
-            jobs.filter((job) =>
+            data.data.filter((job) =>
                 job.title.toLowerCase().includes(e.target.value.toLowerCase())
             )
         );
@@ -65,30 +37,29 @@ function AdminApplication() {
                   Welcome to the company application.
               </p>
               {/* Admin application components */}
-              <div className='w-[300px] sm:w-[400px] md:w-[500px] mx-auto my-10'>
-
-              <Input
-                  type="text"
-                  name="title"
-                  value={title}
-                  onChange={handleChange}
-                  placeholder="Search your job here"
-                  className="w-[200px] md:w-md lg:w-[400px] placeholder:text-sm px-3"
-              />
+              <div className="w-[300px] sm:w-[400px] md:w-[500px] mx-auto my-10">
+                  <Input
+                      type="text"
+                      name="title"
+                      value={title}
+                      onChange={handleChange}
+                      placeholder="Search your job here"
+                      className="w-[200px] md:w-md lg:w-[400px] placeholder:text-sm px-3"
+                  />
               </div>
               {/* Jobs Section */}
               <div className="flex flex-col gap-6 items-center my-16">
                   {filteredJobs.map((job) => (
                       <div
-                          key={job.id}
+                          key={job._id}
                           className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6 flex flex-col gap-4"
                       >
                           {/* Job Title and Image */}
                           <div className="flex items-center gap-4">
                               <img
-                                  src={job.image}
+                                  src={job.company.profileImage}
                                   alt={job.title}
-                                  className="w-24 h-24 object-cover rounded-md"
+                                  className="w-14 h-14 object-cover rounded-full"
                               />
                               <div>
                                   <h2 className="text-lg md:text-xl font-bold text-blue-600">
@@ -118,13 +89,18 @@ function AdminApplication() {
                                   <span className="font-semibold">
                                       Number of Workers:
                                   </span>{" "}
-                                  {job.workers}
+                                  {job.workersCount - job.workersNeeded}
                               </p>
                               <p className="text-gray-700">
                                   <span className="font-semibold">
                                       Date Posted:
                                   </span>{" "}
-                                  {job.date}
+                                  {new Date(job.date).toLocaleDateString("en-US",{
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric",
+  
+                                  })}
                               </p>
                               <p className="text-gray-700">
                                   <span className="font-semibold">Salary:</span>{" "}
@@ -138,15 +114,18 @@ function AdminApplication() {
                                   <span className="font-semibold">
                                       Address:
                                   </span>{" "}
-                                  {job.address}
+                                  {job.location}, {job.district}
                               </p>
                           </div>
 
                           {/* Show Details Button */}
-                          <div className="text-right">
+                          <div className="w-full flex justify-end gap-6 items-center">
+                                <button className="text-red-500 px-6 py-2 rounded-lg hover:text-red-700">
+                                    Delete
+                                     </button>
                               <Link
-                                  to={`/admin/dashboard/applications/${job.id}`}
-                                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
+                                  to={`/company/dashboard/applications/${job._id}`}
+                                  className="bg-third text-white px-6 py-2 rounded-lg hover:bg-purple-700"
                               >
                                   Show Details
                               </Link>
