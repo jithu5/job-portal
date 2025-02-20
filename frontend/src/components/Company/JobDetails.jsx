@@ -37,7 +37,7 @@ function AdminJobDetails() {
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center uppercase">
                 {jobData.title}
             </h1>
-            <div className="mt-4 p-4 border rounded shadow-md bg-white">
+            <div className="mt-4 py-6 px-8 md:px-14 border rounded shadow-md bg-white">
                 <p>
                     <strong>Description:</strong> {jobData.description}
                 </p>
@@ -64,27 +64,15 @@ function AdminJobDetails() {
                     <strong>Time of Work:</strong> {formatTime(jobData.time)}
                 </p>
                 <p>
+                    <strong>Total workers:</strong> {jobData.workersCount}
+                </p>
+                <p>
                     <strong>Applied People:</strong> {jobData.applicantsCount}
                 </p>
                 <p>
                     <strong>Location:</strong> {jobData.location},{" "}
                     {jobData.district}
                 </p>
-                <div className="flex items-end justify-start gap-4 md:gap-10 px-2 md:px-6">
-                    <button
-                        onClick={() =>
-                            navigate(
-                                `/admin/dashboard/applications/edit/${job.id}`
-                            )
-                        }
-                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        Edit Job
-                    </button>
-                    <button className="text-sm md:text-lg font-medium text-red-500 hover:text-red-600">
-                        Delete
-                    </button>
-                </div>
             </div>
 
             <section className="mt-8">
