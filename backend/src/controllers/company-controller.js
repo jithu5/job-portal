@@ -410,28 +410,28 @@ const GetApplicationsJob = asyncHandler(async (req, res) => {
 const GetApplicants = asyncHandler(async (req, res) => {
     const companyId = req.company;
     const { jobId } = req.params;
+
     try {
         const company = await companymodel.findById(companyId);
         if (!company) {
             throw new ApiError(404, "Company not found");
         }
+
         const jobs = await jobmodel.aggregate([
             {
-                $match:{
-                    _id:new mongoose.Types.ObjectId(jobId),
-                }
+                $match: { _id: new mongoose.Types.ObjectId(jobId) }
             },
             {
                 $lookup: {
                     from: "applicants",
                     localField: "_id",
                     foreignField: "jobId",
-                    as: "applicants",
-                },
+                    as: "applicants"
+                }
             },
             {
                 $addFields: {
-                    applicantsCount: {$size:{$ifNull: ["$applicants", []]}},
+                    applicantsCount: { $size: { $ifNull: ["$applicants", []] } }
                 }
             },
             {
@@ -439,47 +439,167 @@ const GetApplicants = asyncHandler(async (req, res) => {
                     from: "users",
                     localField: "applicants.userId",
                     foreignField: "_id",
-                    as: "user",
+                    as: "users"
                 }
             },
             {
-                $project:{
-                    _id: 1,
-                    title: 1,
-                    description: 1,
-                    location: 1,
-                    district: 1,
-                    salary: 1,
-                    date: 1,
-                    shift: 1,
-                    time: 1,
-                    workersCount: 1,
-                    status: 1,
-                    applicantsCount: 1,
+                $addFields: {
                     applicants: {
-                        _id: 1,
-                        username: {$arrayElemAt:["$user.username",0]},
-                        name: {$arrayElemAt:["$user.name",0]},
-                        email: {$arrayElemAt:["$user.email",0]},
-                        phone: {$arrayElemAt:["$user.phone",0]},
-                        gender: {$arrayElemAt:["$user.gender",0]},
-                        address: {$arrayElemAt:["$user.address",0]},
-                        profileImage: {$arrayElemAt:["$user.profileImage",0]},
-                    },
+                        $map: {
+                            input: "$applicants",
+                            as: "applicant",
+                            in: {
+                               
+                                
+                                username: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.username"
+                                    }
+                                },
+                                name: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.name"
+                                    }
+                                },
+                                email: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.email"
+                                    }
+                                },
+                                phone: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.phone"
+                                    }
+                                },
+                                gender: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.gender"
+                                    }
+                                },
+                                address: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.address"
+                                    }
+                                },
+                                profileImage: {
+                                    $let: {
+                                        vars: {
+                                            user: {
+                                                $arrayElemAt: [
+                                                    {
+                                                        $filter: {
+                                                            input: "$users",
+                                                            as: "user",
+                                                            cond: { $eq: ["$$user._id", "$$applicant.userId"] }
+                                                        }
+                                                    }, 0
+                                                ]
+                                            }
+                                        },
+                                        in: "$$user.profileImage"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                $project: {
+                    users: 0 // Exclude extra users array
                 }
             },
             { $limit: 1 }
         ]);
-        if (!jobs) {
+
+        if (!jobs.length) {
             throw new ApiError(404, "Job not found");
         }
-        
+
         return res.json(new ApiResponse(200, jobs[0], "Job Applicants"));
-    }
-    catch (error) {
-        throw new ApiError(error.statusCode, error.message);
+    } catch (error) {
+        throw new ApiError(error.statusCode || 500, error.message);
     }
 });
+
 
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
