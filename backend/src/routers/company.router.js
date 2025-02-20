@@ -1,12 +1,28 @@
 const express = require('express');
 const CompanyRouter = express.Router();
 const {upload} = require('../middlewares/multer.middleware.js');
-const { CRegister, GetCompany,CLogin,Sendotp,Verifyemail,
-    SendResetOtp,VerifyResetOtp,UpdatePassword,PostJob,
-    updateProfileAndCover,DeleteProfileImage,DeleteCoverImage,Logout,EditProfile,EditJob,Deletejob,
-    checkCompanynameUnique,GetApplicants,GetAllPostedJob } = require('../controllers/company-controller.js');
-    updateProfileAndCover,Logout,EditProfile,EditJob,Deletejob,checkCompanynameUnique,GetApplicants,GetAllPostedJob, 
-    GetApplications} = require('../controllers/company-controller.js');
+const {
+    CRegister,
+    GetCompany,
+    CLogin,
+    Sendotp,
+    Verifyemail,
+    SendResetOtp,
+    VerifyResetOtp,
+    UpdatePassword,
+    PostJob,
+    updateProfileAndCover,
+    DeleteProfileImage,
+    DeleteCoverImage,
+    Logout,
+    EditProfile,
+    EditJob,
+    Deletejob,
+    checkCompanynameUnique,
+    GetApplicants,
+    GetAllPostedJob,
+    GetApplicationsJob,
+} = require("../controllers/company-controller.js");
 const protectCompanyMiddleware = require('../middlewares/companyAuth.middleware.js');
 
 
@@ -19,7 +35,7 @@ CompanyRouter.get('/get-jobDetails/:jobId',protectCompanyMiddleware,GetApplicant
 
 CompanyRouter.get('/get-dashboard-data',protectCompanyMiddleware,GetAllPostedJob);
 
-CompanyRouter.get('/get-job',protectCompanyMiddleware,GetApplications);
+CompanyRouter.get("/get-job", protectCompanyMiddleware, GetApplicationsJob);
 
 CompanyRouter.post('/register',CRegister);
 

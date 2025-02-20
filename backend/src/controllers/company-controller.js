@@ -375,7 +375,7 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
 
 // get applications (jobs)
 
-const GetApplications = asyncHandler(async (req, res) => {
+const GetApplicationsJob = asyncHandler(async (req, res) => {
     const companyId = req.company;
     try {
         const company = await companymodel.findById(companyId);
@@ -737,7 +737,7 @@ module.exports = {
     CRegister,
     GetCompany,
     GetAllPostedJob,
-    GetApplications,
+    GetApplicationsJob,
     GetApplicants,
     CLogin,
     Sendotp,
