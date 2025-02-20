@@ -364,23 +364,66 @@ const GetApplicants = asyncHandler(async (req, res) =>{
         if (!company) {
             throw new ApiError(404, "Company not found");
         }
-        const job = await jobmodel.findById(jobId);
-        if (!job) {
+        const jobs = await jobmodel.aggregate([
+            {
+                $match:{
+                    _id: jobId,
+                }
+            },
+            {
+                $lookup: {
+                    from: "applicants",
+                    localField: "_id",
+                    foreignField: "jobId",
+                    as: "applicants",
+                },
+            },
+            {
+                $unwind: "$applicants",
+            },
+            {
+                $lookup: {
+                    from: "users",
+                    localField: "applicants.userId",
+                    foreignField: "_id",
+                    as: "user",
+                }
+            },
+            {
+                $unwind: "$user",
+            },
+            {
+                $project:{
+                    _id: 1,
+                    title: 1,
+                    description: 1,
+                    location: 1,
+                    district: 1,
+                    salary: 1,
+                    date: 1,
+                    shift: 1,
+                    time: 1,
+                    workersCount: 1,
+                    status: 1,
+                    applicants: {
+                        _id: 1,
+                        username: "$user.username",
+                        name: "$user.name",
+                        email: "$user.email",
+                        phone: "$user.phone",
+                        gender: "$user.gender",
+                        address: "$user.address",
+                        profileImage: "$user.profileImage",
+                    },
+                }
+            }
+            
+        ]);
+        if (!jobs) {
             throw new ApiError(404, "Job not found");
         }
-        const applicants = await applicantmodel
-        .find({ jobId: {$in :jobId} })
-            .populate({
-                path: "jobId",
-            })
-            .populate({
-                path: "userId",
-                select: "name email phone address profileImage",
-            });
-        if(applicants.length === 0){
-            return res.json(new ApiResponse(200, [], "No applicants found"));
-        }
-        return res.json(new ApiResponse(200, applicants, "Job Applicants"));
+        
+        return res.json(new ApiResponse(200, jobs, "Job Applicants"));
     }
     catch (error) {
         throw new ApiError(error.statusCode, error.message);
@@ -502,7 +545,7 @@ const EditProfile = asyncHandler(async (req, res) => {
 const EditJob = asyncHandler(async (req, res) => {    
     const {jobId} = req.params;
     console.log("req", jobId);
-    const { title, description, location,district, salary, date, workersCount } =
+    const { title, description, location,district, salary, date,shift,time, workersCount } =
         req.body;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
@@ -521,6 +564,8 @@ const EditJob = asyncHandler(async (req, res) => {
                 district: district || job.district,
                 salary: salary  || job.salary,
                 date: date || job.date,
+                time: time || job.time,
+                shift: shift || job.shift,
                 workersCount: workersCount || job.workersCount,
             },
             { new: true }
