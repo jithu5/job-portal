@@ -29,14 +29,14 @@ const CRegister = asyncHandler(async (req, res) => {
             throw new ApiError(400, "User already exists");
         }
         //check company verified or not verified
-        if (ExistingC && !ExistingC.isAccountVerified){
+        if (ExistingC && !ExistingC.isAccountVerified) {
             const Company = await ExistingC.updateOne({
                 companyName: companyName,
                 email: email,
                 address: address,
                 phone: phone,
                 password: password,
-            })
+            });
             await Company.save();
         }
         // create user
@@ -81,7 +81,7 @@ const CLogin = asyncHandler(async (req, res) => {
         if (!isMatch) {
             throw new ApiError(401, "Invalid email or password");
         }
-        if (!company.isAccountVerified){
+        if (!company.isAccountVerified) {
             throw new ApiError(401, "Account is not verified");
         }
         const token = await company.generateToken();
@@ -285,8 +285,17 @@ const UpdatePassword = asyncHandler(async (req, res) => {
 
 //post job
 const PostJob = asyncHandler(async (req, res) => {
-    const { title, description, location, district, salary, date, shift, time, workersCount } =
-        req.body;
+    const {
+        title,
+        description,
+        location,
+        district,
+        salary,
+        date,
+        shift,
+        time,
+        workersCount,
+    } = req.body;
     const companyId = req.company;
     console.log(req.body);
     if (
@@ -300,7 +309,6 @@ const PostJob = asyncHandler(async (req, res) => {
         !date ||
         !workersCount
     ) {
-
         throw new ApiError(400, "All fields are required");
     }
     try {
@@ -343,22 +351,27 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
         if (!jobs) {
             throw new ApiError(404, "No posted jobs found");
         }
-        const NoOfjobs = await jobs.length;
-        const NoOfactivejobs = await jobs.filter(job => job.status === "Active").length;
-        console.log("NoOfActive", NoOfactivejobs);
-        console.log(NoOfjobs);
-        
-        
-        return res.json(new ApiResponse(200,{NoOfactivejobs,NoOfjobs, jobs},"All posted jobs"))
+        const noOfJobs = await jobs.length;
+        const noOfActiveJobs = await jobs.filter(
+            (job) => job.status === "Active"
+        ).length;
+
+        return res.json(
+            new ApiResponse(
+                200,
+                { noOfActiveJobs, noOfJobs, jobs },
+                "All posted jobs"
+            )
+        );
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
 });
 
 //get applicants
-const GetApplicants = asyncHandler(async (req, res) =>{
+const GetApplicants = asyncHandler(async (req, res) => {
     const companyId = req.company;
-    const {jobId} = req.params;
+    const { jobId } = req.params;
     try {
         const company = await companymodel.findById(companyId);
         if (!company) {
@@ -369,7 +382,7 @@ const GetApplicants = asyncHandler(async (req, res) =>{
             throw new ApiError(404, "Job not found");
         }
         const applicants = await applicantmodel
-        .find({ jobId: {$in :jobId} })
+            .find({ jobId: { $in: jobId } })
             .populate({
                 path: "jobId",
             })
@@ -377,15 +390,14 @@ const GetApplicants = asyncHandler(async (req, res) =>{
                 path: "userId",
                 select: "name email phone address profileImage",
             });
-        if(applicants.length === 0){
+        if (applicants.length === 0) {
             return res.json(new ApiResponse(200, [], "No applicants found"));
         }
         return res.json(new ApiResponse(200, applicants, "Job Applicants"));
-    }
-    catch (error) {
+    } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
-})
+});
 
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
@@ -499,11 +511,18 @@ const EditProfile = asyncHandler(async (req, res) => {
 });
 
 //edit job  (getting id as params)
-const EditJob = asyncHandler(async (req, res) => {    
-    const {jobId} = req.params;
+const EditJob = asyncHandler(async (req, res) => {
+    const { jobId } = req.params;
     console.log("req", jobId);
-    const { title, description, location,district, salary, date, workersCount } =
-        req.body;
+    const {
+        title,
+        description,
+        location,
+        district,
+        salary,
+        date,
+        workersCount,
+    } = req.body;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
     }
@@ -519,7 +538,7 @@ const EditJob = asyncHandler(async (req, res) => {
                 description: description || job.description,
                 location: location || job.location,
                 district: district || job.district,
-                salary: salary  || job.salary,
+                salary: salary || job.salary,
                 date: date || job.date,
                 workersCount: workersCount || job.workersCount,
             },
@@ -538,7 +557,7 @@ const EditJob = asyncHandler(async (req, res) => {
 
 //delete job (getting id as params)
 const Deletejob = asyncHandler(async (req, res) => {
-    const {jobId} = req.params;
+    const { jobId } = req.params;
     if (!jobId) {
         throw new ApiError(400, "Job id is required");
     }
@@ -558,23 +577,26 @@ const Deletejob = asyncHandler(async (req, res) => {
 });
 
 //check company name unique
-const checkCompanynameUnique = asyncHandler(async(req,res)=>{
+const checkCompanynameUnique = asyncHandler(async (req, res) => {
     const companyname = req.query.companyname; // Accessing query parameter
 
-    console.log(companyname)
+    console.log(companyname);
 
     try {
         const company = await usermodel.findOne({
-            companyName: companyname,isAccountVerified:true
-        })
-        if(company){
-            return res.json(new ApiResponse(200, true, "companyname already taken"));
+            companyName: companyname,
+            isAccountVerified: true,
+        });
+        if (company) {
+            return res.json(
+                new ApiResponse(200, true, "companyname already taken")
+            );
         }
         return res.json(new ApiResponse(200, true, "companyname available"));
     } catch (error) {
-        throw new ApiError(500,error?.message)
+        throw new ApiError(500, error?.message);
     }
-})
+});
 
 module.exports = {
     CRegister,

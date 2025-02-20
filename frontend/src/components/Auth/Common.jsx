@@ -43,11 +43,19 @@ function CommonAuth({
 
     if (!isAuthenticated) {
         if (
-            location.pathname.startsWith("/user") ||
-            location.pathname.startsWith("/company/dashboard") ||
-            location.pathname.startsWith("/admin/dashboard") 
+            location.pathname.startsWith("/user") 
         ) {
             return <Navigate to="/api/user/login" />;
+        }
+        if (
+            location.pathname.startsWith("/company/dashboard") 
+        ) {
+            return <Navigate to="/api/company/login" />;
+        }
+        if (
+            location.pathname.startsWith("/admin/dashboard")
+        ) {
+            return <Navigate to="/api/admin/login" />;
         }
     }
 

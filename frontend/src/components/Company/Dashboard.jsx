@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdAdd } from "react-icons/io";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useGetDashboardDetailsQuery } from "../../Store/AdminAuth/AdminAuth-Api";
+import { Loader2 } from "lucide-react";
 
 const jobs = [
     {
@@ -56,14 +58,36 @@ const jobs = [
 
 function AdminDashboard() {
     const navigate = useNavigate();
+    const [dashboardData, setDashboardData] = useState();
 
-    const {user} = useSelector((state)=>state.Auth)
+    const { user } = useSelector((state) => state.Auth);
+
+    const { data, isFetching ,isLoading} = useGetDashboardDetailsQuery();
+
+    useEffect(() => {
+        if (data?.data && !isFetching) {
+            setDashboardData(data.data);
+        }
+    }, [data]);
+
+    if (isFetching || isLoading) {
+        return (
+            <div className="w-full min-h-screen flex justify-center items-center">
+                <Loader2 className="w-6 h-6 md:w-20 md:h-20 animate-spin" />
+            </div>
+        );
+    }
+
+    console.log(dashboardData);
 
     return (
         <>
             <main className="relative w-full py-1">
                 <div className="absolute top-0 right-3 md:right-6">
-                    <button onClick={()=>navigate("/admin/dashboard/postajob")} className="bg-stone-800 text-white text-sm md:text-md px-2 md:px-6 py-1 md:py-2 rounded-lg hover:bg-stone-950 flex items-center justify-center gap-2">
+                    <button
+                        onClick={() => navigate("/admin/dashboard/postajob")}
+                        className="bg-stone-800 text-white text-sm md:text-md px-2 md:px-6 py-1 md:py-2 rounded-lg hover:bg-stone-950 flex items-center justify-center gap-2"
+                    >
                         <IoMdAdd className="text-sm md:text-lg lg:text-xl text-white" />
                         Post New Job
                     </button>
@@ -78,11 +102,11 @@ function AdminDashboard() {
                         <h2 className="text-xl font-semibold">
                             Total Jobs Posted
                         </h2>
-                        <p className="text-2xl font-bold text-blue-600">42</p>
+                        <p className="text-2xl font-bold text-blue-600">{dashboardData?.noOfJobs}</p>
                     </div>
                     <div className="bg-white shadow-lg rounded-lg p-6 w-[250px] text-center">
                         <h2 className="text-xl font-semibold">Active Jobs</h2>
-                        <p className="text-2xl font-bold text-green-600">12</p>
+                        <p className="text-2xl font-bold text-green-600">{dashboardData?.noOfActiveJobs}</p>
                     </div>
                 </section>
                 {/* Jobs Overview Section */}

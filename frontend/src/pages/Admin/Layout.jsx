@@ -6,7 +6,7 @@ import AdminApi, {
     useLogoutMutation,
 } from "../../Store/adminapi/SuperAdmin-Api";
 import { toast } from "react-toastify";
-import { clearUserData } from "../../Store/Auth";
+import { clearUserData } from "../../Store/Auth/index";
 
 function Layout() {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +20,13 @@ function Layout() {
         try {
             const response = await logout().unwrap();
             console.log(response);
-            if (!response.success) {
-                console.log(response.message);
-            }
+            dispatch(clearUserData());
             toast.success("Logged Out Successfully!");
-            // Delay navigation to allow toast to show
-            setTimeout(() => {
-                dispatch(clearUserData());
-                dispatch(AdminApi.util.resetApiState());
-                navigate("/api/admin/login");
-            }, 1000);
+            dispatch(AdminApi.util.resetApiState());
+            navigate("/api/admin/login");
         } catch (error) {
-            console.log(error);
+            const errMessage = error?.data?.message || "Failed to logout";
+            toast.error(errMessage);
         }
     };
     return (

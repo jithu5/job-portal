@@ -18,15 +18,13 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
-   
     const handleClose = () => {
         setAnchorEl(null);
     };
     console.log(anchorEl);
     return (
         <>
-            <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-stone-800">
+            <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-stone-900 text-white">
                 <div className="md:hidden">
                     <TiThMenu
                         className="text-lg"

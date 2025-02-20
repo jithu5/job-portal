@@ -26,10 +26,6 @@ function CompanyLogin
         try {
             const response = await loginAdmin(data).unwrap();
             console.log(response);
-            if (!response.success) {
-                console.log(response.error.data);
-                toast.error(response.message);
-            }
             toast.success(response.message);
             setTimeout(() => {
                 dispatch(setUser(response.data));
@@ -39,8 +35,8 @@ function CompanyLogin
 
             reset();
         } catch (error) {
-            console.log(error);
-            toast.error(error);
+            const errMessage = error?.data?.message || "Failed to login";
+            toast.error(errMessage);
         }
     };
     return (
