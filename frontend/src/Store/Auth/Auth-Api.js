@@ -99,6 +99,15 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
+        updateProfileData: builder.mutation({
+            query: (data) => ({
+                url: "edit-profile",
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"], // Forces re-fetch of "User" queries
+        }),
         logoutUser: builder.mutation({
             query: () => ({
                 url: "logout",
@@ -203,7 +212,8 @@ export const {
     useGetNewJobsQuery,
     useGetWishlistQuery,
     useViewCompanyQuery,
-    useRemovewishlistMutation
+    useRemovewishlistMutation,
+    useUpdateProfileDataMutation,
 } = UserApi;
 
 export default UserApi;

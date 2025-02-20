@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useUpdateProfileDataMutation } from "../../Store/Auth/Auth-Api";
 
 const initialState = {
     name: "",
@@ -8,6 +9,8 @@ const initialState = {
 
 function EditUserProfile() {
     const [input, setInput] = useState(initialState);
+
+    const [ updateProfileData,{isLoading,status} ] = useUpdateProfileDataMutation();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -26,7 +29,7 @@ function EditUserProfile() {
         console.log(input);
         const formData = new FormData();
         formData.append("name", input.name);
-        formData.append("phone", input.number);
+        formData.append("phone", input.phone);
         formData.append("address", input.address);
         // print data
         for (const pair of formData.entries()) {
@@ -57,7 +60,7 @@ function EditUserProfile() {
                     method="post"
                 >
                     <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-between">
-                        <div className="w-full md:w-[55%] flex flex-col items-center">
+                        <div className="w-[92%] sm:w-[85%] md:w-[75%] flex flex-col items-center">
                               
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
@@ -79,9 +82,11 @@ function EditUserProfile() {
                                 </h2>
                                 <input
                                     type="number"
-                                    id="number"
-                                    name="number"
+                                    id="phone"
+                                    name="phone"
                                     value={input.phone}
+                                    maxLength={10}
+                                    minLength={10}
                                     onChange={handleChange}
                                     className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your phone number"

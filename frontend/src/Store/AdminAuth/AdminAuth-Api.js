@@ -7,7 +7,7 @@ const baseQuery = fetchBaseQuery({
     credentials: "include",
 });
 
-const companyApi = createApi({
+const CompanyApi = createApi({
     reducerPath: "company",
     baseQuery,
     tagTypes: ["admin", "Job"],
@@ -120,6 +120,13 @@ const companyApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["admin"],
         }),
+        getDashboardDetails: builder.query({
+            query: () => ({
+                url: "getallpostedjobs",
+            }),
+            transformResponse: (response) => response,
+            tagTypes: ["admin"],
+        }),
     }),
 });
 
@@ -134,7 +141,8 @@ export const {
     useUpdatePasswordMutation,
     useLogoutAdminMutation,
     usePostJobMutation,
-    useUpdateImagesMutation
-} = companyApi;
+    useUpdateImagesMutation,
+    useGetDashboardDetailsQuery
+} = CompanyApi;
 
-export default companyApi;
+export default CompanyApi;
