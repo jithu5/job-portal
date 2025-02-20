@@ -2,13 +2,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGetJobDetailsQuery } from "../../Store/AdminAuth/AdminAuth-Api";
 import { Loader2 } from "lucide-react";
+const formatTime = (time) => {
+    if (!time) return "N/A"; // Handle undefined/null cases
+    console.log(time)
+    const [hours, minutes] = time.split(":");
+    return new Date(0, 0, 0, hours, minutes).toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
+};
 
 function AdminJobDetails() {
     const [jobData, setJobData] = useState('')
     const { jobId } = useParams();
     const navigate = useNavigate();
     const {data,isFetching,isLoading} = useGetJobDetailsQuery(jobId)
-
+    console.log(jobId)
     useEffect(() => {
         if (data?.data &&!isFetching) {
             setJobData(data.data)
@@ -24,7 +34,7 @@ function AdminJobDetails() {
 
     return (
         <main className="w-full min-h-screen p-4">
-            <h1 className="text-xl md:text-2xl font-semibold text-center">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-center uppercase">
                 {jobData.title}
             </h1>
             <div className="mt-4 p-4 border rounded shadow-md bg-white">
@@ -32,51 +42,79 @@ function AdminJobDetails() {
                     <strong>Description:</strong> {jobData.description}
                 </p>
                 <p>
-                    <strong>Salary:</strong> {jobData.salary}
+                    <strong>Salary:</strong> ₹{jobData.salary}
                 </p>
                 <p>
-                    <strong>Date Posted:</strong> {jobData.date}
+                    <strong>Date Posted:</strong>{" "}
+                    {new Date(jobData.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                    })}
                 </p>
                 <p>
-                    {/* <strong>Applied People:</strong> {job.appliedPeople} */}
+                    <strong>Date of Work:</strong>{" "}
+                    {new Date(jobData.date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                    })}
+                </p>
+                <p>
+                    <strong>Time of Work:</strong> {formatTime(jobData.time)}
+                </p>
+                <p>
+                    <strong>Applied People:</strong> {jobData.applicantsCount}
+                </p>
+                <p>
+                    <strong>Location:</strong> {jobData.location},{" "}
+                    {jobData.district}
                 </p>
                 <div className="flex items-end justify-start gap-4 md:gap-10 px-2 md:px-6">
-
-                <button onClick={()=>navigate(`/admin/dashboard/applications/edit/${job.id}`)} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                    Edit Job
-                </button>
-                <button className="text-sm md:text-lg font-medium text-red-500 hover:text-red-600">Delete</button>
+                    <button
+                        onClick={() =>
+                            navigate(
+                                `/admin/dashboard/applications/edit/${job.id}`
+                            )
+                        }
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        Edit Job
+                    </button>
+                    <button className="text-sm md:text-lg font-medium text-red-500 hover:text-red-600">
+                        Delete
+                    </button>
                 </div>
             </div>
 
-            {/* <section className="mt-8">
+            <section className="mt-8">
                 <h2 className="text-lg font-semibold">Applicants</h2>
-                {job.applicants.length > 0 ? (
+                {jobData?.applicants?.length > 0 ? (
                     <ul className="mt-4 space-y-2">
-                        {job.applicants.map((applicant) => (
+                        {jobData?.applicants.map((applicant) => (
                             <li
-                                key={applicant.id}
+                                key={applicant._id}
                                 className="p-4 border rounded shadow-md bg-white flex items-center justify-between w-full"
                             >
-                            <div>
-
-                                <p>
-                                    <strong>Name:</strong> {applicant.name}
-                                </p>
-                                <p>
-                                    <strong>Email:</strong> {applicant.email}
-                                </p>
-                            </div>
-                            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                                View Profile
-                            </button>
+                                <div>
+                                    <p>
+                                        <strong>Name:</strong> {applicant.name}
+                                    </p>
+                                    <p>
+                                        <strong>Email:</strong>{" "}
+                                        {applicant.email}
+                                    </p>
+                                </div>
+                                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                    View Profile
+                                </button>
                             </li>
                         ))}
                     </ul>
                 ) : (
                     <p>No applicants yet.</p>
                 )}
-            </section> */}
+            </section>
         </main>
     );
 }

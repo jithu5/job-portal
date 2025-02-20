@@ -10,14 +10,32 @@ import {
 } from "../../Store/Auth/Auth-Api";
 import { Loader2 } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { addAppliedJobs, addWishlist, removeWishlist } from "../../Store/Auth/index";
+import {
+    addAppliedJobs,
+    addWishlist,
+    removeWishlist,
+} from "../../Store/Auth/index";
 import { toast } from "react-toastify";
 import Jobs from "../../components/Jobs/Jobs";
+import { formatTime } from "../../data";
+
+const convertTo24HourFormat = (time) => {
+    if (!time) return null;
+
+    const [timePart, period] = time.split(" "); // Split "08:30 AM" into ["08:30", "AM"]
+    let [hours, minutes] = timePart.split(":").map(Number);
+
+    if (period === "PM" && hours !== 12) hours += 12; // Convert PM hours correctly
+    if (period === "AM" && hours === 12) hours = 0; // Midnight case (12 AM => 00)
+
+    return hours * 60 + minutes; // Convert to total minutes for easier comparison
+};
+
 
 const SearchJobs = () => {
     const [filterInput, setFilterInput] = useState({
         district: "",
-        shift: "",
+        time: "",
         title: "",
     });
     const [filteredJobs, setFilteredJobs] = useState([]);
@@ -49,22 +67,25 @@ const SearchJobs = () => {
         }
     }, [isError]);
 
-    useEffect(() => {
-        setFilteredJobs(
-            allJobs.filter(
-                (job) =>
-                    job.district
-                        ?.toLowerCase()
-                        .includes(filterInput?.district.toLowerCase()) &&
-                    job.shift
-                        ?.toLowerCase()
-                        .includes(filterInput?.shift.toLowerCase()) &&
-                    job.title
-                        ?.toLowerCase()
-                        .includes(filterInput.title?.toLowerCase())
-            )
-        );
-    }, [filterInput, allJobs]);
+  useEffect(() => {
+      setFilteredJobs(
+          allJobs.filter((job) => {
+              const jobTime = convertTo24HourFormat(formatTime(job.time));
+              const selectedTime = convertTo24HourFormat(filterInput.time);
+
+              return (
+                  job.district
+                      ?.toLowerCase()
+                      .includes(filterInput?.district.toLowerCase()) &&
+                  (filterInput.time === "" || jobTime >= selectedTime) &&
+                  job.title
+                      ?.toLowerCase()
+                      .includes(filterInput.title?.toLowerCase())
+              );
+          })
+      );
+  }, [filterInput, allJobs]);
+
 
     useEffect(() => {
         setCurrentJobs(filteredJobs.slice(0, itemsPerPage));
@@ -176,11 +197,14 @@ const SearchJobs = () => {
                         [e.target.name]: e.target.value,
                     }))
                 }
+                openFilter={filterInput}
+                setFilterInput={setFilterInput}
             />
             <JobSideBar
                 openFilter={openFilter}
                 setOpenFilter={setOpenFilter}
                 filterInput={filterInput}
+                setFilterInput={setFilterInput}
                 handleChange={(e) =>
                     setFilterInput((prev) => ({
                         ...prev,

@@ -27,10 +27,6 @@ const JobSchema = mongoose.Schema(
             type: Date,
             required: true,
         },
-        shift: {
-            type: String,
-            required: true,
-        },
         time:{
             type: String,
             required: true,

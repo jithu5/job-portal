@@ -1,7 +1,6 @@
 import React from "react";
 import {
     Box,
-    Button,
     DialogTitle,
     Drawer,
     MenuItem,
@@ -10,18 +9,13 @@ import {
     FormControl,
 } from "@mui/material";
 import { IoClose } from "react-icons/io5";
+import { formatTime } from "../../data";
 
-function JobSideBar({
-    openFilter,
-    setOpenFilter,
-    filterInput,
-    handleChange,
-}) {
+function JobSideBar({ openFilter, setOpenFilter, filterInput, handleChange }) {
     const shiftTimings = {
-        "Morning (6 AM - 12 PM)": ["06:00", "12:00"],
-        "Afternoon (12 PM - 4 PM)": ["12:00", "16:00"],
-        "Evening (4 PM - 7 PM)": ["16:00", "19:00"],
-        "Night (7 PM - 12 AM)": ["19:00", "23:59"],
+        morning: "08:00",
+        afternoon: "14:30",
+        evening: "18:45",
     };
 
     const keralaDistricts = [
@@ -40,7 +34,6 @@ function JobSideBar({
         "Kannur",
         "Kasaragod",
     ];
-
 
     return (
         <Drawer
@@ -78,7 +71,7 @@ function JobSideBar({
                             label="District"
                             onChange={handleChange}
                         >
-                            {keralaDistricts.map(district =>(
+                            {keralaDistricts.map((district) => (
                                 <MenuItem key={district} value={district}>
                                     {district}
                                 </MenuItem>
@@ -87,21 +80,22 @@ function JobSideBar({
                     </FormControl>
 
                     <FormControl className="w-[90%]">
-                        <InputLabel id="shift-label">Shift</InputLabel>
+                        <InputLabel id="shift-label">Time</InputLabel>
                         <Select
-                            name="shift"
-                            label="Shift"
-                            value={filterInput.shift}
+                            name="time"
+                            label="time"
+                            value={filterInput.time}
                             onChange={handleChange}
                         >
-                            {Object.keys(shiftTimings).map((shift) => (
-                                <MenuItem key={shift} value={shift}>
-                                    {shift}
-                                </MenuItem>
-                            ))}
+                            {Object.entries(shiftTimings).map(
+                                ([shift, time]) => (
+                                    <MenuItem key={shift} value={time}>
+                                        {formatTime(time)}
+                                    </MenuItem>
+                                )
+                            )}
                         </Select>
                     </FormControl>
-
                 </form>
             </Box>
         </Drawer>

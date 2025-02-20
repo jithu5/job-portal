@@ -15,14 +15,6 @@ function AdminPostJob() {
 
     const [ postJob ] = usePostJobMutation()
     const navigate = useNavigate()
-      const [selectedShift, setSelectedShift] = useState("");
-
-      const shiftTimings = {
-          "Morning (6 AM - 12 PM)": ["06:00", "12:00"],
-          "Afternoon (12 PM - 4 PM)": ["12:00", "16:00"],
-          "Evening (4 PM - 7 PM)": ["16:00", "19:00"],
-          "Night (7 PM - 12 AM)": ["19:00", "23:59"],
-      };
 
          const keralaDistricts = [
              "Thiruvananthapuram",
@@ -54,7 +46,7 @@ function AdminPostJob() {
             toast.success("Job posted successfully");
             reset();
             setTimeout(() => {
-              navigate("/admin/dashboard/applications");
+              navigate("/company/dashboard/applications");
             }, 1000)
             
         } catch (error) {
@@ -146,36 +138,13 @@ function AdminPostJob() {
                         <p className="text-red-500 text-sm">Date is required</p>
                     )}
 
-                    {/* Shift Selection */}
-                    <select
-                        className="border-2 border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-primary"
-                        {...register("shift", { required: true })}
-                        onChange={(e) => setSelectedShift(e.target.value)}
-                    >
-                        <option value="">Select Shift</option>
-                        {Object.keys(shiftTimings).map((shift) => (
-                            <option key={shift} value={shift}>
-                                {shift}
-                            </option>
-                        ))}
-                    </select>
-                    {errors.shift && (
-                        <p className="text-red-500 text-sm">
-                            Shift is required
-                        </p>
-                    )}
-
+                 
                     {/* Time Selection */}
                     <input
                         className="border-2 border-gray-300 p-3 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-primary"
                         type="time"
                         {...register("time", { required: true })}
-                        min={
-                            selectedShift ? shiftTimings[selectedShift][0] : ""
-                        }
-                        max={
-                            selectedShift ? shiftTimings[selectedShift][1] : ""
-                        }
+                       
                     />
                     {errors.time && (
                         <p className="text-red-500 text-sm">Time is required</p>

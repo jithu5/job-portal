@@ -294,7 +294,6 @@ const PostJob = asyncHandler(async (req, res) => {
         district,
         salary,
         date,
-        shift,
         time,
         workersCount,
     } = req.body;
@@ -305,7 +304,6 @@ const PostJob = asyncHandler(async (req, res) => {
         !description ||
         !location ||
         !district ||
-        !shift ||
         !time ||
         !salary ||
         !date ||
@@ -327,7 +325,6 @@ const PostJob = asyncHandler(async (req, res) => {
             district,
             salary,
             date,
-            shift,
             time,
             workersCount,
             workersNeeded: workersCount,

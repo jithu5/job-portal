@@ -4,6 +4,15 @@ import { Link } from 'react-router-dom';
 import { useGetJobsQuery } from '../../Store/AdminAuth/AdminAuth-Api';
 import { Loader2 } from 'lucide-react';
 
+const formatTime = (time) => {
+    const [hours, minutes] = time.split(":");
+    return new Date(0, 0, 0, hours, minutes).toLocaleString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+    });
+};
+
 function AdminApplication() {
     const [filteredJobs, setFilteredJobs] = useState([]);
     const [title, setTitle] = useState("");
@@ -107,8 +116,8 @@ function AdminApplication() {
                                   ${job.salary} per month
                               </p>
                               <p className="text-gray-700">
-                                  <span className="font-semibold">Filled:</span>{" "}
-                                  {job.filled}%
+                                  <span className="font-semibold">Time:</span>{" "}
+                                  {formatTime(job.time)}
                               </p>
                               <p className="text-gray-700">
                                   <span className="font-semibold">
