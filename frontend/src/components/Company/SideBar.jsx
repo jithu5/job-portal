@@ -59,7 +59,7 @@ function AdminSideBar({usedIn}) {
     return (
         <>
             <aside className="w-full h-full bg-stone-900 text-white flex flex-col items-center py-7 lg:py-12 gap-10">
-                <h1 className="text-xl lg:text-4xl font-bold font-Oswald">
+                <h1 className="text-xl lg:text-3xl font-bold font-Oswald">
                     {usedIn.toLowerCase() === "company"?"Company Panel":"Admin Panel"}
                 </h1>
                 <div>

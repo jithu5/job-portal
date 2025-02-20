@@ -32,7 +32,7 @@ function AdminLayout() {
     return (
         <>
             <div className="flex w-full justify-between">
-                <div className="hidden md:fixed md:flex w-[20%] lg:w-[17%] bg-stone-900 text-white min-h-screen rounded-tr-2xl rounded-br-2xl">
+                <div className="hidden px-1 md:fixed md:flex w-[20%] lg:w-[17%] bg-stone-900 text-white min-h-screen ">
                     <AdminSideBar usedIn="company" />
                 </div>
                 <AdminDrawer

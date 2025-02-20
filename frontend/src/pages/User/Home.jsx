@@ -29,16 +29,9 @@ const onboardingSteps = [
         icon: "📧",
         color: "#F45B69",
     },
+   
     {
         id: 3,
-        title: "Add Jobs to Your Profile",
-        description:
-            "Users can personalize their profiles by specifying the types of jobs they are interested in. This enables us to provide relevant job.",
-        icon: "📝",
-        color: "#2D9C9B",
-    },
-    {
-        id: 4,
         title: "Search for Jobs",
         description:
             "Users can explore job opportunities using filters such as location, job type, and keywords to narrow down their search.",
@@ -46,7 +39,7 @@ const onboardingSteps = [
         color: "#F1C40F",
     },
     {
-        id: 5,
+        id: 4,
         title: "Apply for a Job",
         description:
             "In the final step, users can submit their applications for the jobs that align with their preferences and interests.",
@@ -127,13 +120,7 @@ function Home() {
                                 >
                                     LOG IN
                                 </AnimationButton>
-                                <AnimationButton
-                                    destination={"/api/user/register"}
-                                    bgColor={"secondary"}
-                                    colorCode={"#020204"}
-                                >
-                                    SIGN UP
-                                </AnimationButton>
+                                
                             </div>
                         )}
                     </div>

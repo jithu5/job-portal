@@ -848,17 +848,15 @@ const Logout = asyncHandler(async (req, res) => {
 //edit profile
 const EditProfile = asyncHandler(async (req, res) => {
     const userId = req.user;
-    const { username, name, address, phone, dob } = req.body;
+    const { name, address, phone} = req.body;
+    console.log(name, address, phone);
 
     try {
         const user = await usermodel.findById(userId);
         if (!user) {
             throw new ApiError(404, "User not found");
         }
-        const existingusername = await usermodel.findOne({ username: username ,_id : { $ne:userId } });
-        if (existingusername) {
-            throw new ApiError(400, "Username already exists");
-        }
+        
         const updatedUser = await usermodel.findOneAndUpdate(
             {
                 _id: userId,
@@ -867,7 +865,6 @@ const EditProfile = asyncHandler(async (req, res) => {
                 name: name || user.name,
                 address: address || user.address,
                 phone: phone || user.phone,
-                dob: dob || user.dob,
             },
             { new: true, runValidators: true }
         );

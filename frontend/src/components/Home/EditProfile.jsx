@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useUpdateProfileDataMutation } from "../../Store/Auth/Auth-Api";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../Store/Auth/index";
 
 const initialState = {
     name: "",
@@ -9,6 +12,7 @@ const initialState = {
 
 function EditUserProfile() {
     const [input, setInput] = useState(initialState);
+    const dispatch = useDispatch()
 
     const [ updateProfileData,{isLoading,status} ] = useUpdateProfileDataMutation();
 
@@ -23,20 +27,27 @@ function EditUserProfile() {
         });
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         // Do something with the updated user data
         console.log(input);
-        const formData = new FormData();
-        formData.append("name", input.name);
-        formData.append("phone", input.phone);
-        formData.append("address", input.address);
-        // print data
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
+       
+        try {
+            const response = await updateProfileData(input).unwrap();
+            console.log(response);
+            toast.success(response.message);
+            dispatch(setUser(response.data));
+        } catch (error) {
+            const errMessage = error?.data?.message || "Failed to update";
+            toast.error(errMessage);
         }
 
         // api call
+        setInput({
+            name: "",
+            phone: "",
+            address: "",
+        })
     }
 
     return (
@@ -113,7 +124,7 @@ function EditUserProfile() {
                             type="submit"
                             className="w-[200px] bg-third font-Abel font-medium text-white px-5 py-2 rounded-md hover:bg-purple-600"
                         >
-                            Edit
+                            { isLoading? "Editing" : "Edit"}
                         </button>
                     </div>
                 </form>

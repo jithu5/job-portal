@@ -84,7 +84,7 @@ const Profile = () => {
             </div>
             <div className="w-[90%] mx-auto flex flex-col gap-4">
                 <h1 className="text-xl md:text-3xl font-bold">
-                    {user.username.toUpperCase()}
+                    {user.name.toUpperCase()}
                 </h1>
                 <p className="text-md md:texxt-lg font-medium">
                     Software Engineer

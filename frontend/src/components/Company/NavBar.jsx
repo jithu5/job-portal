@@ -24,7 +24,7 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
     console.log(anchorEl);
     return (
         <>
-            <header className="px-1 md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-stone-900 text-white">
+            <header className="md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-primary text-stone-900">
                 <div className="md:hidden">
                     <TiThMenu
                         className="text-lg"
