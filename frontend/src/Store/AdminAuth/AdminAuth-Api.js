@@ -119,7 +119,7 @@ const CompanyApi = createApi({
             providesTags: ["Job"],
         }),
         editJob: builder.mutation({
-            query: ({jobId,data}) => ({
+            query: ({ jobId, data }) => ({
                 url: `editjob/${jobId}`,
                 method: "POST",
                 body: JSON.stringify(data),
@@ -135,6 +135,22 @@ const CompanyApi = createApi({
                 url: "update-profile-cover",
                 method: "POST",
                 body: images,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Company"],
+        }),
+        deleteProfileImage: builder.mutation({
+            query: () => ({
+                url: "delete-profilepic",
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Company"],
+        }),
+        deleteCoverImage: builder.mutation({
+            query: () => ({
+                url: "delete-coverpic",
+                method: "POST",
             }),
             transformResponse: (response) => response,
             invalidatesTags: ["Company"],
@@ -188,7 +204,9 @@ export const {
     useGetJobDetailsQuery,
     useDeleteJobMutation,
     useGetJobByIdQuery,
-    useEditJobMutation
+    useEditJobMutation,
+    useDeleteProfileImageMutation,
+    useDeleteCoverImageMutation
 } = CompanyApi;
 
 export default CompanyApi;

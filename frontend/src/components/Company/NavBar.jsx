@@ -10,10 +10,13 @@ import Logout from "@mui/icons-material/Logout";
 import { TiThMenu } from "react-icons/ti";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const {user} = useSelector((state)=>state.Auth)
+    console.log(user)
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -46,11 +49,11 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
                         aria-haspopup="true"
                         aria-expanded={open ? "true" : undefined}
                     >
-                        <Avatar sx={{ width: 32, height: 32 }}>
+                        <Avatar sx={{ width: 38, height: 38 }}>
                             <img
-                                src={avatar}
+                                src={user?.profileImage || avatar}
                                 alt=""
-                                className="w-full h-full"
+                                className="w-full h-full rounded-full object-cover"
                             />
                         </Avatar>
                     </IconButton>

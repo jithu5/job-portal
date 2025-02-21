@@ -33,20 +33,54 @@ function AdminApplication() {
         }
     }, [data]);
 
-    const handleDelete = async (jobId) => {
-        try {
-            const response = await deleteJob(jobId).unwrap();
-            console.log(response);
-            if (!response.success) {
-                return;
-            }
-            toast.success(response.message);
-            setFilteredJobs(filteredJobs.filter((job) => job._id !== jobId));
-        } catch (error) {
-            const errMessage = error?.data?.message || "Failed to delete job";
-            toast.error(errMessage);
+const handleDelete = async (jobId) => {
+    toast(
+        <div>
+            <p>Are you sure you want to delete this job?</p>
+            <div className="flex justify-end gap-2 mt-2 px-3 py-1">
+                <button
+                    onClick={async () => {
+                        toast.dismiss();
+                        await confirmDelete(jobId);
+                    }}
+                    className="bg-red-500 text-white px-3 py-1 rounded"
+                >
+                    Yes
+                </button>
+                <button
+                    onClick={() => toast.dismiss()}
+                    className="bg-gray-300 px-3 py-1 rounded"
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>,
+        {
+            position: "top-right",
+            autoClose: false,
+            closeOnClick: false,
+            draggable: false,
+            closeButton: false,
+            theme:"dark"
         }
-    };
+    );
+};
+
+// Function to execute delete if confirmed
+const confirmDelete = async (jobId) => {
+    try {
+        const response = await deleteJob(jobId).unwrap();
+        console.log(response);
+        if (!response.success) return;
+
+        toast.success(response.message);
+        setFilteredJobs(filteredJobs.filter((job) => job._id !== jobId));
+    } catch (error) {
+        const errMessage = error?.data?.message || "Failed to delete job";
+        toast.error(errMessage);
+    }
+};
+
 
     if (isLoading || isFetching) {
         return (

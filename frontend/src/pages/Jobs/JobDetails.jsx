@@ -152,7 +152,7 @@ function JobDetails() {
             <div className="flex items-center justify-start gap-5">
                 {job?.companyprofile ? (
                     <img
-                        className="w-16 h-16 rounded-full object-cover"
+                        className="w-16 h-16 rounded-full object-cover cursor-pointer"
                         src={job.companyprofile}
                         alt=""
                         onClick={() =>
@@ -164,7 +164,7 @@ function JobDetails() {
                         onClick={() =>
                             navigate(`/user/company-profile/${job.companyId}`)
                         }
-                        className="bg-third flex justify-center items-center font-semibold text-2xl text-white h-16 w-16 rounded-full"
+                        className="bg-third flex justify-center items-center font-semibold text-2xl text-white h-16 w-16 rounded-full cursor-pointer"
                     >
                         {job.company[0].toUpperCase()}
                     </div>

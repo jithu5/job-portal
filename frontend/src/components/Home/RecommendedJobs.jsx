@@ -133,7 +133,7 @@ function RecommendedJobs() {
 
                                 {/* Job Details */}
                                 <p className="text-gray-600 text-sm md:text-base">
-                                    {job.description.slice(0, 250)}...
+                                    {job.description.slice(0, 70)}...
                                 </p>
 
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
