@@ -18,6 +18,10 @@ import AdminPasswordReset from "./Company/PasswordReset";
 import AdminLogin from "./Admin/Login";
 import Layout from "./Admin/Layout";
 import Dashboard from "./Admin/Dashboard";
+import Users from "./Admin/Users";
+import Companies from "./Admin/Company";
+import UserDetails from "./Admin/UserDetails";
+import CompanyDetails from "./Admin/CompanyDetails";
 
 export {
     Home,
@@ -36,5 +40,9 @@ export {
     UserPasswordReset,
     AdminLogin,
     Layout,
-    Dashboard
+    Dashboard,
+    Users,
+    Companies,
+    UserDetails,
+    CompanyDetails
 };

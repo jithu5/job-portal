@@ -26,7 +26,7 @@ const AdminApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin","Company","User"],
+            invalidatesTags: ["admin", "Company", "User"],
         }),
         logout: builder.mutation({
             query: () => ({
@@ -34,12 +34,32 @@ const AdminApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["admin","Company","User"],
+            invalidatesTags: ["admin", "Company", "User"],
+        }),
+        getUsers: builder.query({
+            query: () => ({
+                url: "getusers",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["User"],
+        }),
+        getCompany: builder.query({
+            query: () => ({
+                url: "getcompany",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Company"],
         }),
     }),
     // Define other endpoints here...
 });
 
-export const { useLoginMutation,useGetAdminQuery,useLogoutMutation } = AdminApi;
+export const {
+    useLoginMutation,
+    useGetAdminQuery,
+    useLogoutMutation,
+    useGetUsersQuery,
+    useGetCompanyQuery,
+} = AdminApi;
 
 export default AdminApi;

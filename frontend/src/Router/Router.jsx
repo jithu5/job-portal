@@ -33,7 +33,11 @@ import {
     CompanyLogin,
     Dashboard,
     Layout,
-    SearchJobs
+    SearchJobs,
+    Users,
+    Companies,
+    UserDetails,
+    CompanyDetails
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
@@ -230,6 +234,22 @@ function Router() {
                         {
                             index: true,
                             element: <Dashboard />,
+                        },
+                        {
+                            path: "users",
+                            element: <Users />,
+                        },
+                        {
+                            path: "user/:userId",
+                            element: <UserDetails />,
+                        },
+                        {
+                            path: "companies",
+                            element: <Companies />,
+                        },
+                        {
+                            path: "company/:companyId",
+                            element: <CompanyDetails />,
                         },
                     ],
                 },

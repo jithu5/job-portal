@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 
 import { MdSpaceDashboard, MdWorkHistory, MdAddBox } from "react-icons/md";
 import { RiUserSettingsFill } from "react-icons/ri";
+import { Building2, UserRound } from "lucide-react";
 
 const CompanyNavigationLink = [
     {
@@ -35,32 +36,35 @@ const AdminNavigation = [
         icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
     },
     {
-        name: "User",
-        path: "user",
-        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+        name: "Users",
+        path: "users",
+        icon: <UserRound className="text-white text-lg lg:text-xl" />,
     },
     {
-        name: "Company",
-        path: "company",
-        icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
+        name: "Companies",
+        path: "companies",
+        icon: <Building2 className="text-white text-lg lg:text-xl" />,
     },
-]
-function AdminSideBar({usedIn}) {
+];
+
+function AdminSideBar({ usedIn }) {
     console.log(usedIn);
-    const [NavigationLink, setNavigationLink] = useState([])
+    const [NavigationLink, setNavigationLink] = useState([]);
     useEffect(() => {
-      if (usedIn.toLowerCase() === "company") {
-        setNavigationLink(CompanyNavigationLink)
-        
-      }else if (usedIn.toLowerCase() === "admin") {
-        setNavigationLink(AdminNavigation)}
-    }, [])
-    
+        if (usedIn.toLowerCase() === "company") {
+            setNavigationLink(CompanyNavigationLink);
+        } else if (usedIn.toLowerCase() === "admin") {
+            setNavigationLink(AdminNavigation);
+        }
+    }, []);
+
     return (
         <>
             <aside className="w-full h-full bg-stone-900 text-white flex flex-col items-center py-7 lg:py-12 gap-10">
                 <h1 className="text-xl lg:text-3xl font-bold font-Oswald">
-                    {usedIn.toLowerCase() === "company"?"Company Panel":"Admin Panel"}
+                    {usedIn.toLowerCase() === "company"
+                        ? "Company Panel"
+                        : "Admin Panel"}
                 </h1>
                 <div>
                     <ul className="flex flex-col gap-6">
@@ -69,7 +73,11 @@ function AdminSideBar({usedIn}) {
                                 <NavLink
                                     to={link.path}
                                     end
-                                    className={({isActive})=>`flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-stone-800 ${isActive?"bg-stone-700":null}`}
+                                    className={({ isActive }) =>
+                                        `flex gap-2 items-center px-4 py-2 rounded-lg hover:bg-stone-800 ${
+                                            isActive ? "bg-stone-700" : null
+                                        }`
+                                    }
                                 >
                                     {link.icon}
                                     <span className="ml-2 block">
