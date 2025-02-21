@@ -73,9 +73,6 @@ function AdminProfile() {
                         {user.companyName.toUpperCase()}
                     </h1>
                     <p className="text-md md:texxt-lg font-medium">
-                        Software Engineer
-                    </p>
-                    <p className="text-md md:texxt-lg font-medium">
                         {user.email}
                     </p>
                     <p className="text-md md:texxt-lg font-medium">

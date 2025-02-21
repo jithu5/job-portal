@@ -79,9 +79,6 @@ const Profile = () => {
                 <h1 className="text-xl md:text-3xl font-bold">
                     {user.name.toUpperCase()}
                 </h1>
-                <p className="text-md md:texxt-lg font-medium">
-                    Software Engineer
-                </p>
                 <p className="text-md md:texxt-lg font-medium">{user.email}</p>
                 <p className="text-md md:texxt-lg font-medium">{user.phone}</p>
                 <p className="text-md md:text-lg font-normal">{user.address}</p>

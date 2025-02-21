@@ -1,4 +1,4 @@
-import React, { startTransition, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FaHeart } from "react-icons/fa";
@@ -19,21 +19,21 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
     
     const handleApplyClick = async () => {
         await handleApply(job);
-        startTransition(() => {
+       
             setIsApplied(true);
-        });
+      
     };
     const handleWishlistClick = async () => {
         await addWishlistFn(job);
-        startTransition(() => {
+        
             setIsWishlisted(true);
-        });
+       
     };
     const handleRemoveWishlistClick = async () => {
         await removewishlistFn(job);
-        startTransition(() => {
+      
             setIsWishlisted(false);
-        });
+      
     };
 
     return (
@@ -54,7 +54,14 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                                 className="w-12 h-12 md:w-16 md:h-16 rounded-full object-cover cursor-pointer"
                             />
                         ) : (
-                            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-third flex items-center justify-center text-xl md:text-4xl text-white font-semibold cursor-pointer">
+                            <div
+                                onClick={() =>
+                                    navigate(
+                                        `/user/company-profile/${job.companyId}`
+                                    )
+                                }
+                                className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-third flex items-center justify-center text-xl md:text-4xl text-white font-semibold cursor-pointer"
+                            >
                                 {job.company[0].toUpperCase()}
                             </div>
                         )}

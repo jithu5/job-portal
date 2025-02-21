@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, startTransition } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { JobHeader, JobSideBar } from "../../components/index";
 import { Box } from "@mui/material";
 import _ from "lodash"; // For debounce/throttle functions
@@ -68,7 +68,7 @@ const SearchJobs = () => {
     }, [isError]);
 
   useEffect(() => {
-    startTransition(() => {
+  
         setFilteredJobs(
             allJobs.filter((job) => {
                 const jobTime = convertTo24HourFormat(formatTime(job.time));
@@ -85,7 +85,7 @@ const SearchJobs = () => {
                 );
             })
         );
-    });
+ 
   }, [filterInput, allJobs]);
 
 
@@ -223,7 +223,7 @@ const SearchJobs = () => {
                         <p className="text-md md:text-lg text-center text-red-600 my-10">
                             {error}
                         </p>
-                    ) : allJobs.length === 0 ? (
+                    ) : allJobs.length === 0 || currentJobs.length === 0 ? (
                         <p className="text-md md:text-lg text-center font-Oswald my-10">
                             No jobs found matching your search criteria.
                         </p>

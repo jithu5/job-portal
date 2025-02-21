@@ -32,14 +32,15 @@ import {
     CompanyProfile,
     CompanyLogin,
     Dashboard,
-    Layout
+    Layout,
+    SearchJobs
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
 import { Box, CircularProgress } from "@mui/material";
 import { useGetCompanyQuery } from "../Store/AdminAuth/AdminAuth-Api";
-import { useGetAdminQuery } from "../Store/adminapi/SuperAdmin-Api";
 import { Loader2 } from "lucide-react";
+import { useGetAdminQuery } from "../Store/adminapi/SuperAdmin-Api";
 // Wrapper function to include CommonAuth with Redux state
 const wrapWithCommonAuth = (Component, props) => {
     return <CommonAuth {...props}>{Component}</CommonAuth>;
@@ -49,8 +50,6 @@ const wrapWithCommonAuth = (Component, props) => {
 function Router() {
     const { isAuthenticated, user } = useSelector((state) => state.Auth);
     const dispatch = useDispatch();
-
-    const SearchJobs = lazy(() => import("../pages/Jobs/SearchJobs"));
 
     const { data, isLoading, isSuccess,isFetching } = useGetUserQuery(undefined, {
         refetchOnMountOrArgChange: true,
@@ -131,9 +130,8 @@ function Router() {
                         {
                             path: "jobs",
                             element: (
-                                <Suspense fallback={<div className="w-full min-h-screen flex justify-center items-center"><Loader2 className="w-5 h-5 md:w-24 md:h-24 animate-spin"/></div>}>
                                     <SearchJobs />
-                                </Suspense>
+                             
                             ),
                         },
                         {
