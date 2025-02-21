@@ -5,6 +5,7 @@ import UserLogin from "./User/UserLogin";
 import UserPasswordReset from "./User/PasswordReset";
 import UserAccountVerify from "./User/AccountVerify";
 import CompanyProfile from "./User/CompanyProfile";
+import FAQPage from "./User/FAQPage";
 
 import SearchJobs from "./Jobs/SearchJobs";
 import JobDetails from "./Jobs/JobDetails";
@@ -30,6 +31,7 @@ export {
     UserLogin,
     SearchJobs,
     CompanyProfile,
+    FAQPage,
     JobDetails,
     AdminLayout,
     CompanyLogin,

@@ -1,4 +1,4 @@
-import  { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import App from "../App";
@@ -37,7 +37,8 @@ import {
     Users,
     Companies,
     UserDetails,
-    CompanyDetails
+    CompanyDetails,
+    FAQPage,
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
@@ -55,11 +56,15 @@ function Router() {
     const { isAuthenticated, user } = useSelector((state) => state.Auth);
     const dispatch = useDispatch();
 
-    const { data, isLoading, isSuccess,isFetching } = useGetUserQuery(undefined, {
-        refetchOnMountOrArgChange: true,
-    });
-    const { data: companyData, isLoading: companyIsLoading } = useGetCompanyQuery();
-    const { data: adminData,isFetching:isAdminFetching} = useGetAdminQuery()
+    const { data, isLoading, isSuccess, isFetching } = useGetUserQuery(
+        undefined,
+        {
+            refetchOnMountOrArgChange: true,
+        }
+    );
+    const { data: companyData, isLoading: companyIsLoading } =
+        useGetCompanyQuery();
+    const { data: adminData, isFetching: isAdminFetching } = useGetAdminQuery();
 
     console.log(adminData);
     useEffect(() => {
@@ -72,30 +77,27 @@ function Router() {
         } else if (!user && companyData) {
             console.log("inside admin");
             dispatch(setUser(companyData));
-        }
-        else if(!user && adminData && !isAdminFetching){
+        } else if (!user && adminData && !isAdminFetching) {
             dispatch(setUser(adminData.data));
         }
-    }, [data, user, companyData, isSuccess,adminData]);
+    }, [data, user, companyData, isSuccess, adminData]);
 
-    
-    
     if (isLoading || companyIsLoading || isAdminFetching)
         return (
-    <Box
-    sx={{
-        display: "flex",
-        width: "100vw",
-        height: "100vh",
-        justifyContent: "center",
-        alignItems: "center",
-    }}
-    >
+            <Box
+                sx={{
+                    display: "flex",
+                    width: "100vw",
+                    height: "100vh",
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <CircularProgress className="w-12 h-12 md:w-48 md:h-48" />
             </Box>
         );
-        
-        console.log(user)
+
+    console.log(user);
     const router = createBrowserRouter([
         {
             path: "/",
@@ -120,6 +122,10 @@ function Router() {
                             element: <Profile />,
                         },
                         {
+                            path: "faq-questions",
+                            element: <FAQPage />,
+                        },
+                        {
                             path: "wishlist",
                             element: <WishList />,
                         },
@@ -133,10 +139,7 @@ function Router() {
                         },
                         {
                             path: "jobs",
-                            element: (
-                                    <SearchJobs />
-                             
-                            ),
+                            element: <SearchJobs />,
                         },
                         {
                             path: "job/:jobId",

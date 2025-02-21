@@ -31,7 +31,7 @@ function NavigationLinks({ setIsActive }) {
     };
     return (
         <>
-            <div className="h-full w-full pt-20 px-20 md:pt-36 md:text-4xl flex flex-col text-2xl gap-7 md:gap-10 font-semibold font-Abel">
+            <div className="h-full w-full pt-20 px-20 md:text-4xl flex flex-col text-2xl gap-7 md:gap-10 font-semibold font-Abel">
                 {NavLinks.map((link, index) => (
                     <div
                         key={index}

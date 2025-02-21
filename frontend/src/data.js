@@ -1,17 +1,21 @@
-export const NavLinks=[
+export const NavLinks = [
     {
-        label: 'Home',
-        href: '/user',
+        label: "Home",
+        href: "/user",
     },
     {
-        label: 'Jobs',
-        href: '/user/jobs',
+        label: "Jobs",
+        href: "/user/jobs",
     },
     {
-        label: 'Profile',
-        href: '/user/profile',
-    }
-]
+        label: "Profile",
+        href: "/user/profile",
+    },
+    {
+        label: "FAQ",
+        href: "/user/faq-questions",
+    },
+];
 
 export const formatTime = (time) => {
     console.log(time)

@@ -84,14 +84,14 @@ function NavBar() {
             return {
                 open: {
                     width: 320,
-                    height: 450,
+                    height: 350,
                     top: "5px",
                     right: "15px",
                     transition: "all 0.75s cubic-bezier(0.76,0,0.24,1)",
                 },
                 close: {
-                    width: 0,
-                    height: 0,
+                    width: 20,
+                    height: 20,
                     top: "20px",
                     right: "24px",
                     transition: {
@@ -107,15 +107,15 @@ function NavBar() {
             return {
                 open: {
                     width: 320,
-                    height: 500,
+                    height: 400,
                     top: "5px",
                     right: "50px",
                     transition: "all 0.75s cubic-bezier(0.76,0,0.24,1)",
                     // opacity: 1,
                 },
                 close: {
-                    width: 0,
-                    height: 0,
+                    width: 20,
+                    height: 20,
                     top: "16px",
                     right: "64px",
                     // opacity: 0,
@@ -131,17 +131,17 @@ function NavBar() {
             return {
                 open: {
                     width: 420,
-                    height: 600,
+                    height: 450,
                     top: "5px",
                     right: "50px",
                     // opacity: 1,
                     transition: "all 0.75s cubic-bezier(0.76,0,0.24,1)",
                 },
                 close: {
-                    width: 0,
-                    height: 0,
-                    top: "20px",
-                    right: "66px",
+                    width: 60,
+                    height: 20,
+                    top: "22px",
+                    right: "72px",
                     // opacity: 0,
                     transition: {
                         duration: 0.75,

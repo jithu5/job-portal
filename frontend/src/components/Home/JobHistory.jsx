@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { removeAppliedJobs, setAppliedJobs } from "../../Store/Auth";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 function UserJobHistory() {
     // Sample job history data
@@ -14,6 +15,7 @@ function UserJobHistory() {
     const { data: data, isFetching } = useGetAppliedJobQuery();
     const [cancelAppliedJob] = useCancelAppliedJobMutation();
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const { appliedJobs } = useSelector((state) => state.Auth);
 
@@ -47,11 +49,6 @@ function UserJobHistory() {
         <div className="w-full p-4 min-h-screen">
             <h1 className="text-xl font-bold mb-4 text-center">Job History</h1>
             <div className="flex flex-col gap-4">
-                {appliedJobs.length === 0 && !isFetching && (
-                    <p className="tet-md sm:text-lg md:text-xl font-semibold text-center my-10">
-                        No Jobs you have applied
-                    </p>
-                )}
                 {isFetching && (
                     <div className="w-full flex justify-center mt-10">
                         <Loader2 className="w-8 h-8 animate-spin mt-10" />
@@ -105,9 +102,12 @@ function UserJobHistory() {
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-600">
-                        You haven’t applied to any jobs yet.
+                    <div className="min-h-[60vh] md:min-h-[45vh] w-full flex justify-center items-center flex-col gap-10">
+                    <p className="text-stone-800 text-md md:text-xl font-semibold text-center">
+                        You haven't applied to any jobs yet.
                     </p>
+                    <button onClick={()=>navigate('/user/jobs')} className="bg-third py-1.5 px-3 font-semibold text-md md:text-xl text-white rounded-lg mx-auto hover:bg-purple-600">APPLY FOR JOB</button>
+                    </div>
                 )}
             </div>
         </div>

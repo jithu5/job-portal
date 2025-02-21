@@ -35,7 +35,14 @@ function WishList() {
                     My Wish List
                 </h1>
                 <div className="flex flex-col gap-4">
-                    {wishlist.map((job) => (
+                    {
+                        wishlist.length === 0 && (
+                            <p className="tet-md sm:text-lg md:text-xl font-semibold text-center my-10">
+                                No jobs in your wish list
+                            </p>
+                        )
+                    }
+                    {wishlist.length >0 && wishlist.map((job) => (
                         <div
                             key={job._id}
                             className="border rounded-lg p-4 shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center justify-between px-3 md:px-10 bg-white"
