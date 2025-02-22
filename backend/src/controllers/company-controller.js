@@ -34,7 +34,7 @@ const CRegister = asyncHandler(async (req, res) => {
         });
 
         if (ExistingC && ExistingC.isAccountVerified) {
-            throw new ApiError(400, "User already exists");
+            throw new ApiError(400, "Company already exists");
         }
         //check company verified or not verified
         if (ExistingC && !ExistingC.isAccountVerified) {
@@ -300,7 +300,8 @@ const PostJob = asyncHandler(async (req, res) => {
         district,
         salary,
         date,
-        time,
+        startTime,
+        endTime,
         workersCount,
     } = req.body;
     const companyId = req.company;
@@ -310,7 +311,8 @@ const PostJob = asyncHandler(async (req, res) => {
         !description ||
         !location ||
         !district ||
-        !time ||
+        !startTime ||
+        !endTime ||
         !salary ||
         !date ||
         !workersCount
@@ -331,7 +333,8 @@ const PostJob = asyncHandler(async (req, res) => {
             district,
             salary,
             date,
-            time,
+            startTime,
+            endTime,
             workersCount,
             workersNeeded: workersCount,
         });
@@ -776,7 +779,8 @@ const EditJob = asyncHandler(async (req, res) => {
         district,
         salary,
         date,
-        time,
+        startTime,
+        endTime,
         workersCount,
     } = req.body;
     if (!jobId) {
@@ -796,7 +800,8 @@ const EditJob = asyncHandler(async (req, res) => {
                 district: district,
                 salary: salary,
                 date: date,
-                time: time,
+                startTime: startTime,
+                endTime: endTime,
                 workersCount: workersCount,
             },
             { new: true }
