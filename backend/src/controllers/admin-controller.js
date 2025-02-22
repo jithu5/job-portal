@@ -9,6 +9,7 @@ const applicantmodel = require("../models/applicants.js");
 const wishlistmodel = require("../models/wishlist.js");
 const blocklistmodel = require("../models/blocklist.js");
 const { default: mongoose } = require("mongoose");
+const sendMail = require("../utils/sendEmail.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const crypto = require("crypto");
 

@@ -730,7 +730,7 @@ const Logout = asyncHandler(async (req, res) => {
 //edit profile
 const EditProfile = asyncHandler(async (req, res) => {
     const companyId = req.company;
-    const { address, phone } = req.body;
+    const { companyName,address, phone } = req.body;
     if (!companyId) {
         throw new ApiError(400, "Company id is required");
     }
@@ -742,6 +742,7 @@ const EditProfile = asyncHandler(async (req, res) => {
         const updatedCompany = await companymodel.findOneAndUpdate(
             { _id: companyId },
             {
+                companyName: companyName || company.companyName,
                 address: address || company.address,
                 phone: phone || company.phone,
             },
