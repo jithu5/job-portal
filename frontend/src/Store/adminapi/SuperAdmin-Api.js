@@ -76,7 +76,7 @@ const AdminApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            // invalidatesTags: ["User"],
+            invalidatesTags: ["User"],
         }),
         userDetails: builder.query({
             query: (userId) => ({
@@ -98,7 +98,7 @@ const AdminApi = createApi({
                 method: "POST",
             }),
             transformResponse: (response) => response,
-            // invalidatesTags: ["Company"],
+            invalidatesTags: ["Company"],
         }),
         companyDetails: builder.query({
             query: (companyId) => ({

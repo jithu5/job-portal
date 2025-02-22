@@ -107,6 +107,17 @@ const CompanyApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Company", "Job"],
         }),
+        editProfile: builder.mutation({
+            query: (data) => ({
+                url: "edit-profile",
+                method: "POST",
+                body: JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }),
+            transformResponse: (response) => response,
+        }),
         postJob: builder.mutation({
             query: (data) => ({
                 url: "postjob",
@@ -199,6 +210,7 @@ export const {
     useGetCompanyQuery,
     useRegisterAdminMutation,
     useCheckCompanyNameUniqueMutation,
+    useEditProfileMutation,
     useLoginAdminMutation,
     useSendOtpMutation,
     useVerifyEmailMutation,

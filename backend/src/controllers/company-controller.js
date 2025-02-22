@@ -743,8 +743,8 @@ const EditProfile = asyncHandler(async (req, res) => {
             { _id: companyId },
             {
                 companyName: companyName || company.companyName,
-                address: address || company.address,
-                phone: phone || company.phone,
+                address: address,
+                phone: phone,
             },
             { new: true }
         );

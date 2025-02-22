@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import {
     useCheckCompanyNameUniqueMutation,
     useGetCompanyQuery,
+    useEditProfileMutation
 } from "../../Store/AdminAuth/AdminAuth-Api";
 import { Loader2 } from "lucide-react";
 import useDebounceCallback from "../../hooks/useDebouncedCallback";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { setUser } from "../../Store/Auth";
 
 const initialState = {
     phone: "",
@@ -20,6 +24,8 @@ function EditAdminProfile() {
 
     const { data, isFetching } = useGetCompanyQuery();
     const [checkCompanyNameUnique] = useCheckCompanyNameUniqueMutation();
+    const [editProfile] = useEditProfileMutation();
+    const dispatch = useDispatch()
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -76,12 +82,22 @@ function EditAdminProfile() {
         debounced(value);
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         // Do something with the updated user data
         console.log(input);
-
-        // api call
+        try {
+            const response = await editProfile(input).unwrap();
+            if (!response.success) {
+                return
+            }
+            toast.success(response.message);
+            dispatch(setUser(response?.data))
+        } catch (error) {
+            const errMessage = error?.data?.message || "Error i updating profile."
+            toast.error(errMessage);
+        }
+       
     }
 
     if (isFetching) {
@@ -147,6 +163,7 @@ function EditAdminProfile() {
                                     name="phone"
                                     value={input.phone}
                                     onChange={handleChange}
+                                    required
                                     className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your phone number"
                                 />
@@ -161,6 +178,7 @@ function EditAdminProfile() {
                                     name="address"
                                     value={input.address}
                                     onChange={handleChange}
+                                    required
                                     className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your address"
                                 />
