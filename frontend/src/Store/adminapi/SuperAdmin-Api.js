@@ -43,9 +43,39 @@ const AdminApi = createApi({
             transformResponse: (response) => response,
             providesTags: ["User"],
         }),
+        deleteUser: builder.mutation({
+            query: (userId) => ({
+                url: `deleteuser/${userId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            // invalidatesTags: ["User"],
+        }),
+        userDetails: builder.query({
+            query: (userId) => ({
+                url: `view-user/${userId}`,
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["User"],
+        }),
         getCompany: builder.query({
             query: () => ({
                 url: "getcompany",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["Company"],
+        }),
+        deleteCompany: builder.mutation({
+            query: (companyId) => ({
+                url: `deletecompany/${companyId}`,
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            // invalidatesTags: ["Company"],
+        }),
+        companyDetails: builder.query({
+            query: (companyId) => ({
+                url: `view-company/${companyId}`,
             }),
             transformResponse: (response) => response,
             providesTags: ["Company"],
@@ -59,7 +89,11 @@ export const {
     useGetAdminQuery,
     useLogoutMutation,
     useGetUsersQuery,
+    useUserDetailsQuery,
     useGetCompanyQuery,
+    useDeleteUserMutation,
+    useDeleteCompanyMutation,
+    useCompanyDetailsQuery
 } = AdminApi;
 
 export default AdminApi;

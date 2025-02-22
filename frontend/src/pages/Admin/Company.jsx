@@ -3,59 +3,32 @@ import { Button } from "@mui/material";
 import { Card } from "@mui/material";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { useGetCompanyQuery } from "../../Store/adminapi/SuperAdmin-Api";
-
-const initialCompanies = [
-    {
-        id: 1,
-        name: "Tech Corp",
-        email: "contact@techcorp.com",
-        phone: "123-456-7890",
-        jobsPosted: 10,
-        activeJobs: 5,
-    },
-    {
-        id: 2,
-        name: "Innovate Ltd",
-        email: "info@innovate.com",
-        phone: "987-654-3210",
-        jobsPosted: 7,
-        activeJobs: 3,
-    },
-    {
-        id: 3,
-        name: "Future Solutions",
-        email: "hr@futuresolutions.com",
-        phone: "456-789-0123",
-        jobsPosted: 12,
-        activeJobs: 8,
-    },
-];
+import {
+    useDeleteCompanyMutation,
+    useGetCompanyQuery,
+} from "../../Store/adminapi/SuperAdmin-Api";
+import { useNavigate } from "react-router-dom";
 
 export default function Companies() {
-    const [companies, setCompanies] = useState(initialCompanies);
-    const {data,isFetching} = useGetCompanyQuery()
+    const [companies, setCompanies] = useState([]);
+    const { data, isFetching } = useGetCompanyQuery();
+    const [deleteCompany] = useDeleteCompanyMutation();
+    const navigate = useNavigate()
 
     useEffect(() => {
-      if (data?.data && !isFetching) {
-        console.log(data.data)
-      }
-    }, [data])
-    
+        if (data?.data && !isFetching) {
+            console.log(data.data);
+            setCompanies(data.data);
+        }
+    }, [data]);
 
     const handleDeleteCompany = (id) => {
-        toast.info(
+        toast(
             <div>
                 <p>Are you sure you want to delete this company?</p>
                 <div className="flex justify-end gap-2 mt-2">
                     <button
-                        onClick={() => {
-                            setCompanies(
-                                companies.filter((company) => company.id !== id)
-                            );
-                            toast.dismiss();
-                            toast.success("Company deleted successfully!");
-                        }}
+                        onClick={() => deleteCompanyFn(id)}
                         className="bg-red-500 text-white px-3 py-1 rounded"
                     >
                         Yes
@@ -78,9 +51,28 @@ export default function Companies() {
         );
     };
 
+    async function deleteCompanyFn(id) {
+        try {
+            const response = await deleteCompany(id).unwrap();
+            if (!response.success) {
+                return;
+            }
+            setCompanies((prevCompany) =>
+                prevCompany.filter((comp) => comp._id !== id)
+            );
+        } catch (error) {
+            const errMessage =
+                error?.data?.message || "Error in deleting Company";
+            toast.error(errMessage);
+        }
+        toast.dismiss();
+    }
+
     return (
         <div className="p-6 font-Abel">
-            <h1 className="text-2xl font-bold mb-4 text-secondary">Companies</h1>
+            <h1 className="text-2xl font-bold mb-4 text-secondary">
+                Companies
+            </h1>
             <Card className="p-4">
                 <table className="w-full border-collapse border border-gray-300">
                     <thead>
@@ -96,23 +88,38 @@ export default function Companies() {
                     </thead>
                     <tbody>
                         {companies.map((company) => (
-                            <tr key={company.id} className="border font-semibold">
-                                <td className="p-2">{company.name}</td>
+                            <tr
+                                key={company._id}
+                                className="border font-semibold"
+                            >
+                                <td className="p-2">{company.companyName}</td>
                                 <td className="p-2">{company.email}</td>
                                 <td className="p-2">{company.phone}</td>
                                 <td className="p-2 text-center">
-                                    {company.jobsPosted}
+                                    {company.NoOfjobs}
                                 </td>
                                 <td className="p-2 text-center">
-                                    {company.activeJobs}
+                                    {company.NoOfactivejobs}
                                 </td>
                                 <td className="p-2">
                                     <Button
-                                        variant="destructive"
-                                        className="p-2"
-                                        
+                                        variant="contained"
+                                        sx={{
+                                            paddingX: "9px",
+                                            paddingY: "5px",
+                                            backgroundColor: "#44403C",
+                                            fontSize: "12px",
+                                            "&:hover": {
+                                                backgroundColor: "#1C1917",
+                                            },
+                                        }}
+                                        onClick={() =>
+                                            navigate(
+                                                `/admin/dashboard/company/${company._id}`
+                                            )
+                                        }
                                     >
-                                        VIEW
+                                        VIEW Details
                                     </Button>
                                 </td>
                                 <td className="p-2">
@@ -120,7 +127,7 @@ export default function Companies() {
                                         variant="destructive"
                                         className="p-2"
                                         onClick={() =>
-                                            handleDeleteCompany(company.id)
+                                            handleDeleteCompany(company._id)
                                         }
                                     >
                                         <Trash2 className="h-4 w-4" />

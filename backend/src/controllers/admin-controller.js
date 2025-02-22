@@ -335,17 +335,15 @@ const ViewCompany = asyncHandler(async (req, res) => {
         if (!jobs) {
             throw new ApiError(404, "No posted jobs found");
         }
-        const NoOfjobs = await jobs.length;
-        const NoOfactivejobs = await jobs.filter(
+        const noOfJobs = await jobs.length;
+        const noOfActiveJobs = await jobs.filter(
             (job) => job.status === "Active"
         ).length;
-        console.log("NoOfActive", NoOfactivejobs);
-        console.log(NoOfjobs);
 
         return res.json(
             new ApiResponse(
                 200,
-                { company, NoOfactivejobs, NoOfjobs, jobs },
+                { company, noOfActiveJobs, noOfJobs, jobs },
                 "Company fetched successfully"
             )
         );

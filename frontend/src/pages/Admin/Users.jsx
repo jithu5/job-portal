@@ -3,39 +3,17 @@ import { Button } from "@mui/material";
 import { Card } from "@mui/material";
 import { Loader2, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { useGetUsersQuery } from "../../Store/adminapi/SuperAdmin-Api";
-
-const initialUsers = [
-    {
-        id: 1,
-        name: "John Doe",
-        email: "john@example.com",
-        phone: "123-456-7890",
-        jobsApplied: 5,
-    },
-    {
-        id: 2,
-        name: "Jane Smith",
-        email: "jane@example.com",
-        phone: "987-654-3210",
-        jobsApplied: 3,
-    },
-    {
-        id: 3,
-        name: "Alice Johnson",
-        email: "alice@example.com",
-        phone: "456-789-0123",
-        jobsApplied: 7,
-    },
-];
+import { useDeleteUserMutation, useGetUsersQuery } from "../../Store/adminapi/SuperAdmin-Api";
+import { useNavigate } from "react-router-dom";
 
 export default function Users() {
     const [users, setUsers] = useState([]);
     const { data, isFetching } = useGetUsersQuery();
+    const [ deleteUser] = useDeleteUserMutation()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (data?.data && !isFetching) {
-            console.log(data?.data);
             setUsers(data.data);
         }
     }, [data]);
@@ -46,7 +24,7 @@ export default function Users() {
                 <p>Are you sure you want to delete this user?</p>
                 <div className="flex justify-end gap-2 mt-2">
                     <button
-                        onClick={deleteUser}
+                        onClick={()=>deleteUserFn(id)}
                         className="bg-red-500 text-white px-3 py-1 rounded"
                     >
                         Yes
@@ -70,10 +48,20 @@ export default function Users() {
         );
     };
 
-    async function deleteUser() {
-        setUsers(users.filter((user) => user.id !== id));
-        toast.dismiss();
-        toast.success("User deleted successfully!");
+    async function deleteUserFn(id) {
+        try {
+            const response = await deleteUser(id).unwrap()
+            console.log(response);
+            if (!response.success) {
+                return;
+            }
+            setUsers(users.filter((user) => user._id !== id));
+            toast.dismiss();
+            toast.success(response.message);
+        }  catch (error) {
+            const errMessage = error?.data?.message || "Error in deleting User"
+            toast.error(errMessage);
+        }
     }
 
     if (isFetching) {
@@ -100,7 +88,8 @@ export default function Users() {
                                 <th className="border p-2">Name</th>
                                 <th className="border p-2">Email</th>
                                 <th className="border p-2">Phone</th>
-                                {/* <th className="border p-2">Jobs Applied</th> */}
+                                <th className="border p-2">Jobs Applied</th>
+                                <th className="border p-2">View Details</th>
                                 <th className="border p-2">Actions</th>
                             </tr>
                         </thead>
@@ -113,9 +102,26 @@ export default function Users() {
                                     <td className="p-2">{user.name}</td>
                                     <td className="p-2">{user.email}</td>
                                     <td className="p-2">{user.phone}</td>
-                                    {/* <td className="p-2 text-center">
-                                    {user.jobsApplied}
-                                </td> */}
+                                    <td className="p-2 text-center">
+                                        {user.noOfappliedjobs}
+                                    </td>
+                                    <td className="p-2 text-center">
+                                        <Button
+                                            variant="contained"
+                                            sx={{
+                                                paddingX: "9px",
+                                                paddingY: "5px",
+                                                backgroundColor: "#44403C",
+                                                fontSize: "12px",
+                                                "&:hover": {
+                                                    backgroundColor: "#1C1917",
+                                                },
+                                            }}
+                                            onClick={()=>navigate(`/admin/dashboard/user/${user._id}`)}
+                                        >
+                                            View Details
+                                        </Button>
+                                    </td>
                                     <td className="p-2">
                                         <Button
                                             variant="destructive"

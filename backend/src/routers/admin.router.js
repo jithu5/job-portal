@@ -20,9 +20,9 @@ AdminRouter.get('/getusers',ProtectAdminMiddleware, GetUsers);
 
 AdminRouter.get('/getcompany',ProtectAdminMiddleware, GetCompany);
 
-AdminRouter.post('/view-user/:userId',ProtectAdminMiddleware, ViewUser);
+AdminRouter.get('/view-user/:userId',ProtectAdminMiddleware, ViewUser);
 
-AdminRouter.post('/view-company/:companyId',ProtectAdminMiddleware, ViewCompany);
+AdminRouter.get('/view-company/:companyId',ProtectAdminMiddleware, ViewCompany);
 
 AdminRouter.post('/deleteuser/:userId',ProtectAdminMiddleware, DeleteUser);
 
