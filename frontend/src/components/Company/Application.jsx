@@ -203,7 +203,7 @@ function AdminApplication() {
                                         <span className="font-semibold">
                                             Time:
                                         </span>{" "}
-                                        {formatTime(job.startTime) - formatTime(job.endTime)}
+                                        {formatTime(job.startTime)} - {formatTime(job.endTime)}
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
