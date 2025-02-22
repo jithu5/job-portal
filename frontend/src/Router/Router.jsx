@@ -26,7 +26,7 @@ import {
     AdminLogin,
     AdminRegister,
     AdminAccountVerify,
-    AdminPasswordReset,
+    CompanyPasswordReset,
     UserPasswordReset,
     UserAccountVerify,
     CompanyProfile,
@@ -39,6 +39,7 @@ import {
     UserDetails,
     CompanyDetails,
     FAQPage,
+    AdminPasswordReset,
 } from "../pages/index";
 import { useGetUserQuery } from "../Store/Auth/Auth-Api";
 import { setUser } from "../Store/Auth";
@@ -221,7 +222,7 @@ function Router() {
                         },
                         {
                             path: "reset-password",
-                            element: <AdminPasswordReset />,
+                            element: <CompanyPasswordReset />,
                         },
                     ],
                 },
@@ -229,6 +230,10 @@ function Router() {
                 {
                     path: "api/admin/login",
                     element: <AdminLogin />,
+                },
+                {
+                    path: "api/admin/password-reset",
+                    element: <AdminPasswordReset />,
                 },
                 {
                     path: "admin/dashboard",

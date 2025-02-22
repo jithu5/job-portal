@@ -14,7 +14,7 @@ import AdminLayout from "./Company/AdminLayout";
 import CompanyLogin from "./Company/Login";
 import AdminRegister from "./Company/Register";
 import AdminAccountVerify from "./Company/AccountVerify";
-import AdminPasswordReset from "./Company/PasswordReset";
+import CompanyPasswordReset from "./Company/PasswordReset"
 
 import AdminLogin from "./Admin/Login";
 import Layout from "./Admin/Layout";
@@ -23,6 +23,7 @@ import Users from "./Admin/Users";
 import Companies from "./Admin/Company";
 import UserDetails from "./Admin/UserDetails";
 import CompanyDetails from "./Admin/CompanyDetails";
+import AdminPasswordReset from "./Admin/PasswordReset";
 
 export {
     Home,
@@ -37,7 +38,7 @@ export {
     CompanyLogin,
     AdminRegister,
     AdminAccountVerify,
-    AdminPasswordReset,
+    CompanyPasswordReset,
     UserAccountVerify,
     UserPasswordReset,
     AdminLogin,
@@ -46,5 +47,6 @@ export {
     Users,
     Companies,
     UserDetails,
-    CompanyDetails
+    CompanyDetails,
+    AdminPasswordReset
 };

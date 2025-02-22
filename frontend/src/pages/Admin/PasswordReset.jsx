@@ -3,20 +3,22 @@ import { PasswordReset } from "../../components/index";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import {
-    useResetPasswordOtpMutation,
-    useVerifyResetOtpMutation,
-    useUpdatePasswordMutation,
-} from "../../Store/AdminAuth/AdminAuth-Api";
-import { setUser } from "../../Store/Auth";
 
-function CompanyPasswordReset() {
+import { setUser } from "../../Store/Auth";
+import {
+    useSendOtpMutation,
+    useVerifyOtpMutation,
+    useUpdatePasswordMutation,
+} from "../../Store/adminapi/SuperAdmin-Api";
+import { toast } from "react-toastify";
+
+function AdminPasswordReset() {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
-    const [currentEmail, setCurrentEmail] = useState('')
+    const [currentEmail, setCurrentEmail] = useState("");
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [resetPasswordOtp] = useResetPasswordOtpMutation();
-    const [verifyResetOtp] = useVerifyResetOtpMutation();
+    const [sendOtp] = useSendOtpMutation()
+    const [verifyOtp] = useVerifyOtpMutation();
     const [updatePassword] = useUpdatePasswordMutation();
 
     const steps = ["Enter Email", "Verify OTP", "Reset Password"];
@@ -42,23 +44,20 @@ function CompanyPasswordReset() {
             setError("email", { message: "Please enter a valid email." });
             return;
         }
-        console.log(data.email)
         try {
-            const response = await resetPasswordOtp(data)
+            const response = await sendOtp({ email: data.email });
             console.log(response);
-            if (!response.data.success) {
-                throw new Error(response.data.message);
+            if (!response.data?.success) {
+                console.log(response.data.message);
             }
-            console.log(response.data.message);
-            setCurrentEmail(data.email)
+            toast.success("OTP sent successfully.")
             setInputStatus("otp");
+            setCurrentEmail(data.email);
             resetField("email");
-
         } catch (error) {
-            console.log(error.message);
-            
+            const errMessage = error?.data?.message || "Error sending otp"
+            toast.error(errMessage)
         }
-     
     };
 
     const handleOtpSubmit = async (data) => {
@@ -69,19 +68,20 @@ function CompanyPasswordReset() {
             return;
         }
         try {
-            console.log(currentEmail);
-            console.log(data.otp)
-            const response = await verifyResetOtp({email:currentEmail , otp: data.otp});
+            const response = await verifyOtp({
+                email: currentEmail,
+                otp: data.otp,
+            });
             console.log(response);
             if (!response.data?.success) {
-                throw new Error(response.data);
+                console.log(response.data?.message);
             }
             console.log(response.data.message);
             setInputStatus("password");
             resetField("otp");
         } catch (error) {
-            console.log(error);
-            
+            const errMessage = error?.data?.message || "Error verifying otp"
+            toast.error(errMessage)
         }
     };
 
@@ -93,18 +93,21 @@ function CompanyPasswordReset() {
             return;
         }
         try {
-            const response = await updatePassword({email:currentEmail, newPassword:data.password});
+            const response = await updatePassword({
+                email: currentEmail,
+                newPassword: data.password,
+            });
             console.log(response);
             if (!response.data?.success) {
-                throw new Error(response.data);
+                console.log(response.data?.message);
             }
             console.log(response.data.message);
-            alert(response.data.message);
-            dispatch(setUser(response.data.data))
-            navigate("/company/dashboard");
+            dispatch(setUser(response.data.data));
+
             resetField("password");
+            navigate("/admin/dashboard");
         } catch (error) {
-            console.log(error.message);
+            console.log(error?.message);
         }
     };
 
@@ -124,4 +127,4 @@ function CompanyPasswordReset() {
     );
 }
 
-export default CompanyPasswordReset;
+export default AdminPasswordReset;

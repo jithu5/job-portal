@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setUser } from "../../Store/Auth";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function AdminLogin() {
     const [login] = useLoginMutation()
@@ -99,6 +100,16 @@ function AdminLogin() {
                     >
                         Login
                     </button>
+                    <h2 className="mt-5 mb-2 text-center text-white font-semibold text-md md:text-lg">
+                        Forgot Password? click{" "}
+                        <Link
+                            to={"/api/admin/password-reset"}
+                            className="underline text-third hover:text-purple-800"
+                        >
+                            here
+                        </Link>{" "}
+                        to reset
+                    </h2>
                 </form>
             </div>
         </div>

@@ -28,6 +28,33 @@ const AdminApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["admin", "Company", "User"],
         }),
+        sendOtp: builder.mutation({
+            query: (data) => ({
+                url: "sendresetpassword-otp",
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"],
+        }),
+        verifyOtp: builder.mutation({
+            query: (data) => ({
+                url: "verifyresetotp",
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"],
+        }),
+        updatePassword: builder.mutation({
+            query: (data) => ({
+                url: "updatepassword",
+                method: "POST",
+                body: data,
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User", "Job"],
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: "logout",
@@ -86,6 +113,9 @@ const AdminApi = createApi({
 
 export const {
     useLoginMutation,
+    useSendOtpMutation,
+    useVerifyOtpMutation,
+    useUpdatePasswordMutation,
     useGetAdminQuery,
     useLogoutMutation,
     useGetUsersQuery,

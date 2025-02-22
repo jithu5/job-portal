@@ -8,7 +8,7 @@ AdminRouter.post('/register', Register);
 
 AdminRouter.post('/login', Login);
 
-AdminRouter.post('/sendresetpassword',SendResetOtp);
+AdminRouter.post('/sendresetpassword-otp',SendResetOtp);
 
 AdminRouter.post('/verifyresetotp',VerifyResetOtp);
 
