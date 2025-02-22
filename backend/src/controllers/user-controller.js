@@ -607,7 +607,6 @@ const AppliedJobs = asyncHandler(async (req, res) => {
     }
 });
 
-
 //send otp
 const Sendotp = asyncHandler(async (req, res) => {
     const { email } = req.body;
@@ -771,7 +770,6 @@ const UpdatePassword = asyncHandler(async (req, res) => {
         throw new ApiError(error.statusCode, error.message);
     }
 });
-
 
 //update profile and cover image
 const updateProfileAndCover = asyncHandler(async (req, res) => {
