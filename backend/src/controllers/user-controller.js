@@ -7,6 +7,7 @@ const applicantmodel = require("../models/applicants.js");
 const companymodel = require("../models/company.js");
 const jobmodel = require("../models/jobs.js");
 const wishlistmodel = require("../models/wishlist.js");
+const blocklistmodel = require("../models/blocklist.js");
 const crypto = require("crypto");
 const fs = require("fs");
 const sendMail = require("../utils/sendEmail.js");
@@ -53,6 +54,11 @@ const UserRegister = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
+        //check the user blocked or not 
+        const blocked = await blocklistmodel.findOne({blockedEmail:email});
+        if(blocked){
+            throw new ApiError(403, 'User is blocked');
+        }
         //check if username already exists
         const ExistingUser = await usermodel.findOne({
             $or: [{ username: username }, { email: email }],

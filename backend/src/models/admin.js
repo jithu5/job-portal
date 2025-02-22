@@ -25,6 +25,14 @@ const AdminSchema = mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        resetPasswordOTP: {
+            type: Number,
+            default: null,
+        },
+        resetPasswordOTPValidDate: {
+            type: Date,
+            default: null,
+        },
     },
     {
         timestamps: true,
