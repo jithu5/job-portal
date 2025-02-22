@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { useCheckCompanyNameUniqueMutation, useRegisterAdminMutation } from "../../Store/AdminAuth/AdminAuth-Api";
+import {
+    useCheckCompanyNameUniqueMutation,
+    useRegisterAdminMutation,
+} from "../../Store/AdminAuth/AdminAuth-Api";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Store/Auth";
 import { toast } from "react-toastify";
 import useDebounceCallback from "../../hooks/useDebouncedCallback";
 
 function AdminRegister() {
-    const [companyName, setCompanyName] = useState('')
-    const [isCompanyNameUnique, setIsCompanyNameUnique] = useState('')
+    const [companyName, setCompanyName] = useState("");
+    const [isCompanyNameUnique, setIsCompanyNameUnique] = useState("");
     const [isChecking, setisChecking] = useState(false);
     const {
         register,
@@ -17,61 +20,66 @@ function AdminRegister() {
         setValue,
         formState: { errors, isSubmitting },
     } = useForm();
-    const [ registerAdmin ] = useRegisterAdminMutation();
-    const [checkCompanyNameUnique] = useCheckCompanyNameUniqueMutation()
-    const dispatch = useDispatch()
+    const [registerAdmin] = useRegisterAdminMutation();
+    const [checkCompanyNameUnique] = useCheckCompanyNameUniqueMutation();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const debounced = useDebounceCallback(setCompanyName, 1000);
 
-     useEffect(() => {
-            setIsCompanyNameUnique("");
-            setisChecking(false);
-            async function checkCompanyNameUniqueFn() {
-                if (username.length >= 5) {
-                    setisChecking(true);
-                    try {
-                        const response = await checkCompanyNameUnique(companyName).unwrap();
-                        console.log(response?.message);
-                        if (response.success) {
-                            setCheckUsernameMessage(response.message);
-                        } else {
-                            setCheckUsernameMessage(response.message);
-                        }
-                    } catch (error) {
-                        const errMessage = error?.data?.message || "Error in checking company name unique"
-                        console.log(errMessage)
-                    } finally {
-                        setisChecking(false);
+    useEffect(() => {
+        setIsCompanyNameUnique("");
+        setisChecking(false);
+        async function checkCompanyNameUniqueFn() {
+            if (username.length >= 5) {
+                setisChecking(true);
+                try {
+                    const response = await checkCompanyNameUnique(
+                        companyName
+                    ).unwrap();
+                    console.log(response?.message);
+                    if (response.success) {
+                        setCheckUsernameMessage(response.message);
+                    } else {
+                        setCheckUsernameMessage(response.message);
                     }
+                } catch (error) {
+                    const errMessage =
+                        error?.data?.message ||
+                        "Error in checking company name unique";
+                    console.log(errMessage);
+                } finally {
+                    setisChecking(false);
                 }
             }
-            checkCompanyNameUniqueFn();
-        }, [companyName]);
+        }
+        checkCompanyNameUniqueFn();
+    }, [companyName]);
 
-     const handleCompanyNameChange = (event) => {
-         const { value } = event.target;
-         setValue("companyName", value); // Update the form state
-         debounced(value); // Debounced update of username
-     };
+    const handleCompanyNameChange = (event) => {
+        const { value } = event.target;
+        setValue("companyName", value); // Update the form state
+        debounced(value); // Debounced update of username
+    };
 
     const onSubmit = async (data) => {
         console.log("Submitting Data:", data);
         try {
-            const response = await registerAdmin(data)
+            const response = await registerAdmin(data);
             console.log(response);
             if (!response.data.success) {
                 toast.error(response.error.data.message);
                 console.log(response.error.data.message);
-        
             }
             console.log(response);
             dispatch(setUser(response.data.data));
             toast.success(response.data.message);
-            navigate("/api/company/verify",{state:{email:response.data.data.email}});
+            navigate("/api/company/verify", {
+                state: { email: response.data.data.email },
+            });
         } catch (error) {
             // toast.error("Error during registration:", error);
-            console.log('hello!', error);
+            console.log("hello!", error);
             console.log(error);
         }
     };
@@ -103,6 +111,14 @@ function AdminRegister() {
                                 errors.companyName ? "border-red-500" : ""
                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400`}
                         />
+                        {isChecking && (
+                            <Loader2 className="inline-block ml-2 w-4 h-4 animate-spin" />
+                        )}
+                        {isCompanyNameUnique && (
+                            <p className="text-blue-600 text-sm mt-1">
+                                {isCompanyNameUnique}
+                            </p>
+                        )}
                         {errors.companyName && (
                             <p className="text-sm text-red-500">
                                 {errors.companyName.message}
@@ -212,6 +228,14 @@ function AdminRegister() {
                                 required: "Phone number is required",
                                 pattern: {
                                     value: /^[0-9]{10}$/,
+                                    message: "Phone number must be 10 digits",
+                                },
+                                minLength: {
+                                    value: 10,
+                                    message: "Phone number must be 10 digits",
+                                },
+                                maxLength: {
+                                    value: 10,
                                     message: "Phone number must be 10 digits",
                                 },
                             })}

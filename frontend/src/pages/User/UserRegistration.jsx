@@ -234,6 +234,14 @@ const UserRegistration = () => {
                                         message:
                                             "Enter a valid 10-digit phone number",
                                     },
+                                    minLength:{
+                                        value: 10,
+                                        message: "Phone number must be 10 digits",
+                                    },
+                                    maxLength:{
+                                        value: 10,
+                                        message: "Phone number must not exceed 10 digits",
+                                    }
                                 })}
                                 className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-purple-500 focus:outline-none"
                                 placeholder="Enter your phone number"

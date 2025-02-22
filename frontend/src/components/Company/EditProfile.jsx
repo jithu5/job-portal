@@ -141,7 +141,7 @@ function EditAdminProfile() {
                                     value={input.companyName}
                                     onChange={handleCompanyNameChange}
                                     className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
-                                    placeholder="Enter your email address"
+                                    placeholder="Enter your company name"
                                 />
                                 {isChecking && (
                                     <Loader2 className="ml-3 w-2 h-2 animate-spin" />

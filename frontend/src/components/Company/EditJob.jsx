@@ -41,7 +41,8 @@ function AdminEditJob() {
             title: "",
             location: "",
             date: "",
-            time: "",
+            startTime: "",
+            endTime: "",
             salary: "",
             description: "",
             workersCount: "",
@@ -55,7 +56,8 @@ function AdminEditJob() {
                 title: job.data.title,
                 location: job.data.location,
                 date: job.data.date ? job.data.date.split("T")[0] : "",
-                time: job.data.time,
+                startTime: job.data.startTime,
+                endTime: job.data.endTime,
                 salary: job.data.salary,
                 description: job.data.description,
                 workersCount: job.data.workersCount,
@@ -69,9 +71,6 @@ function AdminEditJob() {
         try {
             const response = await editJob({ jobId, data }).unwrap();
             console.log(response);
-            // if (!response?.success) {
-            //     return
-            // }
             toast.success("Job updated successfully!");
             navigate(`/company/dashboard/applications`);
         } catch (error) {

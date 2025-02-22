@@ -16,7 +16,6 @@ const formatTime = (time) => {
 function AdminJobDetails() {
     const [jobData, setJobData] = useState('')
     const { jobId } = useParams();
-    const navigate = useNavigate();
     const {data,isFetching,isLoading} = useGetJobDetailsQuery(jobId)
     console.log(jobId)
     useEffect(() => {
@@ -61,7 +60,7 @@ function AdminJobDetails() {
                     })}
                 </p>
                 <p>
-                    <strong>Time of Work:</strong> {formatTime(jobData.time)}
+                    <strong>Time of Work:</strong> {formatTime(jobData.startTime)-formatTime(jobData.endTime)}
                 </p>
                 <p>
                     <strong>Total workers:</strong> {jobData.workersCount}

@@ -117,50 +117,58 @@ function AdminDashboard() {
                 {/* Jobs Overview Section */}
                 <section className="mt-10 px-6">
                     <h2 className="text-2xl font-bold mb-4">Your Jobs</h2>
-                    <div className="grid grid-col-1 md:grid-cols-2 gap-6 my-4">
-                        {dashboardData?.jobs.map((job) => (
-                            <div
-                                key={job.id}
-                                className="bg-white shadow-lg rounded-lg p-6"
-                            >
-                                <h3 className="text-xl font-semibold text-blue-600 uppercase">
-                                    {job.title}
-                                </h3>
-                                <p className="text-gray-600">
-                                    Posted on:{" "}
-                                    {new Date(
-                                        job?.createdAt
-                                    ).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "long",
-                                        day: "numeric",
-                                    })}
-                                </p>
-                                <p className="text-gray-600">
-                                    Total Workers:{" "}
-                                    {job.workersCount}
-                                </p>
-                                <p className="text-gray-600">
-                                    Applications:{" "}
-                                    {job.workersCount - job.workersNeeded}
-                                </p>
-                                <p className="text-gray-600">
-                                    Location: {job.location}, {job.district}
-                                </p>
-                                <p className="text-gray-600">
-                                    Salary: ₹{job.salary}
-                                </p>
-                                <p
-                                    className={`font-bold ${
-                                        job.status === "Active"
-                                            ? "text-green-600"
-                                            : "text-red-600"
-                                    }`}
-                                >
-                                    {job.status}
-                                </p>
+                        {dashboardData?.jobs?.length===0 && (
+                            <div className="w-full min-h-[20vh] flex  gap-10 mt-10 items-center justify-center">
+                                <h1 className="text-md md:text-2xl font-semibold font-BarlowSemiCondensed text-stone-800 leading-tight">
+                                    You haven't posted any jobs yet
+                                </h1>
+                              
                             </div>
-                        ))}
+                        )}
+                    <div className="grid grid-col-1 md:grid-cols-2 gap-6 my-4">
+                        {dashboardData?.jobs.length > 0 &&
+                            dashboardData?.jobs.map((job) => (
+                                <div
+                                    key={job.id}
+                                    className="bg-white shadow-lg rounded-lg p-6"
+                                >
+                                    <h3 className="text-xl font-semibold text-blue-600 uppercase">
+                                        {job.title}
+                                    </h3>
+                                    <p className="text-gray-600">
+                                        Posted on:{" "}
+                                        {new Date(
+                                            job?.createdAt
+                                        ).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric",
+                                        })}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Total Workers: {job.workersCount}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Applications:{" "}
+                                        {job.workersCount - job.workersNeeded}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Location: {job.location}, {job.district}
+                                    </p>
+                                    <p className="text-gray-600">
+                                        Salary: ₹{job.salary}
+                                    </p>
+                                    <p
+                                        className={`font-bold ${
+                                            job.status === "Active"
+                                                ? "text-green-600"
+                                                : "text-red-600"
+                                        }`}
+                                    >
+                                        {job.status}
+                                    </p>
+                                </div>
+                            ))}
                     </div>
                 </section>
             </main>

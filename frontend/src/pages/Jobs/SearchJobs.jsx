@@ -71,7 +71,7 @@ const SearchJobs = () => {
   
         setFilteredJobs(
             allJobs.filter((job) => {
-                const jobTime = convertTo24HourFormat(formatTime(job.time));
+                const jobTime = convertTo24HourFormat(formatTime(job.startTime));
                 const selectedTime = convertTo24HourFormat(filterInput.time);
 
                 return (

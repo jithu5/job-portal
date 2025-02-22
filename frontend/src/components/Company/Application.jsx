@@ -1,6 +1,6 @@
 import { Input } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     useDeleteJobMutation,
     useGetJobsQuery,
@@ -25,6 +25,7 @@ function AdminApplication() {
         refetchOnFocus: true,
     });
     const [deleteJob] = useDeleteJobMutation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         console.log("fetching jobs...");
@@ -33,54 +34,53 @@ function AdminApplication() {
         }
     }, [data]);
 
-const handleDelete = async (jobId) => {
-    toast(
-        <div>
-            <p>Are you sure you want to delete this job?</p>
-            <div className="flex justify-end gap-2 mt-2 px-3 py-1">
-                <button
-                    onClick={async () => {
-                        toast.dismiss();
-                        await confirmDelete(jobId);
-                    }}
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                >
-                    Yes
-                </button>
-                <button
-                    onClick={() => toast.dismiss()}
-                    className="bg-gray-300 px-3 py-1 rounded"
-                >
-                    Cancel
-                </button>
-            </div>
-        </div>,
-        {
-            position: "top-right",
-            autoClose: false,
-            closeOnClick: false,
-            draggable: false,
-            closeButton: false,
-            theme:"dark"
+    const handleDelete = async (jobId) => {
+        toast(
+            <div>
+                <p>Are you sure you want to delete this job?</p>
+                <div className="flex justify-end gap-2 mt-2 px-3 py-1">
+                    <button
+                        onClick={async () => {
+                            toast.dismiss();
+                            await confirmDelete(jobId);
+                        }}
+                        className="bg-red-500 text-white px-3 py-1 rounded"
+                    >
+                        Yes
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss()}
+                        className="bg-gray-300 px-3 py-1 rounded"
+                    >
+                        Cancel
+                    </button>
+                </div>
+            </div>,
+            {
+                position: "top-right",
+                autoClose: false,
+                closeOnClick: false,
+                draggable: false,
+                closeButton: false,
+                theme: "dark",
+            }
+        );
+    };
+
+    // Function to execute delete if confirmed
+    const confirmDelete = async (jobId) => {
+        try {
+            const response = await deleteJob(jobId).unwrap();
+            console.log(response);
+            if (!response.success) return;
+
+            toast.success(response.message);
+            setFilteredJobs(filteredJobs.filter((job) => job._id !== jobId));
+        } catch (error) {
+            const errMessage = error?.data?.message || "Failed to delete job";
+            toast.error(errMessage);
         }
-    );
-};
-
-// Function to execute delete if confirmed
-const confirmDelete = async (jobId) => {
-    try {
-        const response = await deleteJob(jobId).unwrap();
-        console.log(response);
-        if (!response.success) return;
-
-        toast.success(response.message);
-        setFilteredJobs(filteredJobs.filter((job) => job._id !== jobId));
-    } catch (error) {
-        const errMessage = error?.data?.message || "Failed to delete job";
-        toast.error(errMessage);
-    }
-};
-
+    };
 
     if (isLoading || isFetching) {
         return (
@@ -120,106 +120,124 @@ const confirmDelete = async (jobId) => {
                 </div>
                 {/* Jobs Section */}
                 <div className="flex flex-col gap-6 items-center my-16">
-                    {filteredJobs.map((job) => (
-                        <div
-                            key={job._id}
-                            className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6 flex flex-col gap-4"
-                        >
-                            {/* Job Title and Image */}
-                            <div className="flex items-center gap-4">
-                                <img
-                                    src={job.company.profileImage}
-                                    alt={job.title}
-                                    className="w-14 h-14 object-cover rounded-full"
-                                />
-                                <div>
-                                    <h2 className="text-lg md:text-xl font-bold text-blue-600">
-                                        {job.title}
-                                    </h2>
-                                    <p className="text-gray-500">
-                                        {job.description}
+                    {filteredJobs.length === 0 && (
+                        <div className="w-full min-h-[60vh] flex flex-col gap-10 mt-10 items-center">
+                            <h1 className="text-md md:text-2xl font-semibold font-BarlowSemiCondensed text-stone-800 leading-tight">
+                                You haven't posted any jobs yet
+                            </h1>
+                            <button
+                                onClick={() =>
+                                    navigate("/company/dashboard/postajob")
+                                }
+                                className="bg-third px-3 py-1 rounded-md font-Abel font-medium text-md md:text-lg text-white hover:bg-purple-800"
+                            >
+                                Add New Job +
+                            </button>
+                        </div>
+                    )}
+                    {filteredJobs.length > 0 &&
+                        filteredJobs.map((job) => (
+                            <div
+                                key={job._id}
+                                className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-6 flex flex-col gap-4"
+                            >
+                                {/* Job Title and Image */}
+                                <div className="flex items-center gap-4">
+                                    <img
+                                        src={job.company.profileImage}
+                                        alt={job.title}
+                                        className="w-14 h-14 object-cover rounded-full"
+                                    />
+                                    <div>
+                                        <h2 className="text-lg md:text-xl font-bold text-blue-600">
+                                            {job.title}
+                                        </h2>
+                                        <p className="text-gray-500">
+                                            {job.description}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Job Details */}
+                                <div className="flex flex-col gap-2">
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Status:
+                                        </span>{" "}
+                                        <span
+                                            className={`${
+                                                job.status === "Active"
+                                                    ? "text-green-600"
+                                                    : "text-red-600"
+                                            } font-bold`}
+                                        >
+                                            {job.status}
+                                        </span>
+                                    </p>
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Number of Workers:
+                                        </span>{" "}
+                                        {job.workersCount - job.workersNeeded}
+                                    </p>
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Date of Work:
+                                        </span>{" "}
+                                        {new Date(job.date).toLocaleDateString(
+                                            "en-US",
+                                            {
+                                                year: "numeric",
+                                                month: "short",
+                                                day: "numeric",
+                                            }
+                                        )}
+                                    </p>
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Salary:
+                                        </span>{" "}
+                                        ${job.salary} per month
+                                    </p>
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Time:
+                                        </span>{" "}
+                                        {formatTime(job.startTime) - formatTime(job.endTime)}
+                                    </p>
+                                    <p className="text-gray-700">
+                                        <span className="font-semibold">
+                                            Address:
+                                        </span>{" "}
+                                        {job.location}, {job.district}
                                     </p>
                                 </div>
-                            </div>
 
-                            {/* Job Details */}
-                            <div className="flex flex-col gap-2">
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">
-                                        Status:
-                                    </span>{" "}
-                                    <span
-                                        className={`${
-                                            job.status === "Active"
-                                                ? "text-green-600"
-                                                : "text-red-600"
-                                        } font-bold`}
+                                {/* Show Details Button */}
+                                <div className="w-full flex justify-between gap-6 items-center">
+                                    <div className="flex items-center gap-6">
+                                        <Link
+                                            to={`/company/dashboard/applications/${job._id}`}
+                                            className="bg-third text-white px-4 py-1 rounded-lg hover:bg-purple-700"
+                                        >
+                                            Show Details
+                                        </Link>
+                                        <Link
+                                            to={`/company/dashboard/applications/edit/${job._id}`}
+                                            className="text-stone-700 px-6 py-2 rounded-lg hover:text-stone-900"
+                                        >
+                                            Edit
+                                        </Link>
+                                    </div>
+                                    <button
+                                        onClick={() => handleDelete(job._id)}
+                                        className="text-red-500 px-6 py-2 rounded-lg hover:text-red-700"
                                     >
-                                        {job.status}
-                                    </span>
-                                </p>
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">
-                                        Number of Workers:
-                                    </span>{" "}
-                                    {job.workersCount - job.workersNeeded}
-                                </p>
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">
-                                        Date Posted:
-                                    </span>{" "}
-                                    {new Date(job.date).toLocaleDateString(
-                                        "en-US",
-                                        {
-                                            year: "numeric",
-                                            month: "short",
-                                            day: "numeric",
-                                        }
-                                    )}
-                                </p>
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">
-                                        Salary:
-                                    </span>{" "}
-                                    ${job.salary} per month
-                                </p>
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">Time:</span>{" "}
-                                    {formatTime(job.time)}
-                                </p>
-                                <p className="text-gray-700">
-                                    <span className="font-semibold">
-                                        Address:
-                                    </span>{" "}
-                                    {job.location}, {job.district}
-                                </p>
-                            </div>
-
-                            {/* Show Details Button */}
-                            <div className="w-full flex justify-between gap-6 items-center">
-                                <div className="flex items-center gap-6">
-                                    <Link
-                                        to={`/company/dashboard/applications/${job._id}`}
-                                        className="bg-third text-white px-4 py-1 rounded-lg hover:bg-purple-700"
-                                    >
-                                        Show Details
-                                    </Link>
-                                    <Link
-                                        to={`/company/dashboard/applications/edit/${job._id}`}
-                                        className="text-stone-700 px-6 py-2 rounded-lg hover:text-stone-900"
-                                    >
-                                        Edit
-                                    </Link>
+                                        Delete
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={() => handleDelete(job._id)}
-                                    className="text-red-500 px-6 py-2 rounded-lg hover:text-red-700"
-                                >
-                                    Delete
-                                </button>
                             </div>
-                        </div>
-                    ))}
+                        ))}
                 </div>
             </div>
         </>

@@ -64,7 +64,7 @@ function AdminPostJob() {
                     </h1>
                 </div>
                 {/* Job Form */}
-                <JobForm handleSubmit={handleSubmit} errors={errors} onSubmit={onSubmit} isSubmitting={isSubmitting} register={register} keralaDistricts={keralaDistricts} title='' location='' date='' time='' salary='' description='' workersCount='' />
+                <JobForm handleSubmit={handleSubmit} errors={errors} onSubmit={onSubmit} isSubmitting={isSubmitting} register={register} keralaDistricts={keralaDistricts} title='' location='' date='' startTime='' endTime='' salary='' description='' workersCount='' />
             </main>
         </>
     );
