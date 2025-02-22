@@ -45,10 +45,10 @@ function AdminPasswordReset() {
             return;
         }
         try {
-            const response = await sendOtp({ email: data.email });
+            const response = await sendOtp({ email: data.email }).unwrap();
             console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data.message);
+            if (!response?.success) {
+                console.log(response?.message);
             }
             toast.success("OTP sent successfully.")
             setInputStatus("otp");
@@ -71,12 +71,12 @@ function AdminPasswordReset() {
             const response = await verifyOtp({
                 email: currentEmail,
                 otp: data.otp,
-            });
+            }).unwrap()
             console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data?.message);
+            if (!response?.success) {
+                console.log(response?.message);
             }
-            console.log(response.data.message);
+            console.log(response.message);
             setInputStatus("password");
             resetField("otp");
         } catch (error) {
@@ -96,13 +96,13 @@ function AdminPasswordReset() {
             const response = await updatePassword({
                 email: currentEmail,
                 newPassword: data.password,
-            });
+            }).unwrap();
             console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data?.message);
+            if (!response?.success) {
+                console.log(response?.message);
             }
-            console.log(response.data.message);
-            dispatch(setUser(response.data.data));
+            console.log(response.message);
+            dispatch(setUser(response.data));
 
             resetField("password");
             navigate("/admin/dashboard");
