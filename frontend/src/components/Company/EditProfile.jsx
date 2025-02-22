@@ -1,39 +1,95 @@
 import React, { useEffect, useState } from "react";
+import {
+    useCheckCompanyNameUniqueMutation,
+    useGetCompanyQuery,
+} from "../../Store/AdminAuth/AdminAuth-Api";
+import { Loader2 } from "lucide-react";
+import useDebounceCallback from "../../hooks/useDebouncedCallback";
 
 const initialState = {
-    number: "25413695321",
-    email: "luffy@sunny.com",
-    address: "123 Main St, Anytown, USA",
+    phone: "",
+    address: "",
+    companyName: "",
 };
 
 function EditAdminProfile() {
     const [input, setInput] = useState(initialState);
+    const [companyName, setCompanyName] = useState("");
+    const [isCompanyNameUnique, setIsCompanyNameUnique] = useState("");
+    const [isChecking, setisChecking] = useState(false);
+
+    const { data, isFetching } = useGetCompanyQuery();
+    const [checkCompanyNameUnique] = useCheckCompanyNameUniqueMutation();
 
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []); // Empty dependency array to run only once when the component mounts
 
+    useEffect(() => {
+        if (data && !isFetching) {
+            setInput({
+                phone: data.phone,
+                address: data.address,
+                companyName: "",
+            });
+        }
+    }, [data]);
+    const debounced = useDebounceCallback(setCompanyName, 1000);
+
+    useEffect(() => {
+        setIsCompanyNameUnique("");
+        setisChecking(false);
+        async function checkCompanyUnique() {
+            if (companyName.length >= 5) {
+                setisChecking(true);
+                try {
+                    const response = await checkCompanyNameUnique(
+                        companyName
+                    ).unwrap();
+                    console.log(response);
+                    if (response.data.success) {
+                        setIsCompanyNameUnique(response.message);
+                    } else {
+                        setIsCompanyNameUnique(response.message);
+                    }
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setisChecking(false);
+                }
+            }
+        }
+        checkCompanyUnique();
+    }, [companyName]);
+
     function handleChange(e) {
         const { name, value } = e.target;
         setInput((prev) => {
-            return { ...prev, [name]: value };
+            if (name !== "companyName") {
+                return { ...prev, [name]: value };
+            }
         });
+    }
+    async function handleCompanyNameChange(e) {
+        const { value } = e.target;
+        setInput((prev) => ({ ...prev, companyName: value }));
+        debounced(value);
     }
 
     function handleSubmit(e) {
         e.preventDefault();
         // Do something with the updated user data
         console.log(input);
-        const formData = new FormData();
-        formData.append("number", input.number);
-        formData.append("email", input.email);
-        formData.append("address", input.address);
-        // print data
-        for (const pair of formData.entries()) {
-            console.log(`${pair[0]}: ${pair[1]}`);
-        }
 
         // api call
+    }
+
+    if (isFetching) {
+        return (
+            <div className="w-full min-hscreen flex justify-center items-center">
+                <Loader2 className="w-6 h-6 md:w-24 md:h-24 animate-spin" />
+            </div>
+        );
     }
 
     return (
@@ -60,30 +116,38 @@ function EditAdminProfile() {
                         <div className="w-full md:w-[55%] flex flex-col items-center">
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
-                                    Email
+                                    Company Name
                                 </h2>
                                 <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={input.email}
-                                    onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    type="text"
+                                    id="companyName"
+                                    name="companyName"
+                                    value={input.companyName}
+                                    onChange={handleCompanyNameChange}
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your email address"
                                 />
+                                {isChecking && (
+                                    <Loader2 className="ml-3 w-2 h-2 animate-spin" />
+                                )}
+                                {isCompanyNameUnique && (
+                                    <p className="text-blue-500 text-md md:text-xl">
+                                        {isCompanyNameUnique}
+                                    </p>
+                                )}
                             </div>
-                         
+
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
                                     Phone Number
                                 </h2>
                                 <input
                                     type="number"
-                                    id="number"
-                                    name="number"
-                                    value={input.number}
+                                    id="phone"
+                                    name="phone"
+                                    value={input.phone}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your phone number"
                                 />
                             </div>
@@ -97,7 +161,7 @@ function EditAdminProfile() {
                                     name="address"
                                     value={input.address}
                                     onChange={handleChange}
-                                    class="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
+                                    className="px-4 py-2 md:py-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-stone-800"
                                     placeholder="Enter your address"
                                 />
                             </div>

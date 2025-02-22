@@ -92,8 +92,8 @@ function NavBar() {
                 close: {
                     width: 20,
                     height: 20,
-                    top: "20px",
-                    right: "24px",
+                    top: "29px",
+                    right: "50px",
                     transition: {
                         duration: 0.75,
                         delay: 0.3, // Delay for the animation
@@ -114,10 +114,10 @@ function NavBar() {
                     // opacity: 1,
                 },
                 close: {
-                    width: 20,
+                    width: 30,
                     height: 20,
-                    top: "16px",
-                    right: "64px",
+                    top: "21px",
+                    right: "84px",
                     // opacity: 0,
                     transition: {
                         duration: 0.75,
@@ -141,7 +141,7 @@ function NavBar() {
                     width: 60,
                     height: 20,
                     top: "22px",
-                    right: "72px",
+                    right: "85px",
                     // opacity: 0,
                     transition: {
                         duration: 0.75,

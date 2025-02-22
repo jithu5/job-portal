@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import ProfileImages from "../common/ProfileImages";
 import ImageEditDrawer from "../common/ImageEditdDawer";
 import { useDispatch, useSelector } from "react-redux";
-import { useUploadIagesMutation } from "../../Store/Auth/Auth-Api";
+import { useDeleteCoverImageMutation, useUploadIagesMutation,useDeleteProfileImageMutation } from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
 import { setUser } from "../../Store/Auth";
 
@@ -16,6 +16,8 @@ const Profile = () => {
 
     const { user } = useSelector((state) => state.Auth);
     const [uploadIages] = useUploadIagesMutation();
+    const [deleteProfileImage] = useDeleteProfileImageMutation()
+    const [deleteCoverImage] = useDeleteCoverImageMutation()
 
     const handleSubmit = async (e) => {
         setIsSubmiting(true);
@@ -60,6 +62,114 @@ const Profile = () => {
         }
     };
 
+     function handleRemoveProfileImage() {
+            toast(
+                <div>
+                    <p>Are you sure you want to delete profile image?</p>
+                    <div className="flex justify-end gap-2 mt-2 px-3 py-1">
+                        <button
+                            onClick={async () => {
+                                toast.dismiss();
+                                await removeProfileImage();
+                            }}
+                            className="bg-red-500 text-white px-3 py-1 rounded"
+                        >
+                            Yes
+                        </button>
+                        <button
+                            onClick={() => toast.dismiss()}
+                            className="bg-gray-300 px-3 py-1 rounded text-secondary"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>,
+                {
+                    position: "top-right",
+                    autoClose: false,
+                    closeOnClick: false,
+                    draggable: false,
+                    closeButton: false,
+                    theme: "dark",
+                }
+            );
+        }
+    
+        async function removeProfileImage() {
+            try {
+                const response = await deleteProfileImage().unwrap();
+                console.log(response);
+                if (!response.success) {
+                    return;
+                }
+                toast.success(response.message);
+                dispatch(
+                    setUser({
+                        ...user,
+                        profileImage: null,
+                    })
+                );
+            } catch (error) {
+                const errMessage =
+                    error?.data?.message || "Error in deleting profile image";
+                toast.error(errMessage);
+            }
+        }
+    
+        function handleRemoveCoverImage() {
+            toast(
+                <div>
+                    <p>Are you sure you want to delete cover image?</p>
+                    <div className="flex justify-end gap-2 mt-2 px-3 py-1">
+                        <button
+                            onClick={async () => {
+                                toast.dismiss();
+                                await removeCoverImage();
+                            }}
+                            className="bg-red-500 text-white px-3 py-1 rounded"
+                        >
+                            Yes
+                        </button>
+                        <button
+                            onClick={() => toast.dismiss()}
+                            className="bg-gray-300 px-3 py-1 rounded text-secondary"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </div>,
+                {
+                    position: "top-right",
+                    autoClose: false,
+                    closeOnClick: false,
+                    draggable: false,
+                    closeButton: false,
+                    theme: "dark",
+                }
+            );
+        }
+    
+        async function removeCoverImage() {
+            try {
+                const response = await deleteCoverImage().unwrap();
+                console.log(response);
+                if (!response.success) {
+                    return;
+                }
+                toast.success(response.message);
+                dispatch(
+                    setUser({
+                        ...user,
+                        coverImage: null,
+                    })
+                );
+            } catch (error) {
+                const errMessage =
+                    error?.data?.message || "Error in deleting cover image";
+                toast.error(errMessage);
+            }
+        }
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []); // Empty dependency array to run only once when the component mounts
@@ -73,7 +183,7 @@ const Profile = () => {
                 handleSubmit={handleSubmit}
                 isSubmiting={isSubmiting}
             />
-            <ProfileImages setOpenDrawer={setOpenDrawer} user={user} />
+            <ProfileImages setOpenDrawer={setOpenDrawer} user={user} removeCoverImage={handleRemoveCoverImage} removeProfileImage={handleRemoveProfileImage} />
          
             <div className="w-[90%] mx-auto flex flex-col gap-4 mt-24">
                 <h1 className="text-xl md:text-3xl font-bold">

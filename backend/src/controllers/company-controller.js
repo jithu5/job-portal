@@ -391,7 +391,6 @@ const GetAllPostedJob = asyncHandler(async (req, res) => {
 });
 
 // get applications (jobs)
-
 const GetApplicationsJob = asyncHandler(async (req, res) => {
     const companyId = req.company;
     try {
@@ -399,19 +398,6 @@ const GetApplicationsJob = asyncHandler(async (req, res) => {
         if (!company) {
             throw new ApiError(404, "Company not found");
         }
-        // const jobs = await jobmodel.aggregate([
-        //     {$match: {company: mongoose.Types.ObjectId(companyId)}},
-        //     {
-        //         $lookup: {
-        //             from: "companies",
-        //             localField: "company",
-        //             foreignField: "_id",
-        //             as: "company",
-        //         },
-        //     },
-        //    ,
-        // ])
-
         const jobs = await jobmodel
             .find({ company: companyId })
             .populate("company");
@@ -851,13 +837,14 @@ const Deletejob = asyncHandler(async (req, res) => {
 
 //check company name unique
 const checkCompanynameUnique = asyncHandler(async (req, res) => {
-    const companyname = req.query.companyname; // Accessing query parameter
+    console.log(req.query)
+    const companyName = req.query.companyName; // Accessing query parameter
 
-    console.log(companyname);
+    console.log(companyName);
 
     try {
-        const company = await usermodel.findOne({
-            companyName: companyname,
+        const company = await companymodel.findOne({
+            companyName: companyName,
             isAccountVerified: true,
         });
         if (company) {

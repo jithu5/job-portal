@@ -28,6 +28,14 @@ const CompanyApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["Company", "Job"],
         }),
+        checkCompanyNameUnique: builder.mutation({
+            query: (data) => ({
+                url: `checkcompanynameunique?companyName=${data}`,
+                method: "GET",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["Company"],
+        }),
         loginAdmin: builder.mutation({
             query: (data) => ({
                 url: "login",
@@ -190,6 +198,7 @@ const CompanyApi = createApi({
 export const {
     useGetCompanyQuery,
     useRegisterAdminMutation,
+    useCheckCompanyNameUniqueMutation,
     useLoginAdminMutation,
     useSendOtpMutation,
     useVerifyEmailMutation,

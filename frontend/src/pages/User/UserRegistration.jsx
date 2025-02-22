@@ -63,7 +63,6 @@ const UserRegistration = () => {
     };
 
     const onSubmit = async (data) => {
-        // console.log("Form Data Submitted:", data);
 
         const userData = new FormData();
         userData.append("username", data.username);
@@ -75,11 +74,6 @@ const UserRegistration = () => {
         userData.append("email", data.email);
         userData.append("password", data.password);
         userData.append("address", data.address);
-
-        // print in loop
-        // for (const pair of userData.entries()) {
-        //     console.log(`${pair[0]}: ${pair[1]}`);
-        // }
 
         try {
             const response = await registerUser(userData).unwrap();

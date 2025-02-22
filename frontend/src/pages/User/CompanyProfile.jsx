@@ -11,6 +11,10 @@ function CompanyProfile() {
     console.log(companyId);
     const { data, isFetching } = useViewCompanyQuery(companyId);
 
+    useEffect(()=>{
+        window.scrollTo(0,0);
+    },[])
+
     useEffect(() => {
         if (data?.data && !isFetching) {
             setCompany(data.data);

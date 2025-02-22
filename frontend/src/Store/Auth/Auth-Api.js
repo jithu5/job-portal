@@ -99,6 +99,22 @@ const UserApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
+        deleteProfileImage: builder.mutation({
+            query: () => ({
+                url: "delete-profilepic",
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"], 
+        }),
+        deleteCoverImage: builder.mutation({
+            query: () => ({
+                url: "delete-coverpic",
+                method: "POST",
+            }),
+            transformResponse: (response) => response,
+            invalidatesTags: ["User"],
+        }),
         updateProfileData: builder.mutation({
             query: (data) => ({
                 url: "edit-profile",
@@ -206,6 +222,8 @@ export const {
     useGetJobByIdQuery,
     useApplyForJobMutation,
     useUploadIagesMutation,
+    useDeleteCoverImageMutation,
+    useDeleteProfileImageMutation,
     useGetAppliedJobQuery,
     useCancelAppliedJobMutation,
     useAddToWishlistMutation,
