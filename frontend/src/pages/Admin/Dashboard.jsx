@@ -1,18 +1,30 @@
 import React from "react";
 import { Card, CardContent, Typography, Grid, Box } from "@mui/material";
+import { useGetDashboardQuery } from "../../Store/adminapi/SuperAdmin-Api";
+import { Loader2 } from "lucide-react";
 
 function Dashboard() {
-    // Hardcoded data
+    const { data, isFetching } = useGetDashboardQuery();
+
+    if (isFetching) {
+        return (
+            <div className="w-full min-h-[70vh] flex justify-center items-center">
+                <Loader2 className="w-6 h-6 md:w-28 md:h-28 animate-spin text-stone-800" />
+            </div>
+        );
+    }
+
     const stats = [
-        { label: "Total Jobs", value: 120 },
-        { label: "Active Jobs", value: 80 },
-        { label: "Total Companies", value: 45 },
-        { label: "Total Users", value: 500 },
-        { label: "Total Applicants", value: 350 },
-        { label: "Jobs Today", value: 5 },
-        { label: "Users Today", value: 12 },
-        { label: "Applications Today", value: 20 },
+        { label: "Total Jobs", value: data?.data.totalJobs },
+        { label: "Active Jobs", value: data?.data.totalActiveJobs },
+        { label: "Total Companies", value: data?.data.totalCompanies },
+        { label: "Total Users", value: data?.data.totalUsers },
+        { label: "Total Applicants", value: data?.data.totalApplicants },
+        { label: "Jobs Today", value: data?.data.jobsToday },
+        { label: "Users Today", value: data?.data.usersToday },
+        { label: "Applications Today", value: data?.data.applicantsToday },
     ];
+    console.log(data?.data);
 
     return (
         <Box

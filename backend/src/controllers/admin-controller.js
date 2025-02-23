@@ -175,50 +175,55 @@ const GetAdmin = asyncHandler(async (req, res) => {
     }
 });
 
-const GetDashboard = asyncHandler(async (req, res)=>{
+const GetDashboard = asyncHandler(async (req, res) => {
     try {
-
         const startOfDay = new Date();
         startOfDay.setHours(0, 0, 0, 0);
 
         const endOfDay = new Date();
         endOfDay.setHours(23, 59, 59, 999);
 
-        const Totalusers = await usermodel.countDocuments({});
-        const Totalcompanies  = await companymodel.countDocuments({});
-        const Totaljobs = await jobmodel.countDocuments({});
-        const TotalActivejobs = await jobmodel.countDocuments({status:"Active"});
-        const TotalApplicants = await applicantmodel.countDocuments({});
-        const JobsToday = await jobmodel.countDocuments({
+        const totalUsers = await usermodel.countDocuments({});
+        const totalCompanies = await companymodel.countDocuments({});
+        const totalJobs = await jobmodel.countDocuments({});
+        const totalActiveJobs = await jobmodel.countDocuments({
+            status: "Active",
+        });
+        const totalApplicants = await applicantmodel.countDocuments({});
+        const jobsToday = await jobmodel.countDocuments({
             createdAt: {
                 $gte: startOfDay,
                 $lte: endOfDay,
             },
-        })
-        const UsersToday = await usermodel.countDocuments({
+        });
+        const usersToday = await usermodel.countDocuments({
             createdAt: {
                 $gte: startOfDay,
                 $lte: endOfDay,
             },
-        })
-        const ApplicantsToday = await applicantmodel.countDocuments({
+        });
+        const applicantsToday = await applicantmodel.countDocuments({
             createdAt: {
                 $gte: startOfDay,
                 $lte: endOfDay,
             },
-        })
+        });
 
         return res.json(
-            new ApiResponse(200, {
-                Totalusers,
-                Totalcompanies,
-                Totaljobs,
-                TotalActivejobs,
-                TotalApplicants,
-                JobsToday,
-                UsersToday,
-                ApplicantsToday,
-            }, "Dashboard fetched successfully")
+            new ApiResponse(
+                200,
+                {
+                    totalUsers,
+                    totalCompanies,
+                    totalJobs,
+                    totalActiveJobs,
+                    totalApplicants,
+                    jobsToday,
+                    usersToday,
+                    applicantsToday,
+                },
+                "Dashboard fetched successfully"
+            )
         );
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);

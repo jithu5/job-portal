@@ -63,6 +63,13 @@ const AdminApi = createApi({
             transformResponse: (response) => response,
             invalidatesTags: ["admin", "Company", "User"],
         }),
+        getDashboard: builder.query({
+            query: () => ({
+                url: "dashboard",
+            }),
+            transformResponse: (response) => response,
+            providesTags: ["admin", "Company", "User"],
+        }),
         getUsers: builder.query({
             query: () => ({
                 url: "getusers",
@@ -118,6 +125,7 @@ export const {
     useUpdatePasswordMutation,
     useGetAdminQuery,
     useLogoutMutation,
+    useGetDashboardQuery,
     useGetUsersQuery,
     useUserDetailsQuery,
     useGetCompanyQuery,
