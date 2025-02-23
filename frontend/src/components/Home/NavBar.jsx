@@ -114,10 +114,10 @@ function NavBar() {
                     // opacity: 1,
                 },
                 close: {
-                    width: 30,
+                    width: 50,
                     height: 20,
                     top: "21px",
-                    right: "84px",
+                    right: "60px",
                     // opacity: 0,
                     transition: {
                         duration: 0.75,

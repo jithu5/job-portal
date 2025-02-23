@@ -1,5 +1,5 @@
 import React from "react";
-import HomeImage from "../../assets/job-image.png";
+import HomeImage from "../../assets/home.png";
 
 import { motion } from "framer-motion";
 
@@ -68,7 +68,7 @@ function Home() {
         visible: { y: 0 },
     };
 
-    const text = "GET YOUR DREAM JOB"; // Text to be animated
+    const text = "GET YOUR PERFECT JOB"; // Text to be animated
     const words = text.split(" "); // Split the text into words
 
     return (

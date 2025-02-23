@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import avatar from "../../assets/man.png";
 
 import Menu from "@mui/material/Menu";
@@ -12,11 +12,11 @@ import { Avatar, IconButton, Tooltip } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 
-function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
+function AdminNavBar({ setIsOpen, handleLogout, usedIn }) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
-    const {user} = useSelector((state)=>state.Auth)
-    console.log(user)
+    const { user } = useSelector((state) => state.Auth);
+    console.log(user);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -27,7 +27,7 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
     console.log(anchorEl);
     return (
         <>
-            <header className="md:px-14 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-primary text-stone-900">
+            <header className="md:px-14 px-4 py-5 w-full font-BarlowSemiCondensed flex items-center justify-between bg-primary text-stone-900">
                 <div className="md:hidden">
                     <TiThMenu
                         className="text-lg"
@@ -36,7 +36,10 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
                 </div>
                 <div>
                     <h1 className="text-xl md:text-3xl font-bold">
-                        {usedIn.toLowerCase() === "company" ? "Company" : "Admin"} Dashboard
+                        {usedIn.toLowerCase() === "company"
+                            ? "Company"
+                            : "Admin"}{" "}
+                        Dashboard
                     </h1>
                 </div>
 
@@ -96,15 +99,19 @@ function AdminNavBar({ setIsOpen, handleLogout,usedIn }) {
                     transformOrigin={{ horizontal: "right", vertical: "top" }}
                     anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                 >
-                    <MenuItem onClick={handleClose}>
-                        <Link
-                            to={"profile"}
-                            className="flex items-center gap-1"
-                        >
-                            <Avatar /> Profile
-                        </Link>
-                    </MenuItem>
-                    <Divider />
+                    {usedIn !== "admin" && (
+                        <>
+                            <MenuItem onClick={handleClose}>
+                                <Link
+                                    to={"profile"}
+                                    className="flex items-center gap-1"
+                                >
+                                    <Avatar /> Profile
+                                </Link>
+                            </MenuItem>
+                            <Divider />
+                        </>
+                    )}
 
                     <MenuItem
                         onClick={() => {

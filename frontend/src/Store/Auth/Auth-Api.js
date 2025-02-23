@@ -122,7 +122,7 @@ const UserApi = createApi({
                 body: data,
             }),
             transformResponse: (response) => response,
-            invalidatesTags: ["User"], // Forces re-fetch of "User" queries
+            // invalidatesTags: ["User"], // Forces re-fetch of "User" queries
         }),
         logoutUser: builder.mutation({
             query: () => ({

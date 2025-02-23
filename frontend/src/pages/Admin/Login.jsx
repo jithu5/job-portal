@@ -19,17 +19,13 @@ function AdminLogin() {
     } = useForm();
 
     const onSubmit = async (data) => {
-        console.log("Login Data:", data);
         try {
             const res = await login(data).unwrap();
-            if (!res.success) {
-                return;
-            }
             toast.success(res.message)
-            console.log(res)
             dispatch(setUser(res.data));
             navigate("/admin/dashboard");
         } catch (error) {
+            console.log(error?.data?.message);
             const errorMessage = error?.data?.message || "An error occurred";
             toast.error(errorMessage);
         }
@@ -59,6 +55,7 @@ function AdminLogin() {
                             })}
                             className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring focus:ring-red-500"
                             placeholder="Enter your email"
+                            autoComplete="email"
                         />
                         {errors.email && (
                             <p className="text-red-400 text-sm">
@@ -77,13 +74,14 @@ function AdminLogin() {
                             {...register("password", {
                                 required: "Password is required",
                                 minLength: {
-                                    value: 6,
+                                    value: 8,
                                     message:
                                         "Password must be at least 6 characters",
                                 },
                             })}
                             className="w-full px-3 py-2 bg-gray-700 text-white rounded focus:outline-none focus:ring focus:ring-red-500"
                             placeholder="Enter your password"
+                            autoComplete="current-password"
                         />
                         {errors.password && (
                             <p className="text-red-400 text-sm">

@@ -64,12 +64,20 @@ function UserJobHistory() {
                                 <div className="flex flex-col gap-2">
                                     {job?.companyprofile ? (
                                         <img
+                                            onClick={() =>
+                                                navigate(`/user/job/${job?._id}`)
+                                            }
                                             src={job.companyprofile}
                                             alt="company profile"
-                                            className="w-12 h-12 rounded-full object-cover"
+                                            className="w-12 h-12 rounded-full object-cover cursor-pointer"
                                         />
                                     ) : (
-                                        <div className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-lg text-white font-semibold">
+                                        <div
+                                            onClick={() =>
+                                                navigate(`/user/job/${job?._id}`)
+                                            }
+                                            className="w-12 h-12 rounded-full bg-gray-300 flex items-center justify-center text-lg text-white font-semibold cursor-pointer"
+                                        >
                                             {job.company[0].toUpperCase()}
                                         </div>
                                     )}
@@ -103,10 +111,15 @@ function UserJobHistory() {
                     ))
                 ) : (
                     <div className="min-h-[60vh] md:min-h-[45vh] w-full flex justify-center items-center flex-col gap-10">
-                    <p className="text-stone-800 text-md md:text-xl font-semibold text-center">
-                        You haven't applied to any jobs yet.
-                    </p>
-                    <button onClick={()=>navigate('/user/jobs')} className="bg-third py-1.5 px-3 font-semibold text-md md:text-xl text-white rounded-lg mx-auto hover:bg-purple-600">APPLY FOR JOB</button>
+                        <p className="text-stone-800 text-md md:text-xl font-semibold text-center">
+                            You haven't applied to any jobs yet.
+                        </p>
+                        <button
+                            onClick={() => navigate("/user/jobs")}
+                            className="bg-third py-1.5 px-3 font-semibold text-md md:text-xl text-white rounded-lg mx-auto hover:bg-purple-600"
+                        >
+                            APPLY FOR JOB
+                        </button>
                     </div>
                 )}
             </div>

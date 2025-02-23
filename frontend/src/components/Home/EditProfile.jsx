@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
-import { useUpdateProfileDataMutation } from "../../Store/Auth/Auth-Api";
+import {
+    useGetUserQuery,
+    useUpdateProfileDataMutation,
+} from "../../Store/Auth/Auth-Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../Store/Auth/index";
-
+import {Loader2} from "lucide-react"
+import {useNavigate} from "react-router-dom"
+ 
 const initialState = {
     name: "",
     phone: "",
@@ -12,9 +17,21 @@ const initialState = {
 
 function EditUserProfile() {
     const [input, setInput] = useState(initialState);
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const navigate = useNavigate()
+    const {user} = useSelector((state)=>state.Auth)
 
-    const [ updateProfileData,{isLoading,status} ] = useUpdateProfileDataMutation();
+    const [updateProfileData, { isLoading }] = useUpdateProfileDataMutation();
+
+    useEffect(() => {
+        if (user) {
+            setInput({
+                name: user.name,
+                phone: user.phone,
+                address: user.address,
+            });
+        }
+    }, [user]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -31,7 +48,6 @@ function EditUserProfile() {
         e.preventDefault();
         // Do something with the updated user data
         console.log(input);
-       
         try {
             const response = await updateProfileData(input).unwrap();
             console.log(response);
@@ -41,13 +57,13 @@ function EditUserProfile() {
             const errMessage = error?.data?.message || "Failed to update";
             toast.error(errMessage);
         }
-
+        navigate('/user/profile');
         // api call
         setInput({
             name: "",
             phone: "",
             address: "",
-        })
+        });
     }
 
     return (
@@ -72,7 +88,6 @@ function EditUserProfile() {
                 >
                     <div className="w-full flex flex-col md:flex-row items-center md:items-start justify-between">
                         <div className="w-[92%] sm:w-[85%] md:w-[75%] flex flex-col items-center">
-                              
                             <div className="w-full md:w-[70%] flex flex-col justify-center gap-2">
                                 <h2 className="text-md md:text-xl font-semibold">
                                     Name
@@ -92,7 +107,7 @@ function EditUserProfile() {
                                     Phone Number
                                 </h2>
                                 <input
-                                    type="number"
+                                    type="text"
                                     id="phone"
                                     name="phone"
                                     value={input.phone}
@@ -124,7 +139,7 @@ function EditUserProfile() {
                             type="submit"
                             className="w-[200px] bg-third font-Abel font-medium text-white px-5 py-2 rounded-md hover:bg-purple-600"
                         >
-                            { isLoading? "Editing" : "Edit"}
+                            {isLoading ? "Editing" : "Edit"}
                         </button>
                     </div>
                 </form>

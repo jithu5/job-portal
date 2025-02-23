@@ -117,7 +117,7 @@ function JobDetails() {
     console.log(job);
 
     return (
-        <main className="w-full md:w-[80%] mx-auto mt-14 h-fit p-5 sm:px-12 md:px-24 py-16 text-secondary bg-white rounded-lg">
+        <main className="w-full md:w-[80%] mx-auto my-14 h-fit p-5 sm:px-12 md:px-24 py-16 text-secondary bg-white rounded-lg">
             <div className="flex items-center justify-between py-1">
                 <h1 className="font-bold text-lg md:text-4xl uppercase mb-10 font-Oswald">
                     {job.title}
@@ -180,7 +180,7 @@ function JobDetails() {
                         </p>
                     </div>
                     <div className="flex items-center gap-5">
-                        <p className="text-sm md:text-lg">{formatTime(job.time)}</p>
+                        <p className="text-sm md:text-lg">{formatTime(job?.startTime)}-{formatTime(job?.endTime)}</p>
                         <p className="text-sm md:text-lg">
                             {new Date(job.date).toLocaleDateString("en-us", {
                                 year: "numeric",
