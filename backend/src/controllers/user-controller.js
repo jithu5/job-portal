@@ -14,6 +14,7 @@ const sendMail = require("../utils/sendEmail.js");
 const EMAIL_VERIFY_TEMPLATE = require("../utils/emailverifytemplate.js");
 const PASSWORD_RESET_TEMPLATE = require("../utils/resetotp.js");
 const Tesseract = require("tesseract.js");
+const Fuse = require("fuse.js");
 const cloudinary = require("../utils/cloudinary.js");
 const extractPublicId = require("../utils/ExtractPublicId.js");
 const { pipeline } = require("stream");
@@ -87,17 +88,36 @@ const UserRegister = asyncHandler(async (req, res) => {
         //check id proof
         const {
             data: { text },
-        } = await Tesseract.recognize(req.file.path, "eng");
+        } = await Tesseract.recognize(req.file.path, "eng",{
+            tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz. ",
+            psm: 6,
+        });
         console.log(text);
 
-        const target = ["university", "school", "college", "student", name];
-        const containtarget = target.some((word) =>
-            text.toLowerCase().includes(word)
-        );
-        if (!containtarget) {
+        const normalizedText = text.replace(/[^a-zA-Z0-9. ]/g, "").trim().toLowerCase();
+        const normalizedName = name.replace(/[^a-zA-Z0-9. ]/g, "").trim().toLowerCase();
+
+        function looseMatch(text, name) {
+            return text.replace(/\s+/g, "").includes(name.replace(/\s+/g, ""));
+        }
+        
+        const directMatch = looseMatch(normalizedText, normalizedName);
+        console.log("Loose Match Found:", directMatch);
+
+        const target = ["university", "school", "college", "student"];
+        const fuse = new Fuse(target, { includeScore: true, threshold: 0.5 });
+        const results = fuse.search(normalizedText);
+        const containtarget = results.length > 0;
+        
+        console.log("Extracted Text:", text);
+        console.log("Normalized Text:", normalizedText);
+        console.log("Normalized Name:", normalizedName);
+        console.log("Target Found:", containtarget);
+        console.log("Fuzzy Search Results:", results);
+
+        if (!containtarget && !directMatch) {
             throw new ApiError(400, "invalid ID");
         }
-        console.log("target: ", containtarget);
 
         //delete temparary id proof file
         try {
@@ -150,8 +170,7 @@ const UserLogin = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
-        // const users = await usermodel.find({});
-        // console.log(users);
+        
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
@@ -160,7 +179,7 @@ const UserLogin = asyncHandler(async (req, res) => {
         }
         const isMatch = await user.comparePassword(password);
         if (!isMatch) {
-            throw new ApiError(401, "Invalid credentials");
+            throw new ApiError(401, "Invalid email or password");
         }
         const token = await user.generateToken();
 
