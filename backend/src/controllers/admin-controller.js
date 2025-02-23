@@ -175,6 +175,56 @@ const GetAdmin = asyncHandler(async (req, res) => {
     }
 });
 
+const GetDashboard = asyncHandler(async (req, res)=>{
+    try {
+
+        const startOfDay = new Date();
+        startOfDay.setHours(0, 0, 0, 0);
+
+        const endOfDay = new Date();
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const Totalusers = await usermodel.countDocuments({});
+        const Totalcompanies  = await companymodel.countDocuments({});
+        const Totaljobs = await jobmodel.countDocuments({});
+        const TotalActivejobs = await jobmodel.countDocuments({status:"Active"});
+        const TotalApplicants = await applicantmodel.countDocuments({});
+        const JobsToday = await jobmodel.countDocuments({
+            createdAt: {
+                $gte: startOfDay,
+                $lte: endOfDay,
+            },
+        })
+        const UsersToday = await usermodel.countDocuments({
+            createdAt: {
+                $gte: startOfDay,
+                $lte: endOfDay,
+            },
+        })
+        const ApplicantsToday = await applicantmodel.countDocuments({
+            createdAt: {
+                $gte: startOfDay,
+                $lte: endOfDay,
+            },
+        })
+
+        return res.json(
+            new ApiResponse(200, {
+                Totalusers,
+                Totalcompanies,
+                Totaljobs,
+                TotalActivejobs,
+                TotalApplicants,
+                JobsToday,
+                UsersToday,
+                ApplicantsToday,
+            }, "Dashboard fetched successfully")
+        );
+    } catch (error) {
+        throw new ApiError(error.statusCode, error.message);
+    }
+});
+
 const GetUsers = asyncHandler(async (req, res) => {
     try {
         const users = await usermodel.aggregate([
@@ -447,6 +497,7 @@ module.exports = {
     VerifyResetOtp,
     UpdatePassword,
     GetAdmin,
+    GetDashboard,
     GetUsers,
     GetCompany,
     ViewUser,
