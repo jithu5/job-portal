@@ -37,12 +37,12 @@ const AdminNavigation = [
     },
     {
         name: "User",
-        path: "user",
+        path: "users",
         icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
     },
     {
         name: "Company",
-        path: "company",
+        path: "companies",
         icon: <MdSpaceDashboard className="text-white text-lg lg:text-xl" />,
     },
 ]

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     useCheckCompanyNameUniqueMutation,
     useRegisterAdminMutation,
@@ -264,6 +264,17 @@ function AdminRegister() {
                         {isSubmitting ? "Submitting..." : "Register"}
                     </button>
                 </form>
+                <div className="flex justify-center mt-5">
+                    <p className="text-stone-800 text-sm font-medium">
+                        Already have an Account?{" "}
+                        <Link
+                            to={"/api/company/login"}
+                            className="text-rose-500 text-sm font-medium hover:text-rose-700"
+                        >
+                            click here
+                        </Link>
+                    </p>
+                </div>
             </div>
         </div>
     );

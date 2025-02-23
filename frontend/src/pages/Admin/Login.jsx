@@ -22,7 +22,6 @@ function AdminLogin() {
         console.log("Login Data:", data);
         try {
             const res = await login(data).unwrap();
-            console.log("Login Response:", res);
             if (!res.success) {
                 return;
             }

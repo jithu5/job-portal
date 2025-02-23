@@ -87,7 +87,16 @@ export default function Companies() {
                         </tr>
                     </thead>
                     <tbody>
-                        {companies.map((company) => (
+                        {
+                            companies.length === 0 && (
+                                <tr>
+                                    <td colSpan="7" className="text-center">
+                                        No companies found
+                                    </td>
+                                </tr>
+                            )
+                        }
+                        {companies.length>0 && companies.map((company) => (
                             <tr
                                 key={company._id}
                                 className="border font-semibold"

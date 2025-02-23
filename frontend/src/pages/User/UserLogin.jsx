@@ -47,7 +47,7 @@ function UserLogin() {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <div className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-md pb-16 px-7">
+            <div className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-md pb-28 px-7">
                 <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
                 <form onSubmit={handleSubmit(onSubmit)}>
                     {/* Email Input */}
@@ -119,7 +119,7 @@ function UserLogin() {
                         Login
                     </button>
                 </form>
-                <div className="absolute bottom-2 w-full mx-auto flex flex-col gap-2 items-center justify-center overflow-hidden left-0">
+                <div className="absolute bottom-4 w-full mx-auto flex flex-col gap-2 items-center justify-center overflow-hidden left-0">
                     <p className="text-gray-600 text-sm">
                         Don't have an account?{" "}
                         <Link
@@ -136,6 +136,15 @@ function UserLogin() {
                             className="text-pink-600 underline cursor-pointer"
                         >
                             Reset Password
+                        </Link>
+                    </p>
+                    <p className="text-gray-600 text-sm">
+                        Login as Company?{" "}
+                        <Link
+                            to={"/api/company/login"}
+                            className="text-blue-600 underline cursor-pointer"
+                        >
+                            click here
                         </Link>
                     </p>
                 </div>

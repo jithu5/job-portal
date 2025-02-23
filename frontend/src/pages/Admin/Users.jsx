@@ -94,7 +94,12 @@ export default function Users() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((user) => (
+                            {users.length === 0 && (
+                                <div className="flex justify-center my-10">
+                                    <p className="text-sm md:text-xl font-semibold text-stone-700">No Users found</p>
+                                </div>
+                            )}
+                            {users.length>0 && users.map((user) => (
                                 <tr
                                     key={user._id}
                                     className="border font-semibold"

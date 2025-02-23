@@ -40,7 +40,7 @@ function Layout() {
                     setIsOpen={setIsOpen}
                     usedIn="admin"
                 />
-                <div className="w-full max-md:px-5 md:w-[80%] lg:w-[83%] min-h-screen md:ml-[20%] lg:ml-[17%]">
+                <div className="w-full   min-h-screen md:ml-[20%] lg:ml-[17%]">
                     <AdminNavBar
                         setIsOpen={setIsOpen}
                         usedIn="admin"
