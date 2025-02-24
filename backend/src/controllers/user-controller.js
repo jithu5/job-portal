@@ -225,6 +225,7 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
+        const userId =  new mongoose.Types.ObjectId(req.user);
         const now = new Date();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -327,6 +328,7 @@ const GetJobs = asyncHandler(async (req, res) => {
 //get first 6 jobs
 const sortJobs = asyncHandler(async (req, res) => {
     try {
+        const userId =  new mongoose.Types.ObjectId(req.user);
         const now = new Date();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
