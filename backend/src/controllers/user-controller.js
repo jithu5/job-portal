@@ -20,8 +20,6 @@ const extractPublicId = require("../utils/ExtractPublicId.js");
 const { pipeline } = require("stream");
 const { error } = require("console");
 
-//homepage
-const Homepage = asyncHandler(async (req, res) => {});
 
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
@@ -1354,7 +1352,6 @@ module.exports = {
     updateProfileAndCover,
     DeleteProfileImage,
     DeleteCoverImage,
-    Homepage,
     Logout,
     EditProfile,
     ApplyJob,
