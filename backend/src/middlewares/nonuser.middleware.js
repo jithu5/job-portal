@@ -16,7 +16,7 @@ const nonUserMiddleware = asyncHandler(async (req, res, next) => {
     }
 
     if (!token) {
-        return res.json(ApiResponse(200,null,"Not a user"));
+        return res.json(new ApiResponse(200,null,"Not a user"));
     }
 
     try {
