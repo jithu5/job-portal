@@ -7,19 +7,31 @@ import Typography from "@mui/material/Typography";
 import { MdExpandMore } from "react-icons/md";
 
 const faqs = [
+   
     {
-        question: "What is Tech Corp?",
-        answer: "Tech Corp is a leading company in software development, providing innovative solutions for businesses.",
+        question: "Can I apply for multiple jobs at the same time?",
+        answer: "Yes, students can apply for multiple jobs due to the availability.",
     },
     {
-        question: "How can I apply for a job?",
-        answer: "You can apply for a job by visiting our careers page and submitting your application online.",
+        question: "Will I be paid directly through the platform?",
+        answer: "No, payments are handled directly between students and employers. However, future updates may include integrated payment tracking for freelance jobs.",
     },
     {
-        question: "What benefits does Tech Corp offer?",
-        answer: "Tech Corp offers competitive salaries, health insurance, remote work options, and professional growth opportunities.",
+        question:
+            "What should I do if I face issues with an employer (non-payment etc.)?",
+        answer: "Students can report employers through the emailing procedures.",
+    },
+    {
+        question: "Can I cancel my job application after submitting it?",
+        answer: "Yes, students can cancel their application. Do it as early as possible before the job begins to allow other applicants to apply for the post.",
+    },
+    {
+        question:
+            "How can students contact a company regarding a job opportunity?",
+        answer: "Contact numbers are provided in the portal.",
     },
 ];
+
 
 export default function FAQPage() {
     return (
@@ -28,18 +40,26 @@ export default function FAQPage() {
                 Frequently Asked Questions
             </h1>
             {faqs.map((faq, index) => (
-                <Card key={index} className="p-4 my-2 border">
-                    <Accordion>
-                        <AccordionSummary expandIcon={<MdExpandMore />}>
-                            <Typography className="font-semibold">
+                // <Card key={index} className="p-4 my-2 border">
+                    <Accordion key={index}>
+                        <AccordionSummary sx={{
+                            paddingY:"15px",
+                            paddingX:"20px",
+                            
+                        }} expandIcon={<MdExpandMore />}>
+                            <Typography sx={{
+                                fontSize:"20px"
+                            }}>
                                 {faq.question}
                             </Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                            <Typography>{faq.answer}</Typography>
+                            <Typography className="text-md md:text-xl" sx={{
+                                fontSize:"17px"
+                            }}>{faq.answer}</Typography>
                         </AccordionDetails>
                     </Accordion>
-                </Card>
+                // </Card>
             ))}
         </div>
     );
