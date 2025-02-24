@@ -82,7 +82,7 @@ function WishList() {
                             </div>
                             <div className="flex gap-6 items-center">
                                 <button
-                                    onClick={() => navigate("/user/jobs")}
+                                    onClick={() => navigate(`/user/job/${job._id}`)}
                                     className="text-sm md:tet-lg font-medium text-stone-700 hover:text-slate-900"
                                 >
                                     Go to Job

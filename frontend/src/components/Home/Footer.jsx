@@ -5,14 +5,13 @@ import {
     FaLinkedinIn,
     FaInstagram,
 } from "react-icons/fa";
-
+import { MdEmail } from "react-icons/md";
+{/* <MdEmail /> */}
 function Footer() {
     return (
         <footer className="w-full bg-secondary rounded-t-xl py-20 text-white">
             <div className="max-w-7xl mx-auto px-6 sm:px-10">
-                <div
-                    className="text-center"
-                >
+                <div className="text-center">
                     <h2 className="text-3xl font-bold mb-4">
                         Find Your Perfect Job
                     </h2>
@@ -22,9 +21,7 @@ function Footer() {
                     </p>
                 </div>
 
-                <div
-                    className="mt-8 text-center flex justify-center gap-6"
-                >
+                <div className="mt-8 text-center flex justify-center gap-6">
                     <a
                         href="https://www.facebook.com"
                         target="_blank"
@@ -58,10 +55,18 @@ function Footer() {
                         <FaInstagram />
                     </a>
                 </div>
-
-                <div
-                    className="mt-6 text-center"
-                >
+                <p className="cursor-pointer text-center mt-5">
+                    Email:
+                    <a
+                        className=" text-red-500"
+                        href="mailto:shabari24371@gmail.com"
+                        target="__blank"
+                    >
+                        {" "}
+                        shabari24371@gmail.com
+                    </a>
+                </p>
+                <div className="mt-6 text-center">
                     <p className="text-sm">
                         © 2025 Find Your Dream Job. All rights reserved.
                     </p>

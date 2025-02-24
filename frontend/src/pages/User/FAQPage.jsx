@@ -1,13 +1,12 @@
 import React from "react";
-import {Card} from "@mui/material";
+import { Card } from "@mui/material";
 import { Accordion } from "@mui/material";
-import {AccordionSummary} from "@mui/material";
-import {AccordionDetails} from "@mui/material";
+import { AccordionSummary } from "@mui/material";
+import { AccordionDetails } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { MdExpandMore } from "react-icons/md";
 
 const faqs = [
-   
     {
         question: "Can I apply for multiple jobs at the same time?",
         answer: "Yes, students can apply for multiple jobs due to the availability.",
@@ -19,7 +18,18 @@ const faqs = [
     {
         question:
             "What should I do if I face issues with an employer (non-payment etc.)?",
-        answer: "Students can report employers through the emailing procedures.",
+        answer: (
+            <>
+                Students can report employers through{" "}
+                <b className="font-semibold text-blue-500 hover:text-blue-700 cursor-pointer">
+                    <a href="mailto:shabari24371@gmail.com" target="__blank">
+                        {" "}
+                        shabari24371@gmail.com
+                    </a>
+                </b>
+                .
+            </>
+        ),
     },
     {
         question: "Can I cancel my job application after submitting it?",
@@ -32,7 +42,6 @@ const faqs = [
     },
 ];
 
-
 export default function FAQPage() {
     return (
         <div className="p-6">
@@ -41,24 +50,33 @@ export default function FAQPage() {
             </h1>
             {faqs.map((faq, index) => (
                 // <Card key={index} className="p-4 my-2 border">
-                    <Accordion key={index}>
-                        <AccordionSummary sx={{
-                            paddingY:"15px",
-                            paddingX:"20px",
-                            
-                        }} expandIcon={<MdExpandMore />}>
-                            <Typography sx={{
-                                fontSize:"20px"
-                            }}>
-                                {faq.question}
-                            </Typography>
-                        </AccordionSummary>
-                        <AccordionDetails>
-                            <Typography className="text-md md:text-xl" sx={{
-                                fontSize:"17px"
-                            }}>{faq.answer}</Typography>
-                        </AccordionDetails>
-                    </Accordion>
+                <Accordion key={index}>
+                    <AccordionSummary
+                        sx={{
+                            paddingY: "15px",
+                            paddingX: "20px",
+                        }}
+                        expandIcon={<MdExpandMore />}
+                    >
+                        <Typography
+                            sx={{
+                                fontSize: "20px",
+                            }}
+                        >
+                            {faq.question}
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography
+                            className="text-md md:text-xl"
+                            sx={{
+                                fontSize: "17px",
+                            }}
+                        >
+                            {faq.answer}
+                        </Typography>
+                    </AccordionDetails>
+                </Accordion>
                 // </Card>
             ))}
         </div>

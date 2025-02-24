@@ -92,7 +92,7 @@ function NavBar() {
                 close: {
                     width: 20,
                     height: 20,
-                    top: "20px",
+                    top: "25px",
                     right: "50px",
                     transition: {
                         duration: 0.75,
@@ -116,7 +116,7 @@ function NavBar() {
                 close: {
                     width: 50,
                     height: 20,
-                    top: "20px",
+                    top: "24px",
                     right: "70px",
                     // opacity: 0,
                     transition: {
@@ -156,8 +156,11 @@ function NavBar() {
     const variants = getResponsiveSize();
     return (
         <>
-            <header className="w-full flex items-center justify-end font-BarlowSemiCondensed font-medium md:px-10">
+            <header className="w-full flex items-center justify-between font-BarlowSemiCondensed font-medium md:px-10">
                 {/* logo */}
+                <h1 className="text-4xl font-bold font-BebasNeue">
+                    <Link to={'/'}>IPO</Link>
+                </h1>
                 <nav>
                     <ul className="flex items-center gap-6">
                         {!currentUser && (

@@ -32,7 +32,7 @@ function CompanyProfile() {
     return (
         <>
             <main className="w-full p-3 mt-10 min-h-screen grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="w-[75%] md:w-[90%] shadow-sm rounded-xl h-[70vh] bg-white rounded-t-3xl font-BarlowSemiCondensed mx-auto">
+                <div className="w-[87%] md:w-[90%] shadow-sm rounded-xl h-[50vh] md:h-[70vh] bg-white rounded-t-3xl font-BarlowSemiCondensed mx-auto">
                     <div className="w-full h-[30%] relative rounded-t-3xl mb-10">
                         <img
                             className="w-full h-full object-cover rounded-t-3xl"
@@ -66,8 +66,8 @@ function CompanyProfile() {
                     </div>
                 </div>
                 <div className="font-BarlowSemiCondensed">
-                    <div className="w-full grid grid-cols-2 gap-5 mb-10">
-                        <div className="max-w-md rounded-lg min-w-44 bg-white h-28 flex flex-col items-center justify-center gap-2">
+                    <div className="w-full grid md:grid-cols-2 gap-5 mb-10 justify-items-center">
+                        <div className="max-w-[350px] rounded-lg min-w-44 bg-white h-28 flex flex-col items-center justify-center gap-2 px-10 py-4">
                             <h2 className="text-3xl font-semibold text-third">
                                 Total Jobs
                             </h2>
@@ -75,7 +75,7 @@ function CompanyProfile() {
                                 {company.noOfJobs}
                             </h3>
                         </div>
-                        <div className="max-w-md rounded-lg min-w-44 bg-white h-28 flex flex-col items-center justify-center gap-2">
+                        <div className="max-w-[350px] rounded-lg min-w-44 bg-white h-28 flex flex-col items-center justify-center gap-2 px-10 py-4">
                             <h2 className="text-3xl font-semibold text-third">
                                 Total Active Jobs
                             </h2>
