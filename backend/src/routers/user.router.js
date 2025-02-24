@@ -12,11 +12,11 @@ const nonUserMiddleware = require('../middlewares/nonuser.middleware.js');
 
 UserRouter.get('/user',protectUserMiddleware,GetUser);
 
-UserRouter.get('/jobs',nonUserMiddleware,GetJobs);
+UserRouter.get('/jobs',protectUserMiddleware,GetJobs);
 
 UserRouter.get("/newjobs", protectUserMiddleware, sortJobs);
 
-UserRouter.get('/job/:jobId',nonUserMiddleware,GetJobById);
+UserRouter.get('/job/:jobId',protectUserMiddleware,GetJobById);
 
 UserRouter.post('/register',upload.single('idProof'),UserRegister);
 
