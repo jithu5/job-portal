@@ -8,7 +8,7 @@ import {
 } from "../../Store/Auth/Auth-Api";
 import { Box, Typography, CircularProgress, Button } from "@mui/material";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addAppliedJobs, addWishlist, removeWishlist } from "../../Store/Auth";
 
 import { FaHeart } from "react-icons/fa";
@@ -18,6 +18,7 @@ import { formatTime } from "../../data";
 
 function JobDetails() {
     const { jobId } = useParams();
+    const { user } = useSelector((state) => state.Auth);
     const { data, isFetching, isError } = useGetJobByIdQuery(jobId);
     const [applyForJob] = useApplyForJobMutation();
     const dispatch = useDispatch();
@@ -26,7 +27,7 @@ function JobDetails() {
     const [isWishListed, setIsWishListed] = useState(false);
 
     const [removewishlist] = useRemovewishlistMutation();
-    const [ addToWishlist] = useAddToWishlistMutation()
+    const [addToWishlist] = useAddToWishlistMutation();
 
     async function addWishlistFn(job) {
         try {
@@ -94,8 +95,7 @@ function JobDetails() {
             const isWishlisted = job?.isWishlisted;
             setIsWishListed(isWishlisted);
         }
-    }, [job])
-    
+    }, [job]);
 
     if (isFetching) {
         return (
@@ -131,7 +131,13 @@ function JobDetails() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={() => handleApply(job)}
+                            onClick={() => {
+                                {
+                                    user
+                                        ? handleApply(job)
+                                        : navigate("/api/admin/login");
+                                }
+                            }}
                         >
                             Apply
                         </Button>
@@ -143,7 +149,13 @@ function JobDetails() {
                         />
                     ) : (
                         <CiHeart
-                            onClick={() => addWishlistFn(job)}
+                            onClick={() => {
+                                {
+                                    user
+                                        ? addWishlistFn(job)
+                                        : navigate("/api/admin/login");
+                                }
+                            }}
                             className="size-8 cursor-pointer"
                         />
                     )}
@@ -180,7 +192,10 @@ function JobDetails() {
                         </p>
                     </div>
                     <div className="flex items-center gap-5">
-                        <p className="text-sm md:text-lg">{formatTime(job?.startTime)}-{formatTime(job?.endTime)}</p>
+                        <p className="text-sm md:text-lg">
+                            {formatTime(job?.startTime)}-
+                            {formatTime(job?.endTime)}
+                        </p>
                         <p className="text-sm md:text-lg">
                             {new Date(job.date).toLocaleDateString("en-us", {
                                 year: "numeric",

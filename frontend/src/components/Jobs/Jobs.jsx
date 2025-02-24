@@ -1,12 +1,14 @@
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { FaHeart } from "react-icons/fa";
 import { CiHeart } from "react-icons/ci";
 import { formatTime } from "../../data";
+import { useSelector } from "react-redux";
 
 function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
     const [isApplied, setIsApplied] = useState(false);
+    const { user } = useSelector((state) => state.Auth);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const navigate = useNavigate();
 
@@ -16,24 +18,21 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
             setIsWishlisted(job.isWishlisted);
         }
     }, [job]);
-    
+
     const handleApplyClick = async () => {
         await handleApply(job);
-       
-            setIsApplied(true);
-      
+
+        setIsApplied(true);
     };
     const handleWishlistClick = async () => {
         await addWishlistFn(job);
-        
-            setIsWishlisted(true);
-       
+
+        setIsWishlisted(true);
     };
     const handleRemoveWishlistClick = async () => {
         await removewishlistFn(job);
-      
-            setIsWishlisted(false);
-      
+
+        setIsWishlisted(false);
     };
 
     return (
@@ -97,7 +96,10 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                         </p>
                     </div>
                     <div className="text-sm md:text-base font-medium text-blue-500">
-                        <p>⏳ {formatTime(job.startTime)}-{formatTime(job.endTime)}</p>
+                        <p>
+                            ⏳ {formatTime(job.startTime)}-
+                            {formatTime(job.endTime)}
+                        </p>
                     </div>
                     <div className="text-sm md:text-base font-semibold text-gray-700">
                         <p>💰 ₹{job.salary}</p>
@@ -133,7 +135,11 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                             />
                         ) : (
                             <CiHeart
-                                onClick={handleWishlistClick}
+                                onClick={() => {
+                                    user
+                                        ? handleWishlistClick()
+                                        : navigate("/api/user/login");
+                                }}
                                 className="size-8 cursor-pointer"
                             />
                         )}
@@ -145,7 +151,11 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                         ) : (
                             <button
                                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-                                onClick={handleApplyClick}
+                                onClick={() => {
+                                    user
+                                        ? handleApplyClick()
+                                        : navigate("/api/user/login");
+                                }}
                             >
                                 Apply
                             </button>
