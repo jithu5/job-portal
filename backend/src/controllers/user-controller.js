@@ -239,7 +239,7 @@ const GetJobs = asyncHandler(async (req, res) => {
                         {
                             $and: [
                                 {date:{$eq:today}},
-                                {date:{$gt:currentTime}}, 
+                                {startTime:{$gt:currentTime}}, 
                             ]
                         }
                      ]
@@ -315,12 +315,10 @@ const GetJobs = asyncHandler(async (req, res) => {
             }
         ])
 
-        const allJobs = await jobmodel.aggregate(Alljobs);
-        console.log(allJobs)
-        if (!allJobs) {
+        if (!Alljobs) {
             throw new ApiError(404, "Job not found");
         }
-        res.json(new ApiResponse(200,allJobs, "Jobs fetched successfully"));
+        res.json(new ApiResponse(200,Alljobs, "Jobs fetched successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }
@@ -345,7 +343,7 @@ const sortJobs = asyncHandler(async (req, res) => {
                         {
                             $and: [
                                 {date:{$eq:today}},
-                                {date:{$gt:currentTime}}, 
+                                {startTime:{$gt:currentTime}}, 
                             ]
                         }
                      ]
