@@ -143,11 +143,14 @@ function AdminApplication() {
                             >
                                 {/* Job Title and Image */}
                                 <div className="flex items-center gap-4">
-                                    <img
-                                        src={job.company.profileImage}
+                                    
+                                    {job.company?.profileImage ?<img
+                                        src={job.company?.profileImage}
                                         alt={job.title}
                                         className="w-14 h-14 object-cover rounded-full"
-                                    />
+                                    />:
+                                    <div className="w-14 h-14 object-cover rounded-full flex justify-center items-center bg-stone-800 text-white font-bold font-BebasNeue text-xl">{job.company?.companyName[0].toUpperCase()}</div>
+                                    }
                                     <div>
                                         <h2 className="text-lg md:text-xl font-bold text-blue-600">
                                             {job.title}
