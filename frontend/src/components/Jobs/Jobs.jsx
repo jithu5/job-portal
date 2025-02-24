@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 
 function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
     const [isApplied, setIsApplied] = useState(false);
-    const { user } = useSelector((state) => state.Auth);
     const [isWishlisted, setIsWishlisted] = useState(false);
     const navigate = useNavigate();
 
@@ -135,11 +134,7 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                             />
                         ) : (
                             <CiHeart
-                                onClick={() => {
-                                    user
-                                        ? handleWishlistClick()
-                                        : navigate("/api/user/login");
-                                }}
+                                onClick={ handleWishlistClick}
                                 className="size-8 cursor-pointer"
                             />
                         )}
@@ -151,11 +146,7 @@ function Jobs({ job, handleApply, addWishlistFn, removewishlistFn }) {
                         ) : (
                             <button
                                 className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition"
-                                onClick={() => {
-                                    user
-                                        ? handleApplyClick()
-                                        : navigate("/api/user/login");
-                                }}
+                                onClick={ handleApplyClick}
                             >
                                 Apply
                             </button>

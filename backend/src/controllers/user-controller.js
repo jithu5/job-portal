@@ -326,11 +326,12 @@ const GetJobs = asyncHandler(async (req, res) => {
             }
         )
 
-        const Alljobs = await jobmodel.aggregate(aggregationpipeline);
-        if (!Alljobs) {
+        const allJobs = await jobmodel.aggregate(aggregationpipeline);
+        console.log(allJobs)
+        if (!allJobs) {
             throw new ApiError(404, "Job not found");
         }
-        res.json(new ApiResponse(200,Alljobs, "Jobs fetched successfully"));
+        res.json(new ApiResponse(200,allJobs, "Jobs fetched successfully"));
     } catch (error) {
         throw new ApiError(error.statusCode, error.message);
     }

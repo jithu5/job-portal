@@ -42,7 +42,10 @@ function CommonAuth({
     }
 
     if (!isAuthenticated) {
-        if (location.pathname.startsWith("/user/profile")) {
+        if (location.pathname.startsWith("/user/faq-questions")) {
+            return <>{children}</>;
+        }
+        if (location.pathname.match(/^\/user\/.+/)) {
             return <Navigate to={"/api/user/login"} />;
         }
         if (

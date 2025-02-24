@@ -18,7 +18,6 @@ import { formatTime } from "../../data";
 
 function JobDetails() {
     const { jobId } = useParams();
-    const { user } = useSelector((state) => state.Auth);
     const { data, isFetching, isError } = useGetJobByIdQuery(jobId);
     const [applyForJob] = useApplyForJobMutation();
     const dispatch = useDispatch();
@@ -132,11 +131,7 @@ function JobDetails() {
                             variant="contained"
                             color="primary"
                             onClick={() => {
-                                {
-                                    user
-                                        ? handleApply(job)
-                                        : navigate("/api/admin/login");
-                                }
+                                handleApply(job);
                             }}
                         >
                             Apply
@@ -150,11 +145,7 @@ function JobDetails() {
                     ) : (
                         <CiHeart
                             onClick={() => {
-                                {
-                                    user
-                                        ? addWishlistFn(job)
-                                        : navigate("/api/admin/login");
-                                }
+                                addWishlistFn(job);
                             }}
                             className="size-8 cursor-pointer"
                         />

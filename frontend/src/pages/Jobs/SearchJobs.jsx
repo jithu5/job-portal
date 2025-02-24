@@ -56,7 +56,6 @@ const SearchJobs = () => {
 
     useEffect(() => {
         if (datas?.data && !isLoading) {
-            console.log(datas.data);
             setAllJobs(datas?.data);
         }
     }, [datas]);

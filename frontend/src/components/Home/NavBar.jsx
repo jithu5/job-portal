@@ -92,7 +92,7 @@ function NavBar() {
                 close: {
                     width: 20,
                     height: 20,
-                    top: "29px",
+                    top: "20px",
                     right: "50px",
                     transition: {
                         duration: 0.75,
@@ -116,8 +116,8 @@ function NavBar() {
                 close: {
                     width: 50,
                     height: 20,
-                    top: "21px",
-                    right: "60px",
+                    top: "20px",
+                    right: "70px",
                     // opacity: 0,
                     transition: {
                         duration: 0.75,
