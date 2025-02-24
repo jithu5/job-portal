@@ -313,9 +313,9 @@ const GetJobs = asyncHandler(async (req, res) => {
                     isWishlisted: {$gt: [{ $size: "$wishlisted"},0]},
                 },
             }
-        )
+        ])
 
-        const allJobs = await jobmodel.aggregate(aggregationpipeline);
+        const allJobs = await jobmodel.aggregate(Alljobs);
         console.log(allJobs)
         if (!allJobs) {
             throw new ApiError(404, "Job not found");
