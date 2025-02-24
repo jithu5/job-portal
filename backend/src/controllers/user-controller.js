@@ -20,8 +20,6 @@ const extractPublicId = require("../utils/ExtractPublicId.js");
 const { pipeline } = require("stream");
 const { error } = require("console");
 
-//homepage
-const Homepage = asyncHandler(async (req, res) => {});
 
 //user register
 const UserRegister = asyncHandler(async (req, res) => {
@@ -225,7 +223,7 @@ const GetUser = asyncHandler(async (req, res) => {
 //get all jobs
 const GetJobs = asyncHandler(async (req, res) => {
     try {
-        const userId =  req.user ? new mongoose.Types.ObjectId(req.user) : null;
+        const userId =  new mongoose.Types.ObjectId(req.user);
         const now = new Date();
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -233,8 +231,7 @@ const GetJobs = asyncHandler(async (req, res) => {
         const currentHours = now.getHours().toString().padStart(2, '0');
         const currentMinutes = now.getMinutes().toString().padStart(2, '0');
         const currentTime = `${currentHours}:${currentMinutes}`;
-
-        const aggregationpipeline = [
+        const Alljobs = await jobmodel.aggregate([ 
             {
                 $match: {
                      $or: [
@@ -260,48 +257,40 @@ const GetJobs = asyncHandler(async (req, res) => {
                 $unwind : "$companydetails",
                 
             },
-        ];
-
-        if(userId){
-            aggregationpipeline.push(
-                {
-                    $lookup : {
-                        from : "applicants",
-                        let : {jobId : "$_id", userId :userId},
-                        pipeline : [{
-                            $match : { $expr :{
-                                $and : [
-                                { $eq : ["$jobId", "$$jobId"] },
-                                { $eq : ["$userId", "$$userId"]},
-                            ] },
-                            } 
-                        },
-                        {$limit : 1}
-                    ],
-                    as : "applied"
-                    }
-                },
-                {
-                    $lookup : {
-                        from : "wishlists",
-                        let : {jobId : "$_id", userId : userId},
-                        pipeline : [{
-                            $match : { $expr : {
-                                $and: [
-                                { $eq : ["$jobId", "$$jobId"] },
-                                { $eq : ["$userId", "$$userId"]},
-                            ] },
-                            }
-                        },
-                        {$limit : 1}
-                    ],
-                    as : "wishlisted"
-                    }
-                },
-            )
-        }
-
-        aggregationpipeline.push(
+            {
+                $lookup : {
+                    from : "applicants",
+                    let : {jobId : "$_id", userId :userId},
+                    pipeline : [{
+                        $match : { $expr :{
+                            $and : [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        } 
+                    },
+                    {$limit : 1}
+                ],
+                as : "applied"
+                }
+            },
+            {
+                $lookup : {
+                    from : "wishlists",
+                    let : {jobId : "$_id", userId : userId},
+                    pipeline : [{
+                        $match : { $expr : {
+                            $and: [
+                            { $eq : ["$jobId", "$$jobId"] },
+                            { $eq : ["$userId", "$$userId"]},
+                        ] },
+                        }
+                    },
+                    {$limit : 1}
+                ],
+                as : "wishlisted"
+                }
+            },
             {
                 $project: {
                     _id: 1,
@@ -320,8 +309,8 @@ const GetJobs = asyncHandler(async (req, res) => {
                     companyId: "$companydetails._id",
                     company: "$companydetails.companyName",
                     companyprofile : "$companydetails.profileImage",
-                    isApplied: userId ? {$gt: [{ $size: "$applied"},0]}:false,
-                    isWishlisted: userId ? {$gt: [{ $size: "$wishlisted"},0]}:false,
+                    isApplied: {$gt: [{ $size: "$applied"},0]},
+                    isWishlisted: {$gt: [{ $size: "$wishlisted"},0]},
                 },
             }
         )
@@ -459,8 +448,7 @@ const GetJobById = asyncHandler(async (req, res) => {
     try {
         const userId =  new mongoose.Types.ObjectId(req.user);
         const {jobId} = req.params;
-
-        const aggregationpipeline = [
+        const job = await jobmodel.aggregate([
             {
                 $match: {
                     _id: new mongoose.Types.ObjectId(jobId)
@@ -478,9 +466,6 @@ const GetJobById = asyncHandler(async (req, res) => {
                     $unwind : "$companydetails",
                     
                 },
-        ];
-        if(userId){
-            aggregationpipeline.push(
                 {
                     $lookup : {
                         from : "applicants",
@@ -515,35 +500,30 @@ const GetJobById = asyncHandler(async (req, res) => {
                     as : "wishlisted"
                     }
                 },
-            )
-        }
-
-        aggregationpipeline.push(
-            {
-                $project: {
-                    _id: 1,
-                    title: 1,
-                    description: 1,
-                    location: 1,
-                    district: 1,
-                    date: 1,
-                    shift: 1,
-                    startTime: 1,
-                    endTime: 1,
-                    salary: 1,
-                    workersCount: 1,
-                    workersNeeded: 1,
-                    status: 1,
-                    companyId: "$companydetails._id",
-                    company: "$companydetails.companyName",
-                    companyprofile : "$companydetails.profileImage",
-                    isApplied: userId ? {$gt: [{ $size: "$applied"},0]}:false,
-                    isWishlisted: userId ? {$gt: [{ $size: "$wishlisted"},0]}:false,
-                },
-            }
-        )
-
-        const job = await jobmodel.aggregate(aggregationpipeline);
+                {
+                    $project: {
+                        _id: 1,
+                        title: 1,
+                        description: 1,
+                        location: 1,
+                        district: 1,
+                        date: 1,
+                        shift: 1,
+                        startTime: 1,
+                        endTime: 1,
+                        salary: 1,
+                        workersCount: 1,
+                        workersNeeded: 1,
+                        status: 1,
+                        companyId: "$companydetails._id",
+                        company: "$companydetails.companyName",
+                        companyprofile : "$companydetails.profileImage",
+                        isApplied: {$gt: [{ $size: "$applied"},0]},
+                        isWishlisted: {$gt: [{ $size: "$wishlisted"},0]},
+                    },
+                }
+            
+        ]);
         if (!job) {
             throw new ApiError(404, "Job not found");
         }
@@ -1355,7 +1335,6 @@ module.exports = {
     updateProfileAndCover,
     DeleteProfileImage,
     DeleteCoverImage,
-    Homepage,
     Logout,
     EditProfile,
     ApplyJob,
