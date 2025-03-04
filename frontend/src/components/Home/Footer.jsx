@@ -1,3 +1,4 @@
+import { Mail } from "lucide-react";
 import React from "react";
 import {
     FaFacebookF,
@@ -21,42 +22,54 @@ function Footer() {
                     </p>
                 </div>
 
-                <div className="mt-8 text-center flex justify-center gap-6">
+                <div className="mt-8 text-center flex justify-between gap-6 w-full px-1 sm:px-5 md:px-10 max-sm:flex-col items-center">
                     <a
-                        href="https://www.facebook.com"
+                        href="mailto:shabari24371@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xl hover:text-indigo-400"
+                        className="text-xl hover:text-indigo-400 flex items-center gap-2"
                     >
-                        <FaFacebookF />
+                        <Mail />
+                        <h2 className="text-xs sm:text-sm md:text-lg">
+                            SURJITH. S
+                        </h2>
                     </a>
                     <a
-                        href="https://www.twitter.com"
+                        href="mailto:ajith.aju39502@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xl hover:text-indigo-400"
+                        className="text-xl hover:text-indigo-400 flex items-center gap-2"
                     >
-                        <FaTwitter />
+                        <Mail />
+                        <h2 className="text-xs sm:text-sm md:text-lg">
+                            AJITH P
+                        </h2>
                     </a>
                     <a
-                        href="https://www.linkedin.com"
+                        href="mailto:leohari17@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xl hover:text-indigo-400"
+                        className="text-xl hover:text-indigo-400 flex items-center gap-2"
                     >
-                        <FaLinkedinIn />
+                        <Mail />
+                        <h2 className="text-xs sm:text-sm md:text-lg">
+                            SREEVAIDYANATHAN R
+                        </h2>
                     </a>
                     <a
-                        href="https://www.instagram.com"
+                        href="mailto:akashas321s@gmail.com"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-xl hover:text-indigo-400"
+                        className="text-xl hover:text-indigo-400 flex items-center gap-2"
                     >
-                        <FaInstagram />
+                        <Mail />
+                        <h2 className="text-xs sm:text-sm md:text-lg">
+                            AKASH S
+                        </h2>
                     </a>
                 </div>
-                <p className="cursor-pointer text-center mt-5">
-                    Email:
+                <p className="cursor-pointer text-center mt-8">
+                    Admin:
                     <a
                         className=" text-red-500"
                         href="mailto:shabari24371@gmail.com"
