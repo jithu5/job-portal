@@ -158,8 +158,8 @@ function NavBar() {
         <>
             <header className="w-full flex items-center justify-between font-BarlowSemiCondensed font-medium md:px-10">
                 {/* logo */}
-                <h1 className="text-4xl font-normal font-BarlowSemiCondensed">
-                    <Link to={"/"}>PartTime-Connect</Link>
+                <h1 className="text-4xl font-normal font-BarlowSemiCondensed ">
+                    <Link to={"/"}>PART-TIME CONNECT</Link>
                 </h1>
                 <nav>
                     <ul className="flex items-center gap-6">
