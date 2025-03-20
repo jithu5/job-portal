@@ -7,6 +7,7 @@ import {
 } from "../../Store/AdminAuth/AdminAuth-Api.js";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../Store/Auth/index.js";
+import { toast } from "react-toastify";
 
 function AdminAccountVerify() {
     const [otp, setOtp] = useState("");
@@ -26,13 +27,12 @@ function AdminAccountVerify() {
         async function sendotp() {
             try {
                 const response = await sendOtp({ email: email });
-                console.log(response);
-                if (!response.data.success) {
-                    throw new Error(response.data.message);
-                }
-                console.log(response.data.message);
+                // if (!response.data.success) {
+                //     throw new Error(response.data.message);
+                // }
+                toast.success(response.data.message);
             } catch (error) {
-                console.log(error.message);
+                toast.error(error.message);
             }
         }
 
@@ -55,19 +55,15 @@ function AdminAccountVerify() {
             return;
         }
 
-        // Simulate API call
-        console.log("OTP Submitted:", otp);
-
         try {
             const response = await verifyEmail({otp: otp});
             console.log(response);
             if (!response.data.success) {
-                console.log(response.data.message);
                 throw new Error("Invalid credentials");
             }
             console.log(response.data.message);
             dispatch(setUser(response.data.data));
-            alert(response.data.message);
+            toast.success(response.data.message);
             navigate("/company/dashboard", { replace: true }); // Redirect to dashboard after successful verification
         } catch (error) {
             console.log(error.message);

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../../Store/Auth";
 import { toast } from "react-toastify";
 import useDebounceCallback from "../../hooks/useDebouncedCallback";
+import { Loader2 } from "lucide-react";
 
 function AdminRegister() {
     const [companyName, setCompanyName] = useState("");
@@ -31,17 +32,16 @@ function AdminRegister() {
         setIsCompanyNameUnique("");
         setisChecking(false);
         async function checkCompanyNameUniqueFn() {
-            if (username.length >= 5) {
+            if (companyName.length >= 5) {
                 setisChecking(true);
                 try {
                     const response = await checkCompanyNameUnique(
                         companyName
                     ).unwrap();
-                    console.log(response?.message);
                     if (response.success) {
-                        setCheckUsernameMessage(response.message);
+                        setIsCompanyNameUnique(response.message);
                     } else {
-                        setCheckUsernameMessage(response.message);
+                        setIsCompanyNameUnique(response.message);
                     }
                 } catch (error) {
                     const errMessage =
@@ -65,22 +65,14 @@ function AdminRegister() {
     const onSubmit = async (data) => {
         console.log("Submitting Data:", data);
         try {
-            const response = await registerAdmin(data);
-            console.log(response);
-            if (!response.data.success) {
-                toast.error(response.error.data.message);
-                console.log(response.error.data.message);
-            }
-            console.log(response);
-            dispatch(setUser(response.data.data));
-            toast.success(response.data.message);
+            const response = await registerAdmin(data).unwrap();
+            dispatch(setUser(response.data));
+            toast.success(response.message);
             navigate("/api/company/verify", {
-                state: { email: response.data.data.email },
+                state: { email: response.data.email },
             });
         } catch (error) {
-            // toast.error("Error during registration:", error);
-            console.log("hello!", error);
-            console.log(error);
+            toast.error(error?.data?.message || "Error while registering");
         }
     };
 
@@ -224,6 +216,8 @@ function AdminRegister() {
                         <input
                             id="phone"
                             type="tel"
+                            minLength={10}
+                            maxLength={10}
                             {...register("phone", {
                                 required: "Phone number is required",
                                 pattern: {
