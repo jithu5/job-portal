@@ -102,7 +102,7 @@ const UserRegister = asyncHandler(async (req, res) => {
         const directMatch = looseMatch(normalizedText, normalizedName);
         console.log("Loose Match Found:", directMatch);
 
-        const target = ["university", "school", "college", "student"];
+        const target = ["university", "government", "" , "school", "college", "student"];
         const fuse = new Fuse(target, { includeScore: true, threshold: 0.5 });
         const results = fuse.search(normalizedText);
         const containtarget = results.length > 0;
@@ -168,7 +168,11 @@ const UserLogin = asyncHandler(async (req, res) => {
         throw new ApiError(400, "All fields are required");
     }
     try {
-        
+        //check the user blocked or not 
+        const blocked = await blocklistmodel.findOne({blockedEmail:email});
+        if(blocked){
+            throw new ApiError(403, 'User is blocked');
+        }
         console.log(email, password);
         const user = await usermodel.findOne({ email });
         console.log(user);
