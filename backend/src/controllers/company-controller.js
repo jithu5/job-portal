@@ -79,6 +79,11 @@ const CLogin = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        //check if company blocked or not
+        const blocked = await blocklistmodel.findOne({blockedEmail:email});
+        if(blocked){
+            throw new ApiError(403, 'Company is blocked');
+        }
         const company = await companymodel.findOne({ email: email });
 
         if (!company) {
