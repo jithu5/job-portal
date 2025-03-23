@@ -227,8 +227,6 @@ const UserRegistration = () => {
                             </label>
                             <input
                                 type="text"
-                                minLength={10}
-                                maxLength={10}
                                 {...register("phone", {
                                     required: "Phone number is required",
                                     pattern: {

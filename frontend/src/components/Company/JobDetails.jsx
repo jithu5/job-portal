@@ -60,7 +60,7 @@ function AdminJobDetails() {
                     })}
                 </p>
                 <p>
-                    <strong>Time of Work:</strong> {formatTime(jobData.startTime) }- {formatTime(jobData.endTime)}
+                    <strong>Time of Work:</strong> {formatTime(jobData.startTime)-formatTime(jobData.endTime)}
                 </p>
                 <p>
                     <strong>Total workers:</strong> {jobData.workersCount}
@@ -91,11 +91,10 @@ function AdminJobDetails() {
                                         <strong>Email:</strong>{" "}
                                         {applicant.email}
                                     </p>
-                                    <p>
-                                        <strong>Phone:</strong>{" "}
-                                        {applicant.phone}
-                                    </p>
                                 </div>
+                                <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                                    View Profile
+                                </button>
                             </li>
                         ))}
                     </ul>

@@ -179,13 +179,7 @@ function AdminApplication() {
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
-                                            Total Number of Workers:
-                                        </span>{" "}
-                                        { job.workersNeeded}
-                                    </p>
-                                    <p className="text-gray-700">
-                                        <span className="font-semibold">
-                                            Total Number of Applicants:
+                                            Number of Workers:
                                         </span>{" "}
                                         {job.workersCount - job.workersNeeded}
                                     </p>
@@ -206,7 +200,7 @@ function AdminApplication() {
                                         <span className="font-semibold">
                                             Salary:
                                         </span>{" "}
-                                        ₹{job.salary}
+                                        ${job.salary} per month
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">

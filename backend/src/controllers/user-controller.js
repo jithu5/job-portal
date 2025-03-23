@@ -86,117 +86,43 @@ const UserRegister = asyncHandler(async (req, res) => {
         //check id proof
         const {
             data: { text },
-        } = await Tesseract.recognize(req.file.path, "eng", {
+        } = await Tesseract.recognize(req.file.path, "eng",{
             tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz. ",
             psm: 6,
         });
-        console.log("Extracted Text:", text);
-        
-        // Normalize the extracted text
-        const normalizedText = text.replace(/[^a-zA-Z0-9. ]/g, " ").trim().toLowerCase(); // Preserve spaces
-        const words = normalizedText.split(/\s+/); // Split into words
+        console.log(text);
+
+        const normalizedText = text.replace(/[^a-zA-Z0-9. ]/g, "").trim().toLowerCase();
         const normalizedName = name.replace(/[^a-zA-Z0-9. ]/g, "").trim().toLowerCase();
-        console.log("Normalized Text:", words);
-        console.log("Normalized Name:", normalizedName);
-        
-        // Safely extract the name from the text
-        let nameFromText;
-        if (text.includes("a | ")) {
-            nameFromText = text.split("a | ")[1].split("\n")[0].trim().toLowerCase();
-        } else {
-            console.error("Delimiter 'a | ' not found in the text. Using normalizedText as fallback.");
-            nameFromText = normalizedText; // Fallback to the entire normalized text
+
+        function looseMatch(text, name) {
+            return text.replace(/\s+/g, "").includes(name.replace(/\s+/g, ""));
         }
-        console.log("Name Extracted from Text:", nameFromText);
-        
-        // Improved loose match function using Levenshtein distance
-        function levenshteinDistance(a, b) {
-            if (a.length === 0) return b.length;
-            if (b.length === 0) return a.length;
-        
-            const matrix = [];
-        
-            for (let i = 0; i <= b.length; i++) {
-                matrix[i] = [i];
-            }
-        
-            for (let j = 0; j <= a.length; j++) {
-                matrix[0][j] = j;
-            }
-        
-            for (let i = 1; i <= b.length; i++) {
-                for (let j = 1; j <= a.length; j++) {
-                    if (b.charAt(i - 1) === a.charAt(j - 1)) {
-                        matrix[i][j] = matrix[i - 1][j - 1];
-                    } else {
-                        matrix[i][j] = Math.min(
-                            matrix[i - 1][j - 1] + 1, // substitution
-                            matrix[i][j - 1] + 1,     // insertion
-                            matrix[i - 1][j] + 1      // deletion
-                        );
-                    }
-                }
-            }
-        
-            return matrix[b.length][a.length];
-        }
-        
-        function looseMatch(text, name, threshold = 3) { // Increased threshold to 3
-            const textWithoutSpaces = text.replace(/\s+/g, "");
-            const nameWithoutSpaces = name.replace(/\s+/g, "");
-            const distance = levenshteinDistance(textWithoutSpaces, nameWithoutSpaces);
-            console.log(`Distance between "${textWithoutSpaces}" and "${nameWithoutSpaces}":`, distance);
-            return distance <= threshold;
-        }
-        
-        // Test the loose match function with dynamic variables
-        const testMatch = looseMatch(nameFromText, normalizedName); // Use nameFromText and normalizedName
-        console.log("Test Loose Match:", testMatch); // Should return true
         
         const directMatch = looseMatch(normalizedText, normalizedName);
-        console.log("Text for Loose Match:", normalizedText);
-        console.log("Name for Loose Match:", normalizedName);
-        console.log("Loose Match Result:", directMatch);
-        
-        // Fuzzy search for keywords
-        const target = ["university", "government", "school", "college", "student"];
-        const fuse = new Fuse(target, { includeScore: true, threshold: 0.5 }); // Increased threshold to 0.5
-        
-        // Search for keywords in the normalized text (joined into a single string)
-        const normalizedTextForSearch = words.join(" ");
-        const results = fuse.search(normalizedTextForSearch);
+        console.log("Loose Match Found:", directMatch);
+
+        const target = ["university", "government", "" , "school", "college", "student"];
+        const fuse = new Fuse(target, { includeScore: true, threshold: 0.5 });
+        const results = fuse.search(normalizedText);
         const containtarget = results.length > 0;
         
-        // Search for keywords in the original text (lowercase)
-        const lowertext = text.toLowerCase();
-        const textresults = fuse.search(lowertext);
-        const containtext = textresults.length > 0;
-        
-        console.log("Target Keywords:", target);
-        console.log("Normalized Text for Search:", normalizedTextForSearch);
-        console.log("Original Text (Lowercase):", lowertext);
-        console.log("Fuzzy Search Results (Normalized Text):", results);
-        console.log("Fuzzy Search Results (Original Text):", textresults);
-        
-        // Check for exact matches
-        const exactMatch = target.some(keyword => normalizedTextForSearch.includes(keyword));
-        console.log("Exact Match Found:", exactMatch);
-        
-        // Validate the ID
-        if (!containtext && !containtarget && !directMatch && !exactMatch) {
-            console.log("Validation Failed: No match found for ID");
+        console.log("Extracted Text:", text);
+        console.log("Normalized Text:", normalizedText);
+        console.log("Normalized Name:", normalizedName);
+        console.log("Target Found:", containtarget);
+        console.log("Fuzzy Search Results:", results);
+
+        if (!containtarget && !directMatch) {
             throw new ApiError(400, "invalid ID");
-        } else {
-            console.log("Validation Passed: ID is valid");
         }
-        
-        // Delete temporary ID proof file
+
+        //delete temparary id proof file
         try {
             await fs.unlinkSync(req.file.path);
         } catch (error) {
             console.error("Error deleting temporary file:", error);
         }
-
 
         // create user
         const newuser = new usermodel({
