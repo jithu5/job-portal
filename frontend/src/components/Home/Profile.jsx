@@ -183,12 +183,20 @@ const Profile = () => {
                 handleSubmit={handleSubmit}
                 isSubmiting={isSubmiting}
             />
-            <ProfileImages setOpenDrawer={setOpenDrawer} user={user} removeCoverImage={handleRemoveCoverImage} removeProfileImage={handleRemoveProfileImage} />
-         
+            <ProfileImages
+                setOpenDrawer={setOpenDrawer}
+                user={user}
+                removeCoverImage={handleRemoveCoverImage}
+                removeProfileImage={handleRemoveProfileImage}
+            />
+
             <div className="w-[90%] mx-auto flex flex-col gap-4 mt-24">
                 <h1 className="text-xl md:text-3xl font-bold">
                     {user.name.toUpperCase()}
                 </h1>
+                <p className="text-md md:texxt-lg font-medium">
+                    @{user.username}
+                </p>
                 <p className="text-md md:texxt-lg font-medium">{user.email}</p>
                 <p className="text-md md:texxt-lg font-medium">{user.phone}</p>
                 <p className="text-md md:text-lg font-normal">{user.address}</p>
