@@ -143,14 +143,17 @@ function AdminApplication() {
                             >
                                 {/* Job Title and Image */}
                                 <div className="flex items-center gap-4">
-                                    
-                                    {job.company?.profileImage ?<img
-                                        src={job.company?.profileImage}
-                                        alt={job.title}
-                                        className="w-14 h-14 object-cover rounded-full"
-                                    />:
-                                    <div className="w-14 h-14 object-cover rounded-full flex justify-center items-center bg-stone-800 text-white font-bold font-BebasNeue text-xl">{job.company?.companyName[0].toUpperCase()}</div>
-                                    }
+                                    {job.company?.profileImage ? (
+                                        <img
+                                            src={job.company?.profileImage}
+                                            alt={job.title}
+                                            className="w-14 h-14 object-cover rounded-full"
+                                        />
+                                    ) : (
+                                        <div className="w-14 h-14 object-cover rounded-full flex justify-center items-center bg-stone-800 text-white font-bold font-BebasNeue text-xl">
+                                            {job.company?.companyName[0].toUpperCase()}
+                                        </div>
+                                    )}
                                     <div>
                                         <h2 className="text-lg md:text-xl font-bold text-blue-600">
                                             {job.title}
@@ -179,7 +182,7 @@ function AdminApplication() {
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
-                                            Number of Workers:
+                                            Number of Applicants:
                                         </span>{" "}
                                         {job.workersCount - job.workersNeeded}
                                     </p>
@@ -200,13 +203,14 @@ function AdminApplication() {
                                         <span className="font-semibold">
                                             Salary:
                                         </span>{" "}
-                                        {job.salary}
+                                        ₹{job.salary}
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
                                             Time:
                                         </span>{" "}
-                                        {formatTime(job.startTime)} - {formatTime(job.endTime)}
+                                        {formatTime(job.startTime)} -{" "}
+                                        {formatTime(job.endTime)}
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
