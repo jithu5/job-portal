@@ -60,7 +60,7 @@ function AdminJobDetails() {
                     })}
                 </p>
                 <p>
-                    <strong>Time of Work:</strong> {formatTime(jobData.startTime)-formatTime(jobData.endTime)}
+                    <strong>Time of Work:</strong> {formatTime(jobData.startTime)}-{formatTime(jobData.endTime)}
                 </p>
                 <p>
                     <strong>Total workers:</strong> {jobData.workersCount}

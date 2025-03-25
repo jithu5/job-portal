@@ -200,7 +200,7 @@ function AdminApplication() {
                                         <span className="font-semibold">
                                             Salary:
                                         </span>{" "}
-                                        ${job.salary} per month
+                                        {job.salary}
                                     </p>
                                     <p className="text-gray-700">
                                         <span className="font-semibold">
