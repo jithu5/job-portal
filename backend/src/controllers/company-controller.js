@@ -37,27 +37,36 @@ const CRegister = asyncHandler(async (req, res) => {
             throw new ApiError(400, "Company already exists");
         }
         //check company verified or not verified
+        let newcompany,token;
         if (ExistingC && !ExistingC.isAccountVerified) {
-            const Company = await ExistingC.updateOne({
+            newcompany = await companymodel.findOneAndUpdate(
+                { _id: ExistingC._id },
+                {
+                companyName,
+                email,
+                address,
+                phone,
+                password,
+            },
+            { new: true, runValidators: true }
+        );
+        console.log("company",newcompany);
+
+        
+        }else{
+
+            // create user
+            newcompany = new companymodel({
                 companyName: companyName,
                 email: email,
                 address: address,
                 phone: phone,
                 password: password,
             });
-            await Company.save();
+            await newcompany.save();
         }
-        // create user
-        const newcompany = new companymodel({
-            companyName: companyName,
-            email: email,
-            address: address,
-            phone: phone,
-            password: password,
-        });
-        await newcompany.save();
-
-        const token = await newcompany.generateToken();
+        token = await newcompany.generateToken();
+        
 
         const cookieOptions = {
             expires: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),

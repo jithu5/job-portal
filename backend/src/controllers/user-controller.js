@@ -59,16 +59,16 @@ const UserRegister = asyncHandler(async (req, res) => {
             throw new ApiError(403, 'User is blocked');
         }
         //check if username already exists
-        const ExistingUser = await usermodel.findOne({
+        let newuser = await usermodel.findOne({
             $or: [{ username: username }, { email: email }],
         });
 
-        if (ExistingUser && ExistingUser.isAccountVerified) {
+        if (newuser && newuser.isAccountVerified) {
             throw new ApiError(400, "User already exists");
         }
-        //check user verified or not
-        if (ExistingUser && !ExistingUser.isAccountVerified) {
-            const user = await ExistingUser.updateOne({
+        
+        if (newuser && !newuser.isAccountVerified) {
+            await newuser.updateOne({
                 username: username,
                 name: name,
                 email: email,
@@ -78,10 +78,8 @@ const UserRegister = asyncHandler(async (req, res) => {
                 age: age,
                 password: password,
         });
-        await user.save();
 
-        }
-
+        }else{
 
         //check id proof
         const {
@@ -198,7 +196,7 @@ const UserRegister = asyncHandler(async (req, res) => {
         }
 
         // create user
-        const newuser = new usermodel({
+        newuser = new usermodel({
             username: username,
             name: name,
             email: email,
@@ -209,6 +207,7 @@ const UserRegister = asyncHandler(async (req, res) => {
             password: password,
         });
         await newuser.save();
+        }   
 
         const token = await newuser.generateToken();
 
