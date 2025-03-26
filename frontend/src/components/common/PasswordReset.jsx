@@ -79,6 +79,8 @@ function PasswordReset({
                     type={inputStatus === "password" ? "password" : "text"}
                     placeholder={currentStep.placeholder}
                     {...register(inputStatus, currentStep.validation)}
+                    minLength={inputStatus === "otp" ? 6 : undefined}
+                    maxLength={inputStatus === "otp" ? 6 : undefined}
                     className={`w-full px-3 py-2 border rounded-md mb-3 ${
                         errors[inputStatus] ? "border-red-500" : ""
                     }`}

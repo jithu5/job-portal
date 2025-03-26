@@ -74,7 +74,7 @@ function NavBar() {
             dispatch(UserApi.util.resetApiState());
             navigate("/api/user/login");
         } catch (error) {
-            toast.error(error);
+            toast.error(error?.data?.message || "Error while logging out");
         }
     };
 
@@ -158,7 +158,7 @@ function NavBar() {
         <>
             <header className="w-full flex items-center justify-between font-BarlowSemiCondensed font-medium md:px-10">
                 {/* logo */}
-                <h1 className="text-4xl font-normal font-BarlowSemiCondensed ">
+                <h1 className="text-md md:text-4xl font-normal font-BarlowSemiCondensed ">
                     <Link to={"/"}>PART-TIME CONNECT</Link>
                 </h1>
                 <nav>

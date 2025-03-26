@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useResetPasswordOtpMutation,useVerifyResetOtpMutation,useUpdatePasswordMutation } from "../../Store/Auth/Auth-Api";
 import { setUser } from "../../Store/Auth";
+import { toast } from "react-toastify";
 
 function UserPasswordReset() {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
@@ -39,16 +40,13 @@ function UserPasswordReset() {
             return;
         }
         try {
-            const response = await resetPasswordOTP({email:data.email});
-            console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data.message);
-            }
+            const response = await resetPasswordOTP({email:data.email}).unwrap();
             setInputStatus("otp");
+            toast.success(response.message);
             setCurrentEmail(data.email);
             resetField("email");
         } catch (error) {
-            console.log(error.response);
+            toast.error(error?.data?.message || "Error while submitting password");
         }
     };
 
@@ -60,17 +58,13 @@ function UserPasswordReset() {
             return;
         }
         try {
-            const response = await verifyResetOtp({email:currentEmail,otp:data.otp})
-            console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data?.message);
-            }
-            console.log(response.data.message);
+            const response = await verifyResetOtp({email:currentEmail,otp:data.otp}).unwrap()
+            toast.success(response.message || "OTP submitted successfully");
             setInputStatus("password");
             resetField("otp");
 
         } catch (error) {
-            console.log(error?.message)
+            toast.error(error?.data?.message || "Invalid OTP")
         }
     };
 
@@ -82,18 +76,14 @@ function UserPasswordReset() {
             return;
         }
         try {
-            const response = await updatePassword({email:currentEmail, newPassword:data.password})
-            console.log(response);
-            if (!response.data?.success) {
-                console.log(response.data?.message);
-            }
-            console.log(response.data.message);
-            dispatch(setUser(response.data.data))
+            const response = await updatePassword({email:currentEmail, newPassword:data.password}).unwrap();
+            toast.success(response.message);
+            dispatch(setUser(response.data))
             
             resetField("password");
             navigate("/user");
         } catch (error) {
-            console.log(error?.message)
+            toast.error(error?.data?.message || "Error while Updating Password")
         }
     };
 

@@ -9,6 +9,7 @@ import {
     useUpdatePasswordMutation,
 } from "../../Store/AdminAuth/AdminAuth-Api";
 import { setUser } from "../../Store/Auth";
+import { toast } from "react-toastify";
 
 function CompanyPasswordReset() {
     const [inputStatus, setInputStatus] = useState("email"); // 'email', 'otp', 'password'
@@ -44,18 +45,14 @@ function CompanyPasswordReset() {
         }
         console.log(data.email)
         try {
-            const response = await resetPasswordOtp(data)
-            console.log(response);
-            if (!response.data.success) {
-                throw new Error(response.data.message);
-            }
-            console.log(response.data.message);
+            const response = await resetPasswordOtp(data).unwrap();
+            toast.success(response.message);
             setCurrentEmail(data.email)
             setInputStatus("otp");
             resetField("email");
 
         } catch (error) {
-            console.log(error.message);
+            toast.error(error?.data?.message || "Error sending OTP");
             
         }
      
@@ -71,16 +68,12 @@ function CompanyPasswordReset() {
         try {
             console.log(currentEmail);
             console.log(data.otp)
-            const response = await verifyResetOtp({email:currentEmail , otp: data.otp});
-            console.log(response);
-            if (!response.data?.success) {
-                throw new Error(response.data);
-            }
-            console.log(response.data.message);
+            const response = await verifyResetOtp({email:currentEmail , otp: data.otp}).unwrap()
+            toast.success(response.message);
             setInputStatus("password");
             resetField("otp");
         } catch (error) {
-            console.log(error);
+            toast.error(error?.data?.message || "Error verifying OTP");
             
         }
     };
@@ -93,18 +86,13 @@ function CompanyPasswordReset() {
             return;
         }
         try {
-            const response = await updatePassword({email:currentEmail, newPassword:data.password});
-            console.log(response);
-            if (!response.data?.success) {
-                throw new Error(response.data);
-            }
-            console.log(response.data.message);
-            alert(response.data.message);
-            dispatch(setUser(response.data.data))
+            const response = await updatePassword({email:currentEmail, newPassword:data.password}).unwrap();
+            toast.success(response.message);
+            dispatch(setUser(response.data))
             navigate("/company/dashboard");
             resetField("password");
         } catch (error) {
-            console.log(error.message);
+            toast.error(error?.data?.message || "Error updating password");
         }
     };
 
