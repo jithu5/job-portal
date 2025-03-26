@@ -1,6 +1,6 @@
 import React from "react";
 
-function AccountVerify({ handleOtpChange, handleSubmit, otp, error }) {
+function AccountVerify({ handleOtpChange, handleSubmit, otp, error,isLoading }) {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
@@ -34,7 +34,7 @@ function AccountVerify({ handleOtpChange, handleSubmit, otp, error }) {
                         type="submit"
                         className="w-full bg-third text-white py-2 rounded-md hover:bg-purple-600 transition"
                     >
-                        Verify OTP
+                    {isLoading?"Verifying":"Verify OTP"}
                     </button>
                 </form>
             </div>

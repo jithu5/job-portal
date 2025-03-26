@@ -142,7 +142,7 @@ function RecommendedJobs() {
                                         </p>
                                     </div>
                                     <div className="text-sm md:text-base font-medium text-blue-500">
-                                        <p>⏳ {formatTime(job.startTime)-formatTime(job.endTime)}</p>
+                                        <p>⏳ {formatTime(job.startTime)}-{formatTime(job.endTime)}</p>
                                     </div>
                                     <div className="text-sm md:text-base font-semibold text-gray-700">
                                         <p>💰 ₹{job.salary}</p>

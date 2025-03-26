@@ -21,18 +21,18 @@ function AdminAccountVerify() {
     const dispatch = useDispatch();
 
     const [sendOtp] = useSendOtpMutation();
-    const [verifyEmail] = useVerifyEmailMutation();
+const [verifyEmail,{isLoading}] = useVerifyEmailMutation();
 
     useEffect(() => {
         async function sendotp() {
             try {
-                const response = await sendOtp({ email: email });
+                const response = await sendOtp({ email: email }).unwrap()
                 // if (!response.data.success) {
                 //     throw new Error(response.data.message);
                 // }
                 toast.success(response.data.message);
             } catch (error) {
-                toast.error(error.message);
+                toast.error(error?.data?.message || "Error sending OTP");
             }
         }
 
@@ -56,17 +56,13 @@ function AdminAccountVerify() {
         }
 
         try {
-            const response = await verifyEmail({otp: otp});
+            const response = await verifyEmail({otp: otp}).unwrap();
             console.log(response);
-            if (!response.data.success) {
-                throw new Error("Invalid credentials");
-            }
-            console.log(response.data.message);
-            dispatch(setUser(response.data.data));
-            toast.success(response.data.message);
+            dispatch(setUser(response.data));
+            toast.success(response.message);
             navigate("/company/dashboard", { replace: true }); // Redirect to dashboard after successful verification
         } catch (error) {
-            console.log(error.message);
+            toast.error(error?.data?.message);
         }
     };
     return (
@@ -76,6 +72,7 @@ function AdminAccountVerify() {
                 handleSubmit={handleSubmit}
                 otp={otp}
                 error={error}
+                isLoading={isLoading}
             />
         </>
     );
